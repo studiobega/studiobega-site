@@ -180,16 +180,15 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
 }
 
 /* fiche dépliée dans la grille */
-.gpanel{grid-column:1/-1;border-top:1.5px solid #141413;padding-top:20px;margin-top:-12px;animation:gp .45s cubic-bezier(.2,.7,.2,1)}
+.card.on{display:none}
+.grid{overflow-anchor:none}
+.gpanel{grid-column:1/-1;border-top:1.5px solid #141413;padding-top:20px;margin-bottom:24px;animation:gp .45s cubic-bezier(.2,.7,.2,1)}
 @keyframes gp{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .gp-h{display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:24px}
 .gp-h .nm{font-size:30px;line-height:1.15;display:block}
 .gp-h .cm{font-family:'Jost',Helvetica,Arial,sans-serif;font-size:14px;color:#6b6b66;letter-spacing:.01em;display:block;margin-top:6px}
 .gp-x{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-serif;font-size:14px;letter-spacing:.02em;text-transform:uppercase;border-bottom:1.5px solid #141413;padding-bottom:2px;flex:none}
-.gpanel .panel{opacity:1;transform:none;cursor:default;padding-top:0}
-.card.on .nm{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:5px}
-.grid.has-open .card:not(.on) img{opacity:.55}
-.grid.has-open .card:not(.on):hover img{opacity:.85}
+.gpanel .panel{opacity:1;transform:none;cursor:default;padding-top:0;padding-bottom:16px}
 /* bouton Fermer flottant (iPhone) */
 .fx{display:none}
 @media (max-width:640px){

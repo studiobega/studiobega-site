@@ -75,6 +75,7 @@
 
   /* ---- fiche dépliée dans la grille ---- */
   var gp = null, fx = document.getElementById('fx'), pushed = false;
+  try { history.scrollRestoration = 'manual'; } catch (e) {}
   function navH() { var n = site.querySelector('.nav'); return n ? n.getBoundingClientRect().height : 56; }
   function closeGrid() {
     if (!gp) return false;
@@ -87,8 +88,8 @@
     var c = document.querySelector('.card[data-open="' + id + '"]'), r = document.getElementById(id);
     if (!c || !r) return;
     closeGrid();
-    var grid = c.parentNode, cards = Array.prototype.slice.call(grid.querySelectorAll('.card')), last = c;
-    cards.forEach(function (x) { if (Math.abs(x.offsetTop - c.offsetTop) < 4) last = x; });
+    var grid = c.parentNode, cards = Array.prototype.slice.call(grid.querySelectorAll('.card')), first = c;
+    for (var i = cards.length - 1; i >= 0; i--) if (Math.abs(cards[i].offsetTop - c.offsetTop) < 4) first = cards[i];
     var line = r.querySelector('.line');
     var meta = Array.prototype.map.call(line.querySelectorAll('.pl,.tp,.yr,.st'), function (x) { return x.textContent; }).filter(Boolean).join(' · ');
     gp = document.createElement('div'); gp.className = 'gpanel'; gp._card = c;
@@ -99,14 +100,14 @@
     t.appendChild(nm); t.appendChild(cm); h.appendChild(t);
     var x = document.createElement('button'); x.type = 'button'; x.className = 'gp-x'; x.textContent = 'Fermer'; h.appendChild(x);
     gp.appendChild(h); gp.appendChild(r.querySelector('.panel').cloneNode(true));
-    last.after(gp); grid.classList.add('has-open'); c.classList.add('on');
+    first.before(gp); grid.classList.add('has-open'); c.classList.add('on');
     x.addEventListener('click', function () { shut(); });
     gp.addEventListener('click', function (ev) {
       var z = ev.target.closest('[data-zoom]'); if (z) zoom(z.getAttribute('data-zoom'));
     });
     if (!noScroll) {
-      var y = (phone() ? gp : c).getBoundingClientRect().top + window.pageYOffset - navH() - 16;
-      window.scrollTo({ top: Math.max(0, y), behavior: phone() ? 'auto' : 'smooth' });
+      var y = gp.getBoundingClientRect().top + window.pageYOffset - navH() - 24;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
     }
     syncFx();
   }
@@ -120,7 +121,7 @@
     if (openRow) { closeAll(); back = back || openRow; }
     if (!fromPop) setHash(null);
     syncFx();
-    if (back && back.getBoundingClientRect().top < 0) window.scrollTo(0, back.getBoundingClientRect().top + window.pageYOffset - navH() - 16);
+    if (back && back.getBoundingClientRect().top < navH()) window.scrollTo(0, back.getBoundingClientRect().top + window.pageYOffset - navH() - 16);
   }
   Array.prototype.forEach.call(document.querySelectorAll('.card'), function (c) {
     c.addEventListener('click', function (ev) {
