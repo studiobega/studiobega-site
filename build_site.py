@@ -146,7 +146,7 @@ NAMES = dict(PORTES)
 bykey = {k: sorted([p for p in P if p['pk'] == k and ph(p['nom'])], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 
 def card(p):
-    """Vignette : l'image seule, comme l'ancien site. Au survol (ou dessous sur téléphone) : la clé, puis le nom."""
+    """Vignette : l'image, le nom, puis la fonction et le lieu. La clé se lit dans la fiche."""
     pics = PICS.get(p['id'])
     if not pics: return ''
     cle, nom = ph(p['cle']), ph(p['nom'])
@@ -154,7 +154,7 @@ def card(p):
     typ = (p['type'] or '').strip()
     sub = ' · '.join(x for x in ((typ[:1].upper() + typ[1:]) if typ else '', ph(p['lieu'])) if x)
     return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><span class="im"><img src="{abs_(pics[0][2])}" alt="{e(nom)}" loading="lazy"></span>'
-            f'<span class="cap"><span class="ck">{e(cle or nom)}</span><span class="cm">{e(sub)}</span></span></a>\n')
+            f'<span class="cap"><span class="nm">{e(nom)}</span><span class="cm">{e(sub)}</span></span></a>\n')
 
 def fiche(p):
     """Contenu de la fiche qui s'ouvre dans la grille (caché jusqu'au clic)."""
