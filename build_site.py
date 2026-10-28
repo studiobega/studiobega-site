@@ -277,8 +277,9 @@ redir = ['RewriteEngine On', 'RewriteCond %{HTTPS} off', 'RewriteRule ^ https://
 old = json.load(open(DATA / 'old_slugs.json')) if (DATA / 'old_slugs.json').exists() else {}
 bycode = {p['code']: p['id'] for p in P}
 for s, code in old.items():
-    if code in bycode: redir.append(f'Redirect 301 {s} /index.html#{bycode[code]}')
-redir.append('Redirect 301 /studio /studio.html'); redir.append('Redirect 301 /contact /contact.html')
+    if code in bycode: redir.append(f'RedirectMatch 301 ^{s}/?$ /index.html#{bycode[code]}')
+# correspondance exacte : « Redirect /studio » attraperait aussi /studio.html (boucle)
+redir.append('RedirectMatch 301 ^/studio/?$ /studio.html'); redir.append('RedirectMatch 301 ^/contact/?$ /contact.html')
 (DIST / '.htaccess').write_text('\n'.join(redir) + '\n')
 
 n_img = sum(1 for _ in IMG.rglob('*.jpg'))
