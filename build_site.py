@@ -155,17 +155,19 @@ def row(p):
 '''
 
 def card(p):
+    """Vignette : l'image, la clé en grand (surlignée à l'apparition), puis nom · lieu."""
     pics = PICS.get(p['id'])
     if not pics or not ph(p['nom']): return ''
-    meta = ' · '.join(x for x in (ph(p['lieu']), p['type']) if x)
-    cle = f'<span class="ck"><span>{e(ph(p["cle"]))}</span></span>' if ph(p['cle']) else ''
-    return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><img src="{pics[0][2]}" alt="" loading="lazy">'
-            f'<span class="cm">{e(meta)}</span><span class="nm">{e(ph(p["nom"]))}</span>{cle}</a>\n')
+    meta = ' · '.join(x for x in (ph(p['nom']), ph(p['lieu'])) if x)
+    head = f'<span class="ck"><span class="mk">{e(ph(p["cle"]))}</span></span>' if ph(p['cle']) else f'<span class="ck nk">{e(ph(p["nom"]))}</span>'
+    return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><span class="im"><img src="{pics[0][2]}" alt="" loading="lazy"></span>'
+            f'{head}<span class="cm">{e(meta)}</span></a>\n')
 
 bykey = {k: sorted([p for p in P if p['pk'] == k], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 doors = ''.join(f'<a href="#{k}">{e(n)}<span class="n">{len(bykey[k])}</span></a>' for k, n in PORTES)
 views = '<div class="views" role="group" aria-label="Affichage"><button type="button" data-v="img" aria-pressed="true">Images</button><button type="button" data-v="list" aria-pressed="false">Liste</button></div>'
-lieux = f'''    <header id="lieux" class="lieux-head"><div class="doors">{doors}</div>{views}</header>
+lieux = f'''    <p class="lead">Chaque lieu a sa clé.</p>
+    <header id="lieux" class="lieux-head"><div class="doors">{doors}</div>{views}</header>
 '''
 for k, n in PORTES:
     rows_h = ''.join(row(p) for p in bykey[k])
@@ -200,42 +202,46 @@ DIST.mkdir(exist_ok=True)
     "Studio BEGA lit les lieux avant de dessiner : communes, hôtellerie, promotion, maisons. Architecture et plans directeurs en Wallonie, à Bruxelles et au Luxembourg."))
 
 # ---------- STUDIO ----------
-# Fil rouge : un même lieu, de la lecture au projet. Photos repérées par leur id de pièce jointe Airtable.
+# Une position, puis la démonstration sur un lieu (Bouillon), puis les échelles, puis les deux regards.
 FIL_CODE = '23.14'
 FIL_SRC = [('lire', 'Lire', 'attRCS6nTI0fJ9dtW', "Sur place, avant de dessiner : le relief, l'eau, les passages, ce que les gens en font. Et le programme, qui compte autant que le lieu."),
-           ('imaginer', 'Imaginer', 'att0sJfbGVF6vDiiV', "Entre le lieu et le programme, une phrase fait basculer le projet : la clé. Le projet se dessine à partir d'elle."),
+           ('imaginer', 'Imaginer', 'att0sJfbGVF6vDiiV', None),
            ('realiser', 'Réaliser', 'attN9EId6PPtfGRFu', "Le permis, le chantier, jusqu'au dernier détail. Transformer ce qui existe, construire quand le terrain le demande.")]
-# Clés montrées sur la page Studio (code projet, dans l'ordre). Texte lu dans Airtable (Site · La clé).
-CLES = ['REF.01', '25.26', '26.56', '25.24', 'REF.10']
+# Échelles : (libellé, code projet) — liens vers des lieux, sans leurs clés.
+ECHELLES = [('Maison', '25.24'), ('Bâtiment', '26.51'), ('Plan directeur', 'REF.01'), ('Territoire', 'REF.02')]
 BYCODE = {p['code']: p for p in P}
 fp = BYCODE.get(FIL_CODE)
 mine = sorted([m for m in MAN if m['code'] == FIL_CODE], key=lambda m: m['k'])
 fpics = PICS.get(fp['id']) if fp else None
+fcle = ph(fp['cle']) if fp else ''
 steps = ''
 for cls, lab, aid, txt in FIL_SRC:
     ks = [i for i, m in enumerate(mine) if m['id'] == aid]
     img = f'<img src="{fpics[ks[0]][2]}" alt="" loading="lazy">' if (fpics and ks and ks[0] < len(fpics)) else '<span class="ph"></span>'
-    steps += f'      <figure class="step {cls}">{img}<figcaption><span class="lab">{lab}</span><span>{e(txt)}</span></figcaption></figure>\n'
-fil_link = f'<a class="fil-l" href="index.html#{fp["id"]}">{e(ph(fp["nom"]))}, {e(ph(fp["lieu"]))} →</a>' if fp else ''
-cles = ''
-for c in CLES:
+    body = f'<span class="kc"><span class="mk">{e(fcle)}</span></span>' if txt is None else f'<span>{e(txt)}</span>'
+    steps += f'      <figure class="step {cls}">{img}<figcaption><span class="lab">{lab}</span>{body}</figcaption></figure>\n'
+fil_link = f'<a class="fil-l" href="index.html#{fp["id"]}">{e(ph(fp["nom"]))}, {e(ph(fp["lieu"]))}</a>' if fp else ''
+ech = ''
+for lab, c in ECHELLES:
     q = BYCODE.get(c)
-    if q and ph(q['cle']):
-        cles += f'      <a href="index.html#{q["id"]}"><span class="kw"><span class="key">{e(q["cle"])}</span></span><span class="cm">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a>\n'
+    if q: ech += f'<a href="index.html#{q["id"]}"><span class="lab">{lab}</span><span class="en">{e(ph(q["nom"]))}</span><span class="el">{e(ph(q["lieu"]))}</span></a>'
 studio = f'''<div class="page"><div class="wrap">
-{nav('Studio')}    <h1 class="manif">BEGA lit les lieux avant qu'on le lui demande.</h1>
-    <p class="bio">Une place de village, un hôtel, une friche, une maison : il dit ce qu'il y voit, et ce qui les ferait basculer. Certains deviennent des projets, en Wallonie, à Bruxelles et au Luxembourg. Studio fondé à Hotton en 2025 par Benjamin Gaspard, architecte depuis 2013, avec Héloïse Collin, architecte d'intérieur.</p>
+{nav('Studio')}    <h1 class="manif">Revaloriser ce qui existe. Construire quand le terrain le demande.</h1>
+    <div class="thesis">
+      <p>Chaque lieu a sa clé : ce qui le rend singulier. Elle se trouve sur place, entre ce que le lieu peut donner et ce que vous voulez en faire. Le projet se dessine à partir d'elle.</p>
+      <p class="bio">Studio fondé à Hotton en 2025 par Benjamin Gaspard, architecte depuis 2013, avec Héloïse Collin, architecte d'intérieur. En Wallonie, à Bruxelles et au Luxembourg.</p>
+    </div>
 
     <section class="fil-band">
-      <div class="lab sec">Un lieu, trois temps</div>
+      <div class="band-h"><span class="lab">Un lieu, trois temps</span>{fil_link}</div>
       <div class="steps">
 {steps}      </div>
-      {fil_link}
     </section>
 
-    <section class="cles">
-      <div class="lab sec">Des clés</div>
-{cles}    </section>
+    <section class="ech">
+      <div class="lab sec">De la maison au territoire</div>
+      <div class="ech-row">{ech}</div>
+    </section>
 
     <div class="blk">
       <div class="lab">Deux regards</div>
@@ -247,7 +253,8 @@ studio = f'''<div class="page"><div class="wrap">
         </div>
       </div>
     </div>
-{FOOT}</div></div>'''
+{FOOT}</div></div>
+<script src="assets/site.js" defer></script>'''
 (DIST / 'studio.html').write_text(page('Studio — Studio BEGA', studio, "Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur. Lire, imaginer, réaliser."))
 
 # ---------- CONTACT ----------
