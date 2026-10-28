@@ -98,7 +98,7 @@ FOOT = """    <footer class="foot">
     </footer>
 """
 MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/#studio', 'Studio'), ('/contact.html', 'Contact')]
-LOGO = '<a class="logo" href="/" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
+LOGO = '<a class="logo" href="/#accueil" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
 def nav(on):
     links = ''.join(f'<a href="{h}"{" class=\"on\"" if t == on else ""}>{t}</a>' for h, t in MENU)
@@ -139,20 +139,20 @@ DOORS = {
                     "Une place, une rue, une rivière, un massif. Chaque territoire porte déjà sa logique : le relief, l'eau, les usages, ceux qui le traversent. BEGA la lit sur place, trouve la clé, et dessine à partir d'elle, du plan directeur à l'espace public."),
     'activites':   ("Un lieu d'activité vit de ce qu'il fait ressentir.",
                     "Un hôtel, un café, un commerce, un cinéma, un bureau. Le lieu porte le projet de celui qui l'exploite : ce qu'il veut offrir, à qui, et comment on y arrive. La clé réconcilie ce programme avec ce que le lieu sait déjà faire."),
-    'habitat':     ("Une maison commence par son terrain.",
-                    "Une maison, une grange, des logements, un quartier. Le terrain, la vue, la lumière, les arbres en place : tout est déjà là. La clé fait le lien entre ce qui existe et la façon dont vous voulez y vivre. Héloïse la prolonge à l'intérieur."),
+    'habitat':     ("Habiter, c'est s'accorder à un lieu.",
+                    "Une maison neuve, une ferme à rénover de fond en comble, des logements, un intérieur. Chaque projet part de ce qui est déjà là : le terrain, les murs, la vue, la lumière. La clé fait le lien entre ce qui existe et la façon dont on veut y vivre. Héloïse la prolonge à l'intérieur."),
 }
 NAMES = dict(PORTES)
 bykey = {k: sorted([p for p in P if p['pk'] == k and ph(p['nom'])], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 
 def card(p):
+    """Vignette : l'image, la clé en titre, puis le nom réel du lieu."""
     pics = PICS.get(p['id'])
     if not pics: return ''
-    cle = ph(p['cle'])
-    meta = ' · '.join(x for x in (ph(p['lieu']), p['type']) if x)
-    ov = f'<span class="ov"><span class="ck">{e(cle)}</span></span>' if cle else ''
-    return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><span class="im"><img src="{abs_(pics[0][2])}" alt="{e(ph(p["nom"]))}" loading="lazy">{ov}</span>'
-            f'<span class="cap"><span class="nm">{e(ph(p["nom"]))}</span><span class="cm">{e(meta)}</span></span></a>\n')
+    cle, nom = ph(p['cle']), ph(p['nom'])
+    sub = ' · '.join(x for x in (nom if cle else '', ph(p['lieu'])) if x)
+    return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><span class="im"><img src="{abs_(pics[0][2])}" alt="{e(nom)}" loading="lazy"></span>'
+            f'<span class="cap"><span class="ck">{e(cle or nom)}</span><span class="cm">{e(sub)}</span></span></a>\n')
 
 def fiche(p):
     """Contenu de la fiche qui s'ouvre dans la grille (caché jusqu'au clic)."""
@@ -208,18 +208,20 @@ hero_links = ''.join(f'<a href="{h}">{t}</a>' for h, t in MENU)
 index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
+  <button type="button" class="go" id="enter" aria-label="Entrer"></button>
   <nav class="nav" aria-label="Navigation">{LOGO}<div class="links">{hero_links}</div></nav>
   <div class="txt">
     <h1>Tout est déjà là.</h1>
     <p>Lire un lieu. Imaginer sa clé. Le réaliser.</p>
   </div>
 </section>
-<div class="page"><div class="wrap">
-    <section class="studio" id="studio">
+<div class="page site" id="site"><div class="wrap">
+{nav('')}    <section class="studio" id="studio">
       <h2 class="t1">Revaloriser ce qui existe.<br>Construire quand le terrain le demande.</h2>
       <div class="essay">
-        <p>Une place de village, un hôtel, une ferme, une maison.<br>Chaque lieu a déjà beaucoup : le relief, l'eau, les murs, ce que les gens en font.<br>Et l'envie de celui qui porte le projet.</p>
-        <p>Entre les deux, il y a une clé.<br>Ce qui rend le lieu singulier.<br>Elle se trouve sur place, et le projet se dessine à partir d'elle.</p>
+        <p>Une maison, un gîte, un commerce, un lieu de travail, un espace public.<br>Studio BEGA accompagne les particuliers, les investisseurs, les entreprises et les communes, quand un lieu demande à être transformé, valorisé ou repensé.</p>
+        <p>Un projet commence par une lecture.<br>Ce que le lieu permet. Ce qu'il impose. Ce qu'il peut devenir.<br>Et ce que vous voulez en faire.</p>
+        <p>Entre les deux, il y a une clé : ce qui rend le lieu singulier.<br>Elle se trouve sur place, et le projet se dessine à partir d'elle, du territoire à l'intérieur.</p>
       </div>
       <div class="temps">
         <div><h3>Lire</h3><p>Sur place, avant de dessiner.</p></div>
@@ -232,7 +234,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
           <div><h3>Benjamin Gaspard</h3><div class="lab">Architecte</div><p>Trouve la clé sur place.</p></div>
           <div><h3>Héloïse Collin</h3><div class="lab">Architecte d'intérieur</div><p>La prolonge à l'intérieur.</p></div>
         </div>
-        <figcaption class="t3">Un studio d'architecture à Hotton.<br>De la maison au territoire, en Wallonie, à Bruxelles et au Luxembourg.</figcaption>
+        <figcaption class="t3">Un studio d'architecture à Hotton, en Wallonie, à Bruxelles et au Luxembourg.<br>Des projets qui restent. Dans leur usage, dans le temps, dans ce qu'ils changent.</figcaption>
       </figure>
     </section>
     <section class="doors" aria-label="Les lieux">
