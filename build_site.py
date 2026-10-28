@@ -23,8 +23,10 @@ e = lambda s: html.escape(s or '', quote=False)
 # ---------- données ----------
 P = json.load(open(DATA / 'projets.json'))
 MAN = json.load(open(DATA / 'photos_manifest.json')) if (DATA / 'photos_manifest.json').exists() else []
-PORTES = [('communes', 'Communes'), ('hotellerie', 'Hôtellerie & commerces'), ('promotion', 'Promotion'), ('maisons', 'Maisons')]
+PORTES = [('territoires', 'Territoires'), ('activites', 'Activités'), ('habitat', 'Habitat')]
 PKEY = {n: k for k, n in PORTES}
+# anciennes valeurs de « Site · Porte », au cas où une ligne n'a pas été rebasculée
+PKEY.update({'Communes': 'territoires', 'Hôtellerie & commerces': 'activites', 'Promotion': 'habitat', 'Maisons': 'habitat'})
 
 def slug(s):
     s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode()
@@ -36,7 +38,7 @@ def ph(s):  # placeholder du mockup → vide
 
 for p in P:
     p['id'] = slug(p['nom']) if ph(p['nom']) else slug(p['code'])
-    p['pk'] = PKEY.get(p['porte'], 'communes')
+    p['pk'] = PKEY.get(p['porte'], 'territoires')
 # ids uniques
 seen = {}
 for p in P:
