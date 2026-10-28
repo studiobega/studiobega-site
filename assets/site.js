@@ -8,10 +8,10 @@
     var map = {}; try { map = JSON.parse(hero.getAttribute('data-map') || '{}'); } catch (e) {}
     var h0 = location.hash.slice(1);
     if (h0 && map[h0]) { location.replace('/' + map[h0] + '/#' + h0); return; }   // anciens liens index.html#lieu
-    var seen = false; try { seen = sessionStorage.getItem('bega_in') === '1'; } catch (e) {}
+    // le rideau accueille chaque arrivée sur le site ; il reste levé quand on revient à l'accueil depuis une autre page
+    var seen = !!document.referrer && document.referrer.indexOf(location.origin) === 0;
     var up = function (instant) {
       if (hero.classList.contains('up')) return;
-      try { sessionStorage.setItem('bega_in', '1'); } catch (e) {}
       if (instant) hero.classList.add('now');
       hero.classList.add('up'); site.classList.remove('locked');
     };
