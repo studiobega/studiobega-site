@@ -9,7 +9,7 @@ Entrées
 
 Sortie
   dist/   index.html (accueil), territoires/ activites/ habitat/ (une page par porte),
-          (chaque lieu s'ouvre en fiche dans sa porte, /porte/#id), studio.html, contact.html, assets/, img/, .htaccess
+          (chaque lieu s'ouvre en fiche dans sa porte, /porte/#id), contact.html ; le studio est sur l'accueil (/#studio), assets/, img/, .htaccess
 
 Usage : python3 -I build_site.py
 """
@@ -97,7 +97,7 @@ FOOT = """    <footer class="foot">
       <div class="grp"><a href="https://www.instagram.com/studio_bega_/">Instagram</a><a href="https://www.facebook.com/studiobenjamingaspard">Facebook</a><a href="https://be.linkedin.com/company/studiobega">LinkedIn</a></div>
     </footer>
 """
-MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/studio.html', 'Studio'), ('/contact.html', 'Contact')]
+MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/#studio', 'Studio'), ('/contact.html', 'Contact')]
 LOGO = '<a class="logo" href="/" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
 def nav(on):
@@ -196,45 +196,50 @@ for src, dst in [('7d27646bb9e84d280aaa51552a3d6afb', 'hero'), ('ec894847fb1cdd2
     if s_.exists():
         save(Image.open(s_), IMG / f'{dst}.jpg', 2000 if dst == 'hero' else 1600, 84)
 
-# ---------- accueil : un seul plein écran ----------
-hero_links = ''.join(f'<a href="{h}">{t}</a>' for h, t in MENU)
+# ---------- accueil : la photo, puis BEGA se présente, puis les trois portes ----------
+def first_pic(k, code=None):
+    L = [p for p in bykey[k] if PICS.get(p['id'])]
+    if code: L = [p for p in L if p['code'] == code] or L
+    return abs_(PICS[L[0]['id']][0][2]) if L else '/img/hero.jpg'
+tiles = ''.join(f"""      <a class="door" href="/{k}/"><span class="im"><img src="{first_pic(k, '23.14' if k == 'territoires' else None)}" alt="" loading="lazy"></span><span class="dn">{e(n)}</span><span class="dt">{e(DOORS[k][0])}</span></a>
+""" for k, n in PORTES)
 IDMAP = json.dumps({p['id']: p['pk'] for p in P}, ensure_ascii=False).replace('"', '&quot;')
+hero_links = ''.join(f'<a href="{h}">{t}</a>' for h, t in MENU)
 index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
-  <a class="go" id="enter" href="/territoires/" aria-label="Entrer"></a>
   <nav class="nav" aria-label="Navigation">{LOGO}<div class="links">{hero_links}</div></nav>
   <div class="txt">
     <h1>Tout est déjà là.</h1>
     <p>Lire un lieu. Imaginer sa clé. Le réaliser.</p>
   </div>
-</section>"""
+</section>
+<div class="page"><div class="wrap">
+    <section class="studio" id="studio">
+      <h2 class="t1">Revaloriser ce qui existe.<br>Construire quand le terrain le demande.</h2>
+      <div class="essay">
+        <p>Une place de village, un hôtel, une ferme, une maison.<br>Chaque lieu a déjà beaucoup : le relief, l'eau, les murs, ce que les gens en font.<br>Et l'envie de celui qui porte le projet.</p>
+        <p>Entre les deux, il y a une clé.<br>Ce qui rend le lieu singulier.<br>Elle se trouve sur place, et le projet se dessine à partir d'elle.</p>
+      </div>
+      <div class="temps">
+        <div><h3>Lire</h3><p>Sur place, avant de dessiner.</p></div>
+        <div><h3>Imaginer</h3><p>Trouver la clé, puis dessiner le projet à partir d'elle.</p></div>
+        <div><h3>Réaliser</h3><p>Le permis, le chantier, jusqu'au dernier détail.</p></div>
+      </div>
+      <figure class="duo">
+        <img src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
+        <div class="two">
+          <div><h3>Benjamin Gaspard</h3><div class="lab">Architecte</div><p>Trouve la clé sur place.</p></div>
+          <div><h3>Héloïse Collin</h3><div class="lab">Architecte d'intérieur</div><p>La prolonge à l'intérieur.</p></div>
+        </div>
+        <figcaption class="t3">Un studio d'architecture à Hotton.<br>De la maison au territoire, en Wallonie, à Bruxelles et au Luxembourg.</figcaption>
+      </figure>
+    </section>
+    <section class="doors" aria-label="Les lieux">
+{tiles}    </section>
+{FOOT}</div></div>"""
 write('index.html', page('Studio BEGA — Architecture & stratégie de lieu, Ardenne', index_body,
     "Studio BEGA lit les lieux avant de dessiner : territoires, lieux d'activité, habitat. Architecture et plans directeurs en Wallonie, à Bruxelles et au Luxembourg."))
-
-# ---------- STUDIO ----------
-studio = f"""<div class="page"><div class="wrap">
-{nav('Studio')}    <h1 class="t1">Revaloriser ce qui existe. Construire quand le terrain le demande.</h1>
-    <div class="essay">
-      <p>Une place de village, un hôtel, une ferme, une maison, un site entier. Chaque lieu a déjà tout : le relief, l'eau, les murs, ce que les gens en font, et l'envie de celui qui porte le projet.</p>
-      <p>Dans chaque lieu, il y a une clé. C'est ce qui le rend singulier, ce qui réconcilie ce que le lieu peut donner et ce que vous voulez en faire. Elle se trouve sur place. Le projet se dessine à partir d'elle.</p>
-      <p>Demain, on construira moins et on revalorisera ce qui existe. BEGA y travaille de la maison au territoire, en Wallonie, à Bruxelles et au Luxembourg.</p>
-      <p>BEGA est un studio d'architecture installé à Hotton, porté par Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur.</p>
-    </div>
-    <section class="temps">
-      <div><h2>Lire</h2><p>Sur place, avant de dessiner.</p></div>
-      <div><h2>Imaginer</h2><p>Trouver la clé, puis dessiner le projet à partir d'elle.</p></div>
-      <div><h2>Réaliser</h2><p>Le permis, le chantier, jusqu'au dernier détail.</p></div>
-    </section>
-    <figure class="duo">
-      <img src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin">
-      <div class="two">
-        <div><h3>Benjamin Gaspard</h3><div class="lab">Architecte</div><p>Trouve la clé sur place.</p></div>
-        <div><h3>Héloïse Collin</h3><div class="lab">Architecte d'intérieur</div><p>La prolonge à l'intérieur.</p></div>
-      </div>
-    </figure>
-{FOOT}</div></div>"""
-write('studio.html', page('Studio — Studio BEGA', studio, "Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur. Lire, imaginer, réaliser."))
 
 # ---------- CONTACT ----------
 contact = f"""<div class="page"><div class="wrap">
@@ -254,16 +259,17 @@ shutil.copy(ROOT / 'assets' / 'site.css', DIST / 'assets' / 'site.css')
 shutil.copy(ROOT / 'assets' / 'site.js', DIST / 'assets' / 'site.js')
 (DIST / 'favicon.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#141413"/><circle cx="16" cy="16" r="7" fill="#FFD400"/></svg>')
 
-# anciennes adresses Adobe Portfolio → nouvelle fiche
+# anciennes adresses Adobe Portfolio → fiche dans sa porte. RewriteRule [NE] : le « # » de l'ancre passe tel quel
+# (Redirect/RedirectMatch l'encoderaient en %23). Correspondance exacte, sans quoi /studio attraperait /studio.html.
 redir = ['RewriteEngine On', 'RewriteCond %{HTTPS} off', 'RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]',
          'ErrorDocument 404 /index.html', 'AddDefaultCharset UTF-8']
+R = lambda src, dst: redir.append(f'RewriteRule ^{src}/?$ {dst} [R=301,L,NE]')
 old = json.load(open(DATA / 'old_slugs.json')) if (DATA / 'old_slugs.json').exists() else {}
 bycode = {p['code']: f"/{p['pk']}/#{p['id']}" for p in P}
-for s, code in old.items():
-    if code in bycode: redir.append(f'RedirectMatch 301 ^{s}/?$ {bycode[code]}')
-# correspondance exacte : « Redirect /studio » attraperait aussi /studio.html (boucle)
-redir.append('RedirectMatch 301 ^/studio/?$ /studio.html'); redir.append('RedirectMatch 301 ^/contact/?$ /contact.html')
-redir.append('RedirectMatch 301 ^/sites/?$ /territoires/'); redir.append('RedirectMatch 301 ^/maisons/?$ /habitat/')
+for s_, code in old.items():
+    if code in bycode: R(re.escape(s_.lstrip('/')), bycode[code])
+R(r'studio(\.html)?', '/#studio'); R('contact', '/contact.html'); R('accueil', '/')
+R('sites', '/territoires/'); R('maisons', '/habitat/')
 (DIST / '.htaccess').write_text('\n'.join(redir) + '\n')
 
 n_img = sum(1 for _ in IMG.rglob('*.jpg'))

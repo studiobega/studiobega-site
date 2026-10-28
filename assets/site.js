@@ -2,17 +2,12 @@
 (function () {
   'use strict';
 
-  /* ---- accueil : un plein écran ; on entre en cliquant ou en faisant défiler ---- */
+  /* ---- accueil : anciens liens index.html#lieu → la fiche dans sa porte ---- */
   var hero = document.getElementById('hero');
   if (hero) {
     var map = {}; try { map = JSON.parse(hero.getAttribute('data-map') || '{}'); } catch (e) {}
     var h0 = location.hash.slice(1);
     if (h0 && map[h0]) { location.replace('/' + map[h0] + '/#' + h0); return; }   // anciens liens index.html#lieu
-    var go = function () { location.href = '/territoires/'; };
-    hero.addEventListener('wheel', function (ev) { if (ev.deltaY > 8) go(); }, { passive: true });
-    var ty = 0;
-    hero.addEventListener('touchstart', function (ev) { ty = ev.touches[0].clientY; }, { passive: true });
-    hero.addEventListener('touchmove', function (ev) { if (ty - ev.touches[0].clientY > 24) go(); }, { passive: true });
     return;
   }
 
