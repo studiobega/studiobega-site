@@ -288,13 +288,13 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
 @media (max-width:640px){.duo-f h3{font-size:22px}.duo-f p{font-size:17px}}
 
 /* Studio : un texte continu, les trois temps, le duo */
-.essay{max-width:880px;margin:16px 0 0;display:flex;flex-direction:column;gap:28px}
-.essay p{margin:0;font-size:30px;line-height:1.38;letter-spacing:-.005em}
+.essay{max-width:760px;margin:0;display:flex;flex-direction:column;gap:20px}
+.essay p{margin:0;font-size:24px;line-height:1.4}
 .temps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;border-top:1px solid #141413;margin:112px 0;padding-top:28px}
 .temps h2{margin:0 0 12px;font-weight:400;font-size:56px;line-height:1;letter-spacing:-.01em}
 .temps p{margin:0;font-size:19px;line-height:1.45;color:#3d3d3a;max-width:300px}
-@media (max-width:900px){.essay p{font-size:26px}.temps h2{font-size:44px}}
+@media (max-width:900px){.temps h2{font-size:44px}}
 @media (max-width:640px){
- .essay{gap:20px}.essay p{font-size:21px;line-height:1.42}
+ .essay{gap:16px}.essay p{font-size:19px;line-height:1.45}
  .temps{grid-template-columns:1fr;gap:28px;margin:64px 0}.temps h2{font-size:36px;margin-bottom:6px}.temps p{font-size:17px}
 }
