@@ -1,0 +1,58 @@
+name: Publier le site
+
+on:
+  workflow_dispatch:        # bouton « Run workflow »
+  schedule:
+    - cron: '17 2 * * *'    # chaque nuit, 03:17 heure belge (hiver)
+  push:
+    branches: [main]        # toute modification du code republie
+
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install --quiet requests pillow
+
+      - name: Cache des photos déjà réduites
+        uses: actions/cache@v4
+        with:
+          path: data/photos
+          key: photos-${{ github.run_id }}
+          restore-keys: photos-
+
+      - name: Lire Airtable
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+        run: python3 fetch_airtable.py
+
+      - name: Construire le site
+        run: python3 build_site.py
+
+      - name: Déposer chez Infomaniak (SFTP)
+        env:
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_HOST: ${{ vars.FTP_HOST || 'kx5isg.ftp.infomaniak.com' }}
+          SITE_DIR: ${{ vars.SITE_DIR || 'sites/new.studiobega.be' }}
+        run: |
+          sudo apt-get install -y -qq lftp > /dev/null
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "sftp://$FTP_HOST" -e "
+            set sftp:auto-confirm yes;
+            set net:max-retries 3;
+            mirror --reverse --delete --verbose=1 --parallel=4 dist/ $SITE_DIR/;
+            quit"
+
+      - name: Résumé
+        run: |
+          echo "### Site publié" >> $GITHUB_STEP_SUMMARY
+          echo "$(grep -c '<article class=\"row\"' dist/index.html) lieux · $(find dist/img -name '*.jpg' | wc -l) images" >> $GITHUB_STEP_SUMMARY
