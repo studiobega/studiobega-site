@@ -163,7 +163,7 @@ def card(p):
     return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><span class="im"><img src="{pics[0][2]}" alt="" loading="lazy"></span>'
             f'{head}<span class="cm">{e(meta)}</span></a>\n')
 
-bykey = {k: sorted([p for p in P if p['pk'] == k], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
+bykey = {k: sorted([p for p in P if p['pk'] == k and ph(p['nom'])], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 doors = ''.join(f'<a href="#{k}">{e(n)}<span class="n">{len(bykey[k])}</span></a>' for k, n in PORTES)
 views = '<div class="views" role="group" aria-label="Affichage"><button type="button" data-v="img" aria-pressed="true">Images</button><button type="button" data-v="list" aria-pressed="false">Liste</button></div>'
 lieux = f'''    <p class="lead" id="lieux">Chaque lieu a sa clé.</p>

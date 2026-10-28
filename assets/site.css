@@ -298,3 +298,8 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
  .essay{gap:16px}.essay p{font-size:19px;line-height:1.45}
  .temps{grid-template-columns:1fr;gap:28px;margin:64px 0}.temps h2{font-size:36px;margin-bottom:6px}.temps p{font-size:17px}
 }
+
+/* Lieux : chaque catégorie s'ouvre sur un filet noir et un vrai temps de respiration */
+#site h2.lab.sec{border-top:1px solid #141413;padding-top:20px;margin:120px 0 0}
+#site .lieux-head+h2.lab.sec{border-top:0;padding-top:0;margin-top:48px}
+@media (max-width:640px){#site h2.lab.sec{margin-top:72px}#site .lieux-head+h2.lab.sec{margin-top:32px}}
