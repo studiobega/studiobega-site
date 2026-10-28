@@ -176,19 +176,39 @@ index_body = f'''<section class="hero" id="hero">
 <div class="site locked v-img" id="site"><div class="page"><div class="wrap">
 {nav('Lieux', home_btn=True)}{lieux}{FOOT}</div></div></div>
 <div class="lb" id="lb" aria-hidden="true"><img src="" alt=""></div>
-<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true"><div class="sheet-in"><div class="sheet-top"><div class="sheet-h"></div><button type="button" class="sheet-x" aria-label="Fermer">Fermer</button></div><div class="sheet-b"></div></div></div>
+<button type="button" class="fx" id="fx" aria-label="Fermer la fiche">Fermer</button>
 <script src="assets/site.js" defer></script>'''
 DIST.mkdir(exist_ok=True)
 (DIST / 'index.html').write_text(page('Studio BEGA — Architecture & stratégie de lieu, Ardenne', index_body,
     "Studio BEGA lit les lieux avant de dessiner : communes, hôtellerie, promotion, maisons. Architecture et plans directeurs en Wallonie, à Bruxelles et au Luxembourg."))
 
 # ---------- STUDIO ----------
+# Fil rouge : un même lieu, de la lecture au projet. Photos repérées par leur id de pièce jointe Airtable.
+FIL_CODE, FIL_SRC = '23.14', {'lire': ('attRCS6nTI0fJ9dtW', 'vue drone'),
+                              'imaginer': ('attWYIHieTktr8c8S', 'le dessin'),
+                              'realiser': ('attN9EId6PPtfGRFu', 'le projet')}
+BYCODE = {p['code']: p for p in P}
+FIL = {}
+for step, (aid, cap) in FIL_SRC.items():
+    fp, html_ = BYCODE.get(FIL_CODE), ''
+    if fp:
+        mine = sorted([m for m in MAN if m['code'] == FIL_CODE], key=lambda m: m['k'])
+        ks = [i for i, m in enumerate(mine) if m['id'] == aid]
+        pics = PICS.get(fp['id']) or []
+        if ks and ks[0] < len(pics):
+            cap = f"{fp['lieu']}, {fp['nom'][0].lower() + fp['nom'][1:]} · {cap}"
+            html_ = f'<figure class="fil {step}"><a href="index.html#{fp["id"]}"><img src="{pics[ks[0]][2]}" alt="{e(cap)}" loading="lazy"></a><figcaption>{e(cap)}</figcaption></figure>'
+    FIL[step] = html_
+def klink(code, txt):
+    q = BYCODE.get(code)
+    return f'<a href="index.html#{q["id"]}">{txt}</a>' if q else txt
+KEYS = ' '.join([klink('REF.01', 'Un musée commence à son parking.'), klink('REF.07', 'Une salle se retourne vers la rivière.'), klink('25.36', 'Une grange devient une maison.')])
 studio = f'''<div class="page"><div class="wrap">
 {nav('Studio')}    <p class="intro">BEGA est un studio d'architecture fondé à Hotton en 2025 par Benjamin Gaspard, architecte depuis 2013, avec Héloïse Collin, architecte d'intérieur. Il lit les lieux avant qu'on le lui demande : une place de village, un hôtel, une friche, une maison. Il dit ce qu'il y voit, et ce qui les ferait basculer. Certains deviennent des projets, en Wallonie, à Bruxelles et au Luxembourg.</p>
 
-    <div class="blk st"><div class="lab">Lire</div><div class="txt"><p>Sur place, avant de dessiner. Le relief, l'eau, les murs, les passages, ce que les gens en font. Et ce que vous voulez en faire : le programme compte autant que le lieu.</p></div></div>
-    <div class="blk st"><div class="lab">Imaginer</div><div class="txt"><p>Entre le lieu et le programme, il y a presque toujours une phrase qui fait basculer le projet. C'est la clé. À partir d'elle, le projet se dessine : un plan directeur, ou le projet lui-même, pour un espace public, un bâtiment, une maison. Le programme y trouve sa place.</p><p class="ex"><span class="key">Un musée commence à son parking. Une salle se retourne vers la rivière. Une grange devient une maison.</span></p></div></div>
-    <div class="blk st"><div class="lab">Réaliser</div><div class="txt"><p>Le permis, le chantier, jusqu'au dernier détail. Transformer ce qui existe quand c'est possible, construire quand le terrain le demande.</p></div></div>
+    <div class="blk st{" pic" if FIL["lire"] else ""}"><div class="lab">Lire</div><div class="txt"><p>Sur place, avant de dessiner. Le relief, l'eau, les murs, les passages, ce que les gens en font. Et ce que vous voulez en faire : le programme compte autant que le lieu.</p></div>{FIL["lire"]}</div>
+    <div class="blk st{" pic" if FIL["imaginer"] else ""}"><div class="lab">Imaginer</div><div class="txt"><p>Entre le lieu et le programme, il y a presque toujours une phrase qui fait basculer le projet. C'est la clé. À partir d'elle, le projet se dessine : un plan directeur, ou le projet lui-même, pour un espace public, un bâtiment, une maison. Le programme y trouve sa place.</p><p class="ex"><span class="key">{KEYS}</span></p></div>{FIL["imaginer"]}</div>
+    <div class="blk st{" pic" if FIL["realiser"] else ""}"><div class="lab">Réaliser</div><div class="txt"><p>Le permis, le chantier, jusqu'au dernier détail. Transformer ce qui existe quand c'est possible, construire quand le terrain le demande.</p></div>{FIL["realiser"]}</div>
 
     <div class="blk">
       <div class="lab">Deux regards</div>
