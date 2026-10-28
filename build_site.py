@@ -90,15 +90,15 @@ def photos_for(p):
     return out
 
 # ---------- gabarit ----------
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap" rel="stylesheet">'
 
 FOOT = """    <footer class="foot">
       <div class="grp"><a href="https://www.instagram.com/studio_bega_/">Instagram</a><a href="https://www.facebook.com/studiobenjamingaspard">Facebook</a><a href="https://be.linkedin.com/company/studiobega">LinkedIn</a></div>
       <div>© Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
     </footer>
 """
-MENU = [('/#accueil', 'Accueil'), ('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/contact.html', 'Contact')]
-LOGO = '<a class="logo" href="/#accueil" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
+MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/contact.html', 'Contact')]
+LOGO = '<a class="logo" href="/" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
 def nav(on):
     links = ''.join(f'<a href="{h}"{" class=\"on\"" if t == on else ""}>{t}</a>' for h, t in MENU)
@@ -172,7 +172,7 @@ def fiche(p):
     wide = lambda j: j == 0 or (j == n - 1 and (n - 1) % 2 == 1)  # 1re pleine largeur, puis par deux, dernière impaire pleine largeur
     imgs = ''.join(f'<img{" class=\"w\"" if wide(j) else ""} src="{abs_(b)}" alt="{e(nom)}" loading="lazy" data-zoom="{abs_(b)}">' for j, (b, t, m) in enumerate(pics))
     return f"""    <template id="f-{p['id']}">
-      <div class="fh"><div><h2 class="nm">{e(nom)}</h2><div class="meta">{e(meta)}</div></div><button type="button" class="fx-x">Fermer</button></div>
+      <div class="fh"><div><h2 class="nm">{e(nom)}</h2><div class="meta">{e(meta)}</div></div><button type="button" class="fx-x" aria-label="Fermer">×</button></div>
       <div class="fb"><div class="pics">{imgs}</div><div class="tx"><dl>{dl}</dl>{f'<p class="para">{e(para)}</p>' if para else ''}{f'<div class="links">{lk}</div>' if lk else ''}</div></div>
     </template>
 """
@@ -186,8 +186,8 @@ for k, n in PORTES:
     <div class="grid">
 {cards}    </div>
 {fiches}{FOOT}</div></div>
-<div class="lb" id="lb" aria-hidden="true"><img src="" alt=""></div>
-<button type="button" class="fx" id="fx" aria-label="Fermer la fiche">Fermer</button>"""
+<div class="modal" id="modal" aria-hidden="true"><div class="mbox" role="dialog" aria-modal="true"></div></div>
+<div class="lb" id="lb" aria-hidden="true"><button type="button" class="lb-p" aria-label="Image précédente">‹</button><img src="" alt=""><button type="button" class="lb-n" aria-label="Image suivante">›</button><span class="lb-c"></span></div>"""
     write(f'{k}/index.html', page(f'{n} — Studio BEGA', body, intro))
 
 # ---------- images fixes ----------
@@ -219,7 +219,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
 </section>
 <div class="page site" id="site"><div class="wrap">
-{nav('Accueil')}    <div class="col">
+{nav('')}    <div class="col">
       <section><h2 class="h">Des lieux singuliers.</h2>{lines("Une place, un hôtel, une ferme, une maison.", "Chacun a déjà ce qu'il faut pour devenir unique.")}</section>
       <section><h2 class="h">Des projets à faire évoluer.</h2>{lines("Maison, gîte, commerce, lieu de travail, bien à valoriser ou projet public.", "Studio BEGA accompagne les particuliers, les investisseurs, les entreprises et les communes, quand un lieu demande à être transformé, valorisé ou repensé.")}</section>
       <section><h2 class="h">Un projet commence par une lecture.</h2>{lines("Ce que le lieu permet.", "Ce qu'il impose.", "Ce qu'il peut devenir.", "Et ce que vous voulez en faire.")}</section>
