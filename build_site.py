@@ -97,7 +97,7 @@ FOOT = """    <footer class="foot">
       <div>© Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
     </footer>
 """
-MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/#studio', 'Studio'), ('/contact.html', 'Contact')]
+MENU = [('/#accueil', 'Accueil'), ('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/contact.html', 'Contact')]
 LOGO = '<a class="logo" href="/#accueil" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
 def nav(on):
@@ -201,7 +201,9 @@ def pic(code, k=0):
     q = next((p for p in P if p['code'] == code and PICS.get(p['id'])), None)
     return abs_(PICS[q['id']][min(k, len(PICS[q['id']]) - 1)][0]) if q else ''
 def lines(*xs): return ''.join(f'<p>{e(x)}</p>' for x in xs)
-IMG_BANDEAU, IMG_COL = pic('23.14'), pic('REF.04')
+IMG_COL = pic('REF.04')
+# le schéma de l'ancien accueil (lire → la clé → le projet), gardé tel quel
+shutil.copy(DATA / 'adobe' / 'schema-lire.png', IMG / 'schema-lire.png'); IMG_BANDEAU = '/img/schema-lire.png'
 IDMAP = json.dumps({p['id']: p['pk'] for p in P}, ensure_ascii=False).replace('"', '&quot;')
 hero_links = ''.join(f'<a href="{h}">{t}</a>' for h, t in MENU)
 portes = ''.join(f'<a class="pill" href="/{k}/">{e(n)}</a>' for k, n in PORTES)
@@ -213,18 +215,18 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
 </section>
 <div class="page site" id="site"><div class="wrap">
-{nav('')}    <div class="col">
+{nav('Accueil')}    <div class="col">
       <section><h2 class="h">Des lieux singuliers.</h2>{lines("Une place, un hôtel, une ferme, une maison.", "Chacun a déjà ce qu'il faut pour devenir unique.")}</section>
       <section><h2 class="h">Des projets à faire évoluer.</h2>{lines("Maison, gîte, commerce, lieu de travail, bien à valoriser ou projet public.", "Studio BEGA accompagne les particuliers, les investisseurs, les entreprises et les communes, quand un lieu demande à être transformé, valorisé ou repensé.")}</section>
       <section><h2 class="h">Un projet commence par une lecture.</h2>{lines("Ce que le lieu permet.", "Ce qu'il impose.", "Ce qu'il peut devenir.", "Et ce que vous voulez en faire.")}</section>
       <section><h2 class="h">Puis vient la clé.</h2>{lines("Ce qui rend le lieu singulier.", "Elle se trouve sur place, entre le lieu et votre projet.", "Tout se dessine à partir d'elle.")}</section>
-      {f'<img class="band" src="{IMG_BANDEAU}" alt="" loading="lazy">' if IMG_BANDEAU else ''}
+      <img class="band" src="{IMG_BANDEAU}" alt="Lire le lieu, trouver la clé, faire le projet" loading="lazy">
       <section><h2 class="h">Lire. Imaginer. Réaliser.</h2>{lines("Du territoire à l'intérieur.", "Lire le lieu, trouver la clé, dessiner le projet.", "Puis le construire, jusqu'au dernier détail.")}</section>
       {f'<img class="ill" src="{IMG_COL}" alt="" loading="lazy">' if IMG_COL else ''}
       <section><h2 class="h">Des projets qui restent.</h2>{lines("Dans leur usage.", "Dans le temps.", "Dans ce qu'ils changent.")}<div class="pills">{portes}</div></section>
       <section id="studio"><h2 class="h">Le Studio.</h2>{lines("Architecture & stratégie de lieu.", "Benjamin Gaspard, architecte, trouve la clé sur place.", "Héloïse Collin, architecte d'intérieur, la prolonge à l'intérieur.", "Revaloriser ce qui existe. Construire quand le terrain le demande.", "Installé à Hotton. Projets en Wallonie, à Bruxelles et au Luxembourg.")}</section>
       <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
-      <section>{lines("contact@studiobega.be", "+32 474 63 43 09")}<div class="pills"><a class="pill" href="/contact.html">Contact</a></div></section>
+      <section>{lines("contact@studiobega.be")}<div class="pills"><a class="pill" href="/contact.html">Contact</a></div></section>
     </div>
 {FOOT}</div></div>"""
 write('index.html', page('Studio BEGA — Architecture & stratégie de lieu, Ardenne', index_body,

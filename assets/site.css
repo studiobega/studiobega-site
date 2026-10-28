@@ -10,11 +10,11 @@ a:focus-visible,button:focus-visible{outline:2px solid #111;outline-offset:4px}
 
 /* en-tête : le logo à gauche, le menu à droite */
 .nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:26px 0;position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.nav .links{display:flex;gap:30px;font-size:17px}
+.nav .links{display:flex;gap:28px;font-size:15px;letter-spacing:.05em;text-transform:uppercase}
 .nav .links a.on{font-weight:600}
 .nav .links a:hover{opacity:.6}
-.logo{position:relative;isolation:isolate;font-weight:700;font-size:24px;letter-spacing:.02em;line-height:1}
-.logo .dot{position:absolute;z-index:-1;right:-3px;top:8px;width:23px;height:23px;border-radius:50%;background:#FFD400}
+.logo{font-weight:600;font-size:24px;letter-spacing:.06em;line-height:1;display:inline-flex;align-items:flex-end;gap:5px}
+.logo .dot{width:9px;height:9px;border-radius:50%;background:#FFD400;display:inline-block;margin-bottom:2px}
 
 /* colonne de texte, comme l'ancien site */
 .col{max-width:680px;margin:0 auto}
@@ -25,7 +25,8 @@ a:focus-visible,button:focus-visible{outline:2px solid #111;outline-offset:4px}
 header.col{padding-top:72px;margin-bottom:72px}
 header.col p{max-width:680px}
 .col img{display:block;width:100%;margin-top:96px}
-.col img.band{aspect-ratio:16/6;object-fit:cover}
+.col img.band{width:calc(100% + 240px);max-width:100vw;margin:40px 0 -24px -120px}
+@media (max-width:960px){.col img.band{width:100%;margin-left:0}}
 .col img.ill{aspect-ratio:3/2;object-fit:cover}
 .pills{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:48px}
 .pill{display:inline-block;min-width:120px;text-align:center;background:#111;color:#fff;font-size:14px;font-weight:600;letter-spacing:.02em;padding:13px 26px;border-radius:999px}
@@ -44,7 +45,6 @@ header.col p{max-width:680px}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,20,19,.40) 0%,rgba(20,20,19,.10) 28%,rgba(20,20,19,.10) 48%,rgba(20,20,19,.70) 100%)}
 .hero .go{all:unset;position:absolute;inset:0;z-index:1;cursor:pointer}
 .hero .nav{position:absolute;top:0;left:0;right:0;padding:26px 40px;z-index:3;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
-.hero .logo .dot{z-index:-1}
 .hero .txt{position:absolute;z-index:2;pointer-events:none;left:0;right:0;bottom:0;padding:0 40px 52px;display:flex;flex-direction:column;gap:12px}
 .hero h1{margin:0;font-size:64px;line-height:1.05;font-weight:700;letter-spacing:-.01em;animation:bega-rise 1.4s ease-out .5s both;text-shadow:0 1px 24px rgba(0,0,0,.25)}
 .hero p{margin:0;font-size:20px;line-height:1.4;animation:bega-rise 1.4s ease-out 1.1s both;text-shadow:0 1px 16px rgba(0,0,0,.3)}
@@ -113,7 +113,7 @@ header.col p{max-width:680px}
  .page{padding:0 20px 40px}
  .nav{flex-wrap:wrap;row-gap:10px;padding:16px 0}
  .nav .links{width:100%;justify-content:space-between;gap:0;font-size:14px}
- .logo{font-size:21px}.logo .dot{width:20px;height:20px;top:7px}
+ .logo{font-size:21px}.logo .dot{width:8px;height:8px}
  .hero .nav{padding:16px 20px}
  .hero .txt{padding:0 20px 36px;gap:10px}
  .hero h1{font-size:42px}.hero p{font-size:17px}
