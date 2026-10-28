@@ -278,3 +278,11 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
 .step.imaginer img{outline:none;background:#f3f2ee;padding:6%;box-sizing:border-box}
 .step figcaption{font-size:18px;line-height:1.45;gap:8px;margin-top:16px}
 @media (max-width:640px){.thesis{margin-bottom:56px}.thesis .bio{font-size:17px}.step figcaption{font-size:17px}}
+
+.duo-f{margin:0;display:flex;flex-direction:column;gap:24px}
+.duo-f>img{width:100%;display:block}
+.duo-f .two{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.duo-f .two>div{display:flex;flex-direction:column;gap:6px}
+.duo-f h3{margin:0;font-weight:400;font-size:28px}
+.duo-f p{margin:0;font-size:19px}
+@media (max-width:640px){.duo-f h3{font-size:22px}.duo-f p{font-size:17px}}

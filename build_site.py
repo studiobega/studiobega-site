@@ -228,31 +228,16 @@ for lab, c in ECHELLES:
 studio = f'''<div class="page"><div class="wrap">
 {nav('Studio')}    <h1 class="manif">Revaloriser ce qui existe. Construire quand le terrain le demande.</h1>
     <div class="thesis">
-      <p>Chaque lieu a sa clé : ce qui le rend singulier. Elle se trouve sur place, entre ce que le lieu peut donner et ce que vous voulez en faire. Le projet se dessine à partir d'elle.</p>
+      <p>Chaque lieu a sa clé : ce qui le rend singulier. Elle se trouve sur place, entre ce que le lieu peut donner et ce que vous voulez en faire. Le projet se dessine à partir d'elle, puis se construit, jusqu'au dernier détail. De la maison au territoire.</p>
       <p class="bio">Studio fondé à Hotton en 2025 par Benjamin Gaspard, architecte depuis 2013, avec Héloïse Collin, architecte d'intérieur. En Wallonie, à Bruxelles et au Luxembourg.</p>
     </div>
-
-    <section class="fil-band">
-      <div class="lab sec">Un lieu, trois temps{fil_link}</div>
-      <div class="steps">
-{steps}      </div>
-    </section>
-
-    <section class="ech">
-      <div class="lab sec">De la maison au territoire</div>
-      <div class="ech-row">{ech}</div>
-    </section>
-
-    <div class="blk duo-blk">
-      <div class="lab">Deux regards</div>
-      <div class="duo">
-        <img src="img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin">
-        <div class="two">
-          <div><h3>Benjamin Gaspard</h3><div class="lab">Architecte</div><p>Trouve la clé sur place. Lit les lieux depuis l'enfance, les dessine depuis 2013.</p></div>
-          <div><h3>Héloïse Collin</h3><div class="lab">Architecte d'intérieur</div><p>Prolonge la clé à l'intérieur, jusqu'au dernier détail.</p></div>
-        </div>
+    <figure class="duo-f">
+      <img src="img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin">
+      <div class="two">
+        <div><h3>Benjamin Gaspard</h3><div class="lab">Architecte</div><p>Trouve la clé sur place.</p></div>
+        <div><h3>Héloïse Collin</h3><div class="lab">Architecte d'intérieur</div><p>La prolonge à l'intérieur.</p></div>
       </div>
-    </div>
+    </figure>
 {FOOT}</div></div>
 <script src="assets/site.js" defer></script>'''
 (DIST / 'studio.html').write_text(page('Studio — Studio BEGA', studio, "Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur. Lire, imaginer, réaliser."))
