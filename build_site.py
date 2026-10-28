@@ -156,10 +156,11 @@ def row(p):
 
 def card(p):
     pics = PICS.get(p['id'])
-    if not pics: return ''
+    if not pics or not ph(p['nom']): return ''
     meta = ' · '.join(x for x in (ph(p['lieu']), p['type']) if x)
+    cle = f'<span class="ck"><span>{e(ph(p["cle"]))}</span></span>' if ph(p['cle']) else ''
     return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><img src="{pics[0][2]}" alt="" loading="lazy">'
-            f'<span class="nm">{e(ph(p["nom"]))}</span><span class="cm">{e(meta)}</span></a>\n')
+            f'<span class="cm">{e(meta)}</span><span class="nm">{e(ph(p["nom"]))}</span>{cle}</a>\n')
 
 bykey = {k: sorted([p for p in P if p['pk'] == k], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 doors = ''.join(f'<a href="#{k}">{e(n)}<span class="n">{len(bykey[k])}</span></a>' for k, n in PORTES)
@@ -200,31 +201,41 @@ DIST.mkdir(exist_ok=True)
 
 # ---------- STUDIO ----------
 # Fil rouge : un même lieu, de la lecture au projet. Photos repérées par leur id de pièce jointe Airtable.
-FIL_CODE, FIL_SRC = '23.14', {'lire': ('attRCS6nTI0fJ9dtW', 'vue drone'),
-                              'imaginer': ('att0sJfbGVF6vDiiV', 'le schéma'),
-                              'realiser': ('attN9EId6PPtfGRFu', 'le projet')}
+FIL_CODE = '23.14'
+FIL_SRC = [('lire', 'Lire', 'attRCS6nTI0fJ9dtW', "Sur place, avant de dessiner : le relief, l'eau, les passages, ce que les gens en font. Et le programme, qui compte autant que le lieu."),
+           ('imaginer', 'Imaginer', 'att0sJfbGVF6vDiiV', "Entre le lieu et le programme, une phrase fait basculer le projet : la clé. Le projet se dessine à partir d'elle."),
+           ('realiser', 'Réaliser', 'attN9EId6PPtfGRFu', "Le permis, le chantier, jusqu'au dernier détail. Transformer ce qui existe, construire quand le terrain le demande.")]
+# Clés montrées sur la page Studio (code projet, dans l'ordre). Texte lu dans Airtable (Site · La clé).
+CLES = ['REF.01', '25.26', '26.56', '25.24', 'REF.10']
 BYCODE = {p['code']: p for p in P}
-FIL = {}
-for step, (aid, cap) in FIL_SRC.items():
-    fp, html_ = BYCODE.get(FIL_CODE), ''
-    if fp:
-        mine = sorted([m for m in MAN if m['code'] == FIL_CODE], key=lambda m: m['k'])
-        ks = [i for i, m in enumerate(mine) if m['id'] == aid]
-        pics = PICS.get(fp['id']) or []
-        if ks and ks[0] < len(pics):
-            cap = f"{fp['lieu']}, {fp['nom'][0].lower() + fp['nom'][1:]} · {cap}"
-            html_ = f'<figure class="fil {step}"><a href="index.html#{fp["id"]}"><img src="{pics[ks[0]][2]}" alt="{e(cap)}" loading="lazy"></a><figcaption>{e(cap)}</figcaption></figure>'
-    FIL[step] = html_
-def klink(code, txt):
-    q = BYCODE.get(code)
-    return f'<a href="index.html#{q["id"]}">{txt}</a>' if q else txt
-KEYS = ' '.join([klink('REF.01', 'Un musée commence à son parking.'), klink('REF.07', 'Une salle se retourne vers la rivière.'), klink('25.36', 'Une grange devient une maison.')])
+fp = BYCODE.get(FIL_CODE)
+mine = sorted([m for m in MAN if m['code'] == FIL_CODE], key=lambda m: m['k'])
+fpics = PICS.get(fp['id']) if fp else None
+steps = ''
+for cls, lab, aid, txt in FIL_SRC:
+    ks = [i for i, m in enumerate(mine) if m['id'] == aid]
+    img = f'<img src="{fpics[ks[0]][2]}" alt="" loading="lazy">' if (fpics and ks and ks[0] < len(fpics)) else '<span class="ph"></span>'
+    steps += f'      <figure class="step {cls}">{img}<figcaption><span class="lab">{lab}</span><span>{e(txt)}</span></figcaption></figure>\n'
+fil_link = f'<a class="fil-l" href="index.html#{fp["id"]}">{e(ph(fp["nom"]))}, {e(ph(fp["lieu"]))} →</a>' if fp else ''
+cles = ''
+for c in CLES:
+    q = BYCODE.get(c)
+    if q and ph(q['cle']):
+        cles += f'      <a href="index.html#{q["id"]}"><span class="kw"><span class="key">{e(q["cle"])}</span></span><span class="cm">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a>\n'
 studio = f'''<div class="page"><div class="wrap">
-{nav('Studio')}    <p class="intro">BEGA est un studio d'architecture fondé à Hotton en 2025 par Benjamin Gaspard, architecte depuis 2013, avec Héloïse Collin, architecte d'intérieur. Il lit les lieux avant qu'on le lui demande : une place de village, un hôtel, une friche, une maison. Il dit ce qu'il y voit, et ce qui les ferait basculer. Certains deviennent des projets, en Wallonie, à Bruxelles et au Luxembourg.</p>
+{nav('Studio')}    <h1 class="manif">BEGA lit les lieux avant qu'on le lui demande.</h1>
+    <p class="bio">Une place de village, un hôtel, une friche, une maison : il dit ce qu'il y voit, et ce qui les ferait basculer. Certains deviennent des projets, en Wallonie, à Bruxelles et au Luxembourg. Studio fondé à Hotton en 2025 par Benjamin Gaspard, architecte depuis 2013, avec Héloïse Collin, architecte d'intérieur.</p>
 
-    <div class="blk st{" pic" if FIL["lire"] else ""}"><div class="lab">Lire</div><div class="txt"><p>Sur place, avant de dessiner. Le relief, l'eau, les murs, les passages, ce que les gens en font. Et ce que vous voulez en faire : le programme compte autant que le lieu.</p></div>{FIL["lire"]}</div>
-    <div class="blk st{" pic" if FIL["imaginer"] else ""}"><div class="lab">Imaginer</div><div class="txt"><p>Entre le lieu et le programme, il y a presque toujours une phrase qui fait basculer le projet. C'est la clé. À partir d'elle, le projet se dessine : un plan directeur, ou le projet lui-même, pour un espace public, un bâtiment, une maison. Le programme y trouve sa place.</p><p class="ex"><span class="key">{KEYS}</span></p></div>{FIL["imaginer"]}</div>
-    <div class="blk st{" pic" if FIL["realiser"] else ""}"><div class="lab">Réaliser</div><div class="txt"><p>Le permis, le chantier, jusqu'au dernier détail. Transformer ce qui existe quand c'est possible, construire quand le terrain le demande.</p></div>{FIL["realiser"]}</div>
+    <section class="fil-band">
+      <div class="lab sec">Un lieu, trois temps</div>
+      <div class="steps">
+{steps}      </div>
+      {fil_link}
+    </section>
+
+    <section class="cles">
+      <div class="lab sec">Des clés</div>
+{cles}    </section>
 
     <div class="blk">
       <div class="lab">Deux regards</div>
