@@ -55,7 +55,7 @@ def save(img, dst, w, q=82):
     dst.parent.mkdir(parents=True, exist_ok=True); img.save(dst, 'JPEG', quality=q, optimize=True, progressive=True)
 
 def photos_for(p):
-    """→ liste de (grande, vignette) en chemins relatifs dist/."""
+    """→ liste de (grande 1600, vignette 480, moyenne 900) en chemins relatifs dist/."""
     out = []
     mine = sorted([m for m in MAN if m['code'] == p['code']], key=lambda m: m['k'])
     srcs = [(DATA / 'photos' / f"{m['id']}.jpg") for m in mine]
@@ -63,10 +63,11 @@ def photos_for(p):
     if not srcs:
         srcs = [DATA / 'mockup' / f'{b}.jpg' for b in FALLBACK.get(p['code'], []) if (DATA / 'mockup' / f'{b}.jpg').exists()]
     for k, src in enumerate(srcs):
-        big, th = IMG / p['id'] / f'{k+1}.jpg', IMG / p['id'] / f'{k+1}-t.jpg'
-        if not big.exists() or big.stat().st_mtime < src.stat().st_mtime:
-            im = Image.open(src); save(im, big, 1600); save(im, th, 480, 78)
-        out.append((f"img/{p['id']}/{k+1}.jpg", f"img/{p['id']}/{k+1}-t.jpg"))
+        big, th, mid = (IMG / p['id'] / f'{k+1}{x}.jpg' for x in ('', '-t', '-m'))
+        if not (big.exists() and mid.exists()) or big.stat().st_mtime < src.stat().st_mtime:
+            im = Image.open(src); save(im, big, 1600); save(im, th, 480, 78); save(im, mid, 900, 80)
+        r = f"img/{p['id']}/{k+1}"
+        out.append((r + '.jpg', r + '-t.jpg', r + '-m.jpg'))
     return out
 
 # ---------- CSS ----------
@@ -105,8 +106,9 @@ def page(title, body, desc, extra_head=''):
 '''
 
 # ---------- LIEUX ----------
+PICS = {}
 def row(p):
-    pics = photos_for(p)
+    pics = PICS[p['id']] = photos_for(p)
     thumb = f'<img class="th" src="{pics[0][1]}" alt="" loading="lazy">' if pics else '<span class="th" aria-hidden="true"></span>'
     nom = ph(p['nom']) or '[Nom du lieu]'
     lieu, typ, an, etat = ph(p['lieu']), p['type'], ph(p['annee']), ph(p['etat'])
@@ -114,7 +116,7 @@ def row(p):
     # 1re photo pleine largeur, les suivantes par deux ; si elles sont en nombre impair, la dernière repasse pleine largeur
     n = len(pics)
     wide = lambda k: k == 0 or (k == n - 1 and (n - 1) % 2 == 1)
-    picsh = ''.join(f'<img{" class=\"w\"" if wide(k) else ""} src="{b}" alt="{e(nom)}" loading="lazy" data-zoom="{b}">' for k, (b, t) in enumerate(pics)) if pics else '<span class="ph w" aria-hidden="true"></span>'
+    picsh = ''.join(f'<img{" class=\"w\"" if wide(k) else ""} src="{b}" alt="{e(nom)}" loading="lazy" data-zoom="{b}">' for k, (b, t, m) in enumerate(pics)) if pics else '<span class="ph w" aria-hidden="true"></span>'
     two = ' two' if len(pics) >= 2 else ''
     liens = [l.split('|', 1) for l in (p['liens'] or '').split('\n') if '|' in l]
     more = ''
@@ -136,12 +138,24 @@ def row(p):
       </article>
 '''
 
+def card(p):
+    pics = PICS.get(p['id'])
+    if not pics: return ''
+    meta = ' · '.join(x for x in (ph(p['lieu']), p['type']) if x)
+    return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><img src="{pics[0][2]}" alt="" loading="lazy">'
+            f'<span class="nm">{e(ph(p["nom"]))}</span><span class="cm">{e(meta)}</span></a>\n')
+
 bykey = {k: sorted([p for p in P if p['pk'] == k], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 doors = ''.join(f'<a href="#{k}">{e(n)}<span class="n">{len(bykey[k])}</span></a>' for k, n in PORTES)
-lieux = f'''    <header id="lieux" class="lieux-head"><div class="doors">{doors}</div></header>
+views = '<div class="views" role="group" aria-label="Affichage"><button type="button" data-v="img" aria-pressed="true">Images</button><button type="button" data-v="list" aria-pressed="false">Liste</button></div>'
+lieux = f'''    <header id="lieux" class="lieux-head"><div class="doors">{doors}</div>{views}</header>
 '''
 for k, n in PORTES:
-    lieux += f'    <h2 class="lab sec" id="{k}">{e(n)}</h2>\n    <div>\n' + ''.join(row(p) for p in bykey[k]) + '    </div>\n'
+    rows_h = ''.join(row(p) for p in bykey[k])
+    cards_h = ''.join(card(p) for p in bykey[k])
+    lieux += (f'    <h2 class="lab sec" id="{k}">{e(n)}</h2>\n'
+              f'    <div class="grid">\n{cards_h}    </div>\n'
+              f'    <div class="lst">\n{rows_h}    </div>\n')
 
 # hero & images fixes
 for src, dst in [('7d27646bb9e84d280aaa51552a3d6afb', 'hero'), ('ec894847fb1cdd2dc482462924bcd351', 'duo'), ('18732aa0aa56be5aeb1bb35760702fa6', 'contact')]:
@@ -159,9 +173,10 @@ index_body = f'''<section class="hero" id="hero">
     <p>Lire un lieu. Écouter un programme. Trouver ce qui fait basculer le projet.</p>
   </div>
 </section>
-<div class="site locked" id="site"><div class="page"><div class="wrap">
+<div class="site locked v-img" id="site"><div class="page"><div class="wrap">
 {nav('Lieux', home_btn=True)}{lieux}{FOOT}</div></div></div>
 <div class="lb" id="lb" aria-hidden="true"><img src="" alt=""></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true"><div class="sheet-in"><div class="sheet-top"><div class="sheet-h"></div><button type="button" class="sheet-x" aria-label="Fermer">Fermer</button></div><div class="sheet-b"></div></div></div>
 <script src="assets/site.js" defer></script>'''
 DIST.mkdir(exist_ok=True)
 (DIST / 'index.html').write_text(page('Studio BEGA — Architecture & stratégie de lieu, Ardenne', index_body,

@@ -1,4 +1,4 @@
-/* studiobega.be — rideau d'accueil, fiches dépliantes, lightbox. Aucune dépendance. */
+/* studiobega.be — rideau d'accueil, vues Images / Liste, fiches, lightbox. Aucune dépendance. */
 (function () {
   'use strict';
   var hero = document.getElementById('hero'), site = document.getElementById('site'), lb = document.getElementById('lb');
@@ -62,9 +62,58 @@
       closeAll(); history.replaceState(null, '', location.pathname);
     });
   });
+  /* ---- Images / Liste ---- */
+  var view = 'img'; try { view = sessionStorage.getItem('bega_view') || 'img'; } catch (e) {}
+  var vbtns = Array.prototype.slice.call(document.querySelectorAll('.views button'));
+  function setView(v) {
+    view = v; try { sessionStorage.setItem('bega_view', v); } catch (e) {}
+    site.classList.toggle('v-img', v === 'img'); site.classList.toggle('v-list', v === 'list');
+    vbtns.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === v ? 'true' : 'false'); });
+  }
+  vbtns.forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-v')); }); });
+  setView(view);
+
+  /* ---- fiche plein écran (depuis la grille) ---- */
+  var sheet = document.getElementById('sheet'), lastScroll = 0;
+  function openSheet(id) {
+    var r = document.getElementById(id); if (!r || !sheet) return;
+    var line = r.querySelector('.line');
+    var meta = Array.prototype.map.call(line.querySelectorAll('.pl,.tp,.yr,.st'), function (x) { return x.textContent; }).filter(Boolean).join(' · ');
+    sheet.querySelector('.sheet-h').innerHTML = '';
+    var nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = line.querySelector('.nm').textContent;
+    var cm = document.createElement('span'); cm.className = 'cm'; cm.textContent = meta;
+    sheet.querySelector('.sheet-h').appendChild(nm); sheet.querySelector('.sheet-h').appendChild(cm);
+    var b = sheet.querySelector('.sheet-b'); b.innerHTML = ''; b.appendChild(r.querySelector('.panel').cloneNode(true));
+    lastScroll = window.pageYOffset;
+    sheet.scrollTop = 0; sheet.classList.add('on'); sheet.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    history.replaceState(null, '', '#' + id);
+    sheet.querySelector('.sheet-x').focus({ preventScroll: true });
+  }
+  function closeSheet() {
+    if (!sheet || !sheet.classList.contains('on')) return false;
+    sheet.classList.remove('on'); sheet.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    history.replaceState(null, '', location.pathname);
+    window.scrollTo(0, lastScroll);
+    return true;
+  }
+  if (sheet) {
+    sheet.querySelector('.sheet-x').addEventListener('click', closeSheet);
+    sheet.addEventListener('click', function (ev) {
+      var z = ev.target.closest('[data-zoom]'); if (z) { zoom(z.getAttribute('data-zoom')); }
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.card'), function (c) {
+    c.addEventListener('click', function (ev) { ev.preventDefault(); openSheet(c.getAttribute('data-open')); });
+  });
+
   function openHash() {
     var h = location.hash ? location.hash.slice(1) : '', r0 = h && document.getElementById(h);
-    if (r0 && r0.classList.contains('row')) { enter(true); open(r0, true); setTimeout(function () { r0.scrollIntoView({ block: 'start' }); }, 50); }
+    if (!(r0 && r0.classList.contains('row'))) return;
+    enter(true);
+    if (view === 'img' && document.querySelector('.card[data-open="' + h + '"]')) { openSheet(h); return; }
+    setView('list'); open(r0, true); setTimeout(function () { r0.scrollIntoView({ block: 'start' }); }, 50);
   }
   openHash();
   window.addEventListener('hashchange', openHash);
@@ -72,5 +121,10 @@
   /* ---- lightbox ---- */
   function zoom(src) { if (!lb) return; lb.querySelector('img').src = src; lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); }
   function unzoom() { if (!lb) return; lb.classList.remove('on'); lb.setAttribute('aria-hidden', 'true'); }
-  if (lb) { lb.addEventListener('click', unzoom); document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') unzoom(); }); }
+  if (lb) lb.addEventListener('click', unzoom);
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Escape') return;
+    if (lb && lb.classList.contains('on')) { unzoom(); return; }
+    closeSheet();
+  });
 })();
