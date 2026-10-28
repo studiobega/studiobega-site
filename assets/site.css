@@ -253,3 +253,5 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
  .ech{margin-top:64px}.ech-row{grid-template-columns:1fr 1fr;gap:20px}
  .ech-row .en{font-size:19px}
 }
+.ct-sub{margin:0 0 48px;font-size:24px;line-height:1.4;max-width:640px}
+@media (max-width:640px){.ct-sub{font-size:19px;margin-bottom:32px}}

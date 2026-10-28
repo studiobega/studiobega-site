@@ -98,7 +98,7 @@ FOOT = '''    <footer class="foot">
 '''
 
 def nav(on, home_btn=False):
-    links = ''.join(f'<a href="{href}"{" class=\"on\"" if t == on else ""}>{t}</a>' for href, t in [('index.html#lieux', 'Lieux'), ('studio.html', 'Studio'), ('contact.html', 'Contact')])
+    links = ''.join(f'<a href="{href}"{" class=\"on\"" if t == on else ""}>{t}</a>' for href, t in [('index.html', 'Lieux'), ('studio.html', 'Studio'), ('contact.html', 'Contact')])
     logo = '<button type="button" class="logo" id="home" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></button>' if home_btn else '<a class="logo" href="index.html" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
     return f'    <nav class="nav" aria-label="Navigation">\n      {logo}\n      <div class="links">{links}</div>\n    </nav>\n'
 
@@ -166,8 +166,8 @@ def card(p):
 bykey = {k: sorted([p for p in P if p['pk'] == k], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 doors = ''.join(f'<a href="#{k}">{e(n)}<span class="n">{len(bykey[k])}</span></a>' for k, n in PORTES)
 views = '<div class="views" role="group" aria-label="Affichage"><button type="button" data-v="img" aria-pressed="true">Images</button><button type="button" data-v="list" aria-pressed="false">Liste</button></div>'
-lieux = f'''    <p class="lead">Chaque lieu a sa clé.</p>
-    <header id="lieux" class="lieux-head"><div class="doors">{doors}</div>{views}</header>
+lieux = f'''    <p class="lead" id="lieux">Chaque lieu a sa clé.</p>
+    <header class="lieux-head"><div class="doors">{doors}</div>{views}</header>
 '''
 for k, n in PORTES:
     rows_h = ''.join(row(p) for p in bykey[k])
@@ -259,7 +259,9 @@ studio = f'''<div class="page"><div class="wrap">
 
 # ---------- CONTACT ----------
 contact = f'''<div class="page"><div class="wrap">
-{nav('Contact')}    <div class="map">
+{nav('Contact')}    <h1 class="manif">Un lieu à imaginer.</h1>
+    <p class="ct-sub">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
+    <div class="map">
       <img src="img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon">
       <span class="pin" aria-hidden="true"></span>
     </div>
