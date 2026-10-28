@@ -2,14 +2,6 @@
 (function () {
   'use strict';
   var hero = document.getElementById('hero'), site = document.getElementById('site'), lb = document.getElementById('lb');
-  /* le surligneur : chaque clé se surligne quand elle arrive à l'écran */
-  var mks = document.querySelectorAll('.mk');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } });
-    }, { rootMargin: '0px 0px -12% 0px' });
-    Array.prototype.forEach.call(mks, function (m) { io.observe(m); });
-  } else Array.prototype.forEach.call(mks, function (m) { m.classList.add('in'); });
   if (!site) return;
   var phone = function () { return window.innerWidth <= 640; };
   var top = function () { try { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (e) {} };

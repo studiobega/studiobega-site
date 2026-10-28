@@ -198,11 +198,6 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
  .fx.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 }
 
-/* le geste BEGA : la clé se surligne quand elle arrive à l'écran */
-.mk{background:linear-gradient(#FFD400,#FFD400) no-repeat 0 88%/0% 40%;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size 1s cubic-bezier(.6,.05,.2,1) .15s}
-.mk.in{background-size:100% 40%}
-@media (prefers-reduced-motion:reduce){.mk{transition:none;background-size:100% 40%}}
-
 /* Lieux : collection de clés */
 .lead{font-size:56px;line-height:1.08;letter-spacing:-.01em;margin:8px 0 8px}
 .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:72px 40px;padding-top:28px}
@@ -216,6 +211,10 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
 .card:hover .cm{color:#141413}
 
 /* Studio */
+.duo-blk{grid-template-columns:1fr;gap:20px}
+.duo-blk .duo{display:flex;flex-direction:column;gap:28px}
+.duo-blk .duo>img{width:100%;height:auto;aspect-ratio:auto;display:block}
+.step .kc .key{-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .manif{font-weight:400;font-size:64px;line-height:1.06;letter-spacing:-.015em;margin:8px 0 40px;max-width:1000px}
 .thesis{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;margin-bottom:96px;align-items:end}
 .thesis p{margin:0;font-size:24px;line-height:1.4}

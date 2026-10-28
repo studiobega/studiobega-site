@@ -155,11 +155,11 @@ def row(p):
 '''
 
 def card(p):
-    """Vignette : l'image, la clé en grand (surlignée à l'apparition), puis nom · lieu."""
+    """Vignette : l'image, la clé en grand, puis nom · lieu."""
     pics = PICS.get(p['id'])
     if not pics or not ph(p['nom']): return ''
     meta = ' · '.join(x for x in (ph(p['nom']), ph(p['lieu'])) if x)
-    head = f'<span class="ck"><span class="mk">{e(ph(p["cle"]))}</span></span>' if ph(p['cle']) else f'<span class="ck nk">{e(ph(p["nom"]))}</span>'
+    head = f'<span class="ck">{e(ph(p["cle"]))}</span>' if ph(p['cle']) else f'<span class="ck nk">{e(ph(p["nom"]))}</span>'
     return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><span class="im"><img src="{pics[0][2]}" alt="" loading="lazy"></span>'
             f'{head}<span class="cm">{e(meta)}</span></a>\n')
 
@@ -218,7 +218,7 @@ steps = ''
 for cls, lab, aid, txt in FIL_SRC:
     ks = [i for i, m in enumerate(mine) if m['id'] == aid]
     img = f'<img src="{fpics[ks[0]][2]}" alt="" loading="lazy">' if (fpics and ks and ks[0] < len(fpics)) else '<span class="ph"></span>'
-    body = f'<span class="kc"><span class="mk">{e(fcle)}</span></span>' if txt is None else f'<span>{e(txt)}</span>'
+    body = f'<span class="kc"><span class="key">{e(fcle)}</span></span>' if txt is None else f'<span>{e(txt)}</span>'
     steps += f'      <figure class="step {cls}">{img}<figcaption><span class="lab">{lab}</span>{body}</figcaption></figure>\n'
 fil_link = f'<a class="fil-l" href="index.html#{fp["id"]}">{e(ph(fp["nom"]))}, {e(ph(fp["lieu"]))}</a>' if fp else ''
 ech = ''
@@ -243,7 +243,7 @@ studio = f'''<div class="page"><div class="wrap">
       <div class="ech-row">{ech}</div>
     </section>
 
-    <div class="blk">
+    <div class="blk duo-blk">
       <div class="lab">Deux regards</div>
       <div class="duo">
         <img src="img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin">
