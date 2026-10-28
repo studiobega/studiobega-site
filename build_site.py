@@ -248,7 +248,11 @@ contact = f"""<div class="page"><div class="wrap">
       <img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon">
       <span class="pin" aria-hidden="true"></span>
     </div>
-    <div class="addr"><a href="mailto:contact@studiobega.be">contact@studiobega.be</a><a href="tel:+32474634309">+32 474 63 43 09</a><div>Studio BEGA<br>Rue Simon 43<br>6990 Hotton, Belgique</div></div>
+    <dl class="addr">
+      <div><dt>Mail</dt><dd><a href="mailto:contact@studiobega.be">contact@studiobega.be</a></dd></div>
+      <div><dt>Téléphone</dt><dd><a href="tel:+32474634309">+32 474 63 43 09</a></dd></div>
+      <div><dt>Studio</dt><dd>Rue Simon 43<br>6990 Hotton, Belgique</dd></div>
+    </dl>
 {FOOT}</div></div>"""
 write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue Simon 43, 6990 Hotton. contact@studiobega.be · +32 474 63 43 09'))
 

@@ -123,9 +123,11 @@ html.lock{overflow:hidden}
 .map{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;border-radius:6px}
 .map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%}
 .pin{position:absolute;left:67.6%;top:74.7%;width:4.2%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#FFD400}
-.addr{max-width:680px;margin:48px auto 0;display:flex;flex-direction:column;gap:10px;font-size:24px;font-weight:500;line-height:1.3}
-.addr a{border-bottom:1.5px solid #111;align-self:flex-start}
-.addr div{margin-top:14px;color:#6b6b66;font-size:18px;font-weight:400}
+.addr{max-width:680px;margin:48px auto 0;display:grid;grid-template-columns:repeat(3,auto);justify-content:space-between;gap:24px 40px}
+.addr div{display:flex;flex-direction:column;gap:6px}
+.addr dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a8a85;font-weight:500}
+.addr dd{margin:0;font-size:18px;line-height:1.5;font-weight:500}
+.addr a{border-bottom:1px solid #111}
 
 @media (prefers-reduced-motion:reduce){.hero img.bg,.hero h1,.hero p{animation:none}.mbox{transition:none}.card .im img{transition:none}}
 
@@ -153,6 +155,6 @@ html.lock{overflow:hidden}
  .fcle{font-size:20px;margin-top:28px}
  .mbox dl{grid-template-columns:1fr;gap:18px}
  .mbox .pics{gap:16px;margin-top:32px}
- .addr{font-size:20px}.addr div{font-size:16px}
+ .addr{grid-template-columns:1fr;gap:20px}
  .foot{margin-top:80px}
 }
