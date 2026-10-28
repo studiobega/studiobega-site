@@ -1,3 +1,4 @@
+/* Un seul arrondi pour tout le site : 6px (vignettes, portes, fiche, photos, carte). */
 /* studiobega.be — mise en page de l'ancien site : une police (Jost), titres gras, phrases courtes
    en colonne centrée, images en grand, grilles d'images. Jaune : le logo et la clé. */
 body{margin:0;background:#fff;color:#111;font-family:'Jost',Helvetica,Arial,sans-serif}
@@ -37,7 +38,7 @@ header.col p{max-width:680px}
 /* les trois portes en bas de l'accueil : une image chacune, côte à côte, plus large que la colonne */
 .doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:64px -120px 0}
 .door{display:flex;flex-direction:column;gap:12px}
-.door .im{display:block;overflow:hidden;border-radius:8px;background:#e9e8e3}
+.door .im{display:block;overflow:hidden;border-radius:6px;background:#e9e8e3}
 .door .im img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .door .dn{font-size:20px;font-weight:600}
 @media (hover:hover){.door:hover .im img{transform:scale(1.03)}}
@@ -68,7 +69,7 @@ header.col p{max-width:680px}
 /* portes : la grille d'images */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px 24px}
 .card{display:block;position:relative}
-.card .im{display:block;overflow:hidden;border-radius:8px;background:#e9e8e3}
+.card .im{display:block;overflow:hidden;border-radius:6px;background:#e9e8e3}
 .card .im img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .card .cap{display:flex;flex-direction:column;gap:4px;padding-top:12px}
 .card .nm{font-size:16px;line-height:1.35;font-weight:500}
@@ -89,7 +90,7 @@ html.lock{overflow:hidden}
 .fx-x:hover{opacity:1}
 .fb{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:start}
 .fb .pics{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fb .pics img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#e9e8e3;cursor:zoom-in;border-radius:3px}
+.fb .pics img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#e9e8e3;cursor:zoom-in;border-radius:6px}
 .fb .pics img.w{grid-column:1/-1;aspect-ratio:3/2}
 .fb dl{margin:0;display:flex;flex-direction:column;gap:20px}
 .fb dl>div{display:flex;flex-direction:column;gap:6px}
@@ -109,7 +110,7 @@ html.lock{overflow:hidden}
 .lb-c{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:rgba(255,255,255,.75);font-size:13px;letter-spacing:.08em}
 
 /* contact */
-.map{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;border-radius:8px}
+.map{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;border-radius:6px}
 .map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%}
 .pin{position:absolute;left:67.6%;top:74.7%;width:4.2%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#FFD400}
 .addr{max-width:680px;margin:48px auto 0;display:flex;flex-direction:column;gap:10px;font-size:24px;font-weight:500;line-height:1.3}
