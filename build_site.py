@@ -101,7 +101,7 @@ MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habi
 LOGO = '<a class="logo" href="/" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
 def nav(on):
-    links = ''.join(f'<a href="{h}"{" class=\"on\"" if t == on else ""}>{t}</a>' for h, t in MENU)
+    links = ''.join(f'<a href="{h}" class="{"on " if t == on else ""}{"ct" if t == "Contact" else ""}">{t}</a>' for h, t in MENU)
     return f'    <nav class="nav" aria-label="Navigation">\n      {LOGO}\n      <div class="links">{links}</div>\n    </nav>\n'
 
 def page(title, body, desc, img='/img/hero.jpg'):
@@ -205,7 +205,7 @@ IMG_COL = pic('REF.04')
 # le schéma de l'ancien accueil (lire → la clé → le projet), gardé tel quel
 shutil.copy(DATA / 'adobe' / 'schema-lire.png', IMG / 'schema-lire.png'); IMG_BANDEAU = '/img/schema-lire.png'
 IDMAP = json.dumps({p['id']: p['pk'] for p in P}, ensure_ascii=False).replace('"', '&quot;')
-hero_links = ''.join(f'<a href="{h}">{t}</a>' for h, t in MENU)
+hero_links = ''.join(f'<a href="{h}"{" class=\"ct\"" if t == "Contact" else ""}>{t}</a>' for h, t in MENU)
 def first_pic(k, code=None):
     L = [q for q in bykey[k] if PICS.get(q['id'])]
     if code: L = [q for q in L if q['code'] == code] or L
