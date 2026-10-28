@@ -182,7 +182,7 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
 /* fiche dépliée dans la grille */
 .card.on{display:none}
 .grid{overflow-anchor:none}
-.gpanel{grid-column:1/-1;border-top:1.5px solid #141413;padding-top:20px;margin-bottom:24px;animation:gp .45s cubic-bezier(.2,.7,.2,1)}
+.gpanel{grid-column:1/-1;border-top:1.5px solid #141413;border-bottom:1.5px solid #141413;padding-top:20px;margin-bottom:24px;cursor:pointer;animation:gp .45s cubic-bezier(.2,.7,.2,1)}
 @keyframes gp{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .gp-h{display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:24px}
 .gp-h .nm{font-size:30px;line-height:1.15;display:block}

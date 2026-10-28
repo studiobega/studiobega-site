@@ -103,7 +103,9 @@
     first.before(gp); grid.classList.add('has-open'); c.classList.add('on');
     x.addEventListener('click', function () { shut(); });
     gp.addEventListener('click', function (ev) {
-      var z = ev.target.closest('[data-zoom]'); if (z) zoom(z.getAttribute('data-zoom'));
+      var z = ev.target.closest('[data-zoom]'); if (z) { zoom(z.getAttribute('data-zoom')); return; }
+      if (ev.target.closest('a')) return;
+      shut();
     });
     if (!noScroll) {
       var y = gp.getBoundingClientRect().top + window.pageYOffset - navH() - 24;
@@ -137,6 +139,20 @@
     if (!gp || window.innerWidth === rw) return; rw = window.innerWidth;
     openGrid(gp._card.getAttribute('data-open'), true);
   });
+  /* la fiche se referme d'elle-même quand on la dépasse en scrollant */
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (!gp || ticking) return; ticking = true;
+    requestAnimationFrame(function () {
+      ticking = false; if (!gp) return;
+      var b = gp.getBoundingClientRect();
+      if (b.bottom < navH() - 40) {
+        var g = gp.parentNode, before = g.getBoundingClientRect().bottom;
+        closeGrid(); setHash(null); syncFx();
+        window.scrollTo(0, window.pageYOffset + (g.getBoundingClientRect().bottom - before));
+      } else if (b.top > window.innerHeight + 40) { closeGrid(); setHash(null); syncFx(); }
+    });
+  }, { passive: true });
 
   function openHash() {
     var h = location.hash ? location.hash.slice(1) : '', r0 = h && document.getElementById(h);
