@@ -1,0 +1,10 @@
+name: Vérifier le site
+on: workflow_dispatch
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          for u in / /index.html /studio.html /contact.html /studio /contact; do
+            echo "== $u"; curl -sS -o /dev/null -m 20 -w "%{http_code} %{redirect_url} %{time_total}s\n" "https://new.studiobega.be$u" || true
+          done
