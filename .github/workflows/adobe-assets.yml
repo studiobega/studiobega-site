@@ -1,0 +1,26 @@
+name: Rapatrier les images de l'ancien site
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  get:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p data/adobe
+          B=https://cdn.myportfolio.com/c60bb576-accb-493f-85eb-9ff130da82d8
+          curl -sSfL -o data/adobe/hero.png   "$B/3d2affd6-9c20-4318-8be9-4e976b080556_rwc_0x0x5485x3072x4096.png?h=f70cc30bbbbbd73144c66963ec3f1c02"
+          curl -sSfL -o data/adobe/bandeau.jpg "$B/c8e01c75-cb10-482c-a297-64b86910bcaa_rw_1920.jpg?h=4b3c39e6e96af7ccbab5b01a0180bd31"
+          curl -sSfL -o data/adobe/image-1.png "$B/58e589cd-6ab9-4620-ad0e-d7e9e8f4f00c_rw_1920.png?h=a6285867af56336ea5701113a07087dd"
+          curl -sSfL -o data/adobe/image-2.jpg "$B/24fc99e3-2752-4eb7-8a06-e633c27c3fff_rw_1920.jpg?h=17adff2261f88a378964f52a22ff3e27"
+          curl -sSfL -o data/adobe/logo.png    "$B/aa3613c3-2064-421c-9fbd-5aa7fbe6c700_rwc_0x0x800x800x4096.png?h=8d32827a11f0e4cd043c91e50a568b8"
+          pip install --quiet pillow
+          python3 -c "
+          from PIL import Image
+          im=Image.open('data/adobe/hero.png').convert('RGB'); im.thumbnail((2400,2400)); im.save('data/adobe/hero.jpg',quality=86); import os; os.remove('data/adobe/hero.png')
+          im=Image.open('data/adobe/image-1.png').convert('RGB'); im.save('data/adobe/image-1.jpg',quality=86); os.remove('data/adobe/image-1.png')
+          "
+          ls -la data/adobe
+          git config user.name "Claude"; git config user.email "noreply@anthropic.com"
+          git add data/adobe && git commit -m "Images de l'accueil de l'ancien site (Adobe Portfolio)" && git push
