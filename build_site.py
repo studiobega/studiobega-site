@@ -111,7 +111,10 @@ def row(p):
     nom = ph(p['nom']) or '[Nom du lieu]'
     lieu, typ, an, etat = ph(p['lieu']), p['type'], ph(p['annee']), ph(p['etat'])
     dem, cle, sorti, para = ph(p['dem']), ph(p['cle']), ph(p['sorti']), ph(p['para'])
-    picsh = ''.join(f'<img src="{b}" alt="{e(nom)}" loading="lazy" data-zoom="{b}">' for b, t in pics) if pics else '<span class="ph" aria-hidden="true"></span>'
+    # 1re photo pleine largeur, les suivantes par deux ; si elles sont en nombre impair, la dernière repasse pleine largeur
+    n = len(pics)
+    wide = lambda k: k == 0 or (k == n - 1 and (n - 1) % 2 == 1)
+    picsh = ''.join(f'<img{" class=\"w\"" if wide(k) else ""} src="{b}" alt="{e(nom)}" loading="lazy" data-zoom="{b}">' for k, (b, t) in enumerate(pics)) if pics else '<span class="ph w" aria-hidden="true"></span>'
     two = ' two' if len(pics) >= 2 else ''
     liens = [l.split('|', 1) for l in (p['liens'] or '').split('\n') if '|' in l]
     more = ''

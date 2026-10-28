@@ -42,8 +42,9 @@ a{color:inherit;text-decoration:none}
 .pi{overflow:hidden;min-height:0}
 .panel{cursor:pointer;display:grid;grid-template-columns:484px minmax(0,1fr);gap:24px;padding:8px 0 56px;align-items:start;opacity:0;transform:translateY(-8px);transition:opacity .4s ease .1s,transform .5s cubic-bezier(.2,.7,.2,1) .05s}
 .row.open .panel{opacity:1;transform:none}
-.panel .pics{display:grid;grid-template-columns:1fr;gap:12px}
-.panel .pics.two{grid-template-columns:1fr 1fr}
+.panel .pics{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel .pics .w{grid-column:1/-1}
+.panel .pics img.w{aspect-ratio:3/2}
 .panel .pics img,.panel .pics .ph{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#e9e8e3}
 .panel dl{margin:0;display:flex;flex-direction:column;gap:16px;font-size:20px;line-height:1.4}
 .panel dl>div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:0 24px;align-items:baseline}
@@ -97,7 +98,6 @@ a{color:inherit;text-decoration:none}
  .line .yr{display:none}
  .line .st{grid-column:3;grid-row:1;font-size:13px;text-align:right;padding-top:6px}
  .panel{grid-template-columns:1fr;gap:20px;padding-bottom:36px}
- .panel .pics img:nth-child(n+3),.panel .pics .ph:nth-child(n+3){display:none}
  .panel .more{font-size:16px;gap:10px}
  .panel dl{font-size:18px;gap:14px}
  .panel dl>div{grid-template-columns:1fr;gap:4px}
