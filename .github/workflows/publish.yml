@@ -55,4 +55,4 @@ jobs:
       - name: Résumé
         run: |
           echo "### Site publié" >> $GITHUB_STEP_SUMMARY
-          echo "$(grep -c '<article class=\"row\"' dist/index.html) lieux · $(find dist/img -name '*.jpg' | wc -l) images" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat dist/*/index.html | grep -c '<template id=\"f-' || true) lieux · $(find dist/img -name '*.jpg' | wc -l) images" >> $GITHUB_STEP_SUMMARY

@@ -11,7 +11,7 @@ Airtable (BEGA BASE › Projets, vue « Site »)
 data/   projets.json · photos_manifest.json · photos/*.jpg
         │  build_site.py      génère le HTML, redimensionne les images
         ▼
-dist/   index.html · studio.html · contact.html · assets/ · img/ · .htaccess
+dist/   index.html (accueil) · territoires/ · activites/ · habitat/ · studio.html · contact.html · assets/ · img/ · .htaccess
         │  GitHub Action      dépose dist/ chez Infomaniak par SFTP
         ▼
 https://new.studiobega.be  (puis studiobega.be)
@@ -19,7 +19,7 @@ https://new.studiobega.be  (puis studiobega.be)
 
 ## Publier
 
-1. Dans Airtable, coche **Site** sur le projet, remplis la ligne (la colonne *Site · À compléter* dit ce qui manque), glisse les photos dans l'ordre (la première = vignette).
+1. Dans Airtable, coche **Site** sur le projet, choisis sa **Porte** (Territoires · Activités · Habitat : ce qu'est le lieu), remplis la ligne (la colonne *Site · À compléter* dit ce qui manque), glisse les photos dans l'ordre (la première = vignette).
 2. Attends la nuit, **ou** GitHub → Actions → *Publier le site* → *Run workflow*.
 
 Rien d'autre. Pas de code à toucher pour un projet.
