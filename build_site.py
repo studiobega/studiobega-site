@@ -169,6 +169,11 @@ bykey = {k: sorted([p for p in P if p['pk'] == k and ph(p['nom'])], key=lambda p
 doors = ''.join(f'<a href="#{k}">{e(n)}<span class="n">{len(bykey[k])}</span></a>' for k, n in PORTES)
 views = '<div class="views" role="group" aria-label="Affichage"><button type="button" data-v="img" aria-pressed="true">Images</button><button type="button" data-v="list" aria-pressed="false">Liste</button></div>'
 lieux = f'''    <p class="lead" id="lieux">Chaque lieu a sa clé.</p>
+    <section class="temps temps-l">
+      <div><h2>Lire</h2><p>Sur place, avant de dessiner.</p></div>
+      <div><h2>Imaginer</h2><p>Trouver la clé, puis dessiner le projet à partir d'elle.</p></div>
+      <div><h2>Réaliser</h2><p>Le permis, le chantier, jusqu'au dernier détail.</p></div>
+    </section>
     <header class="lieux-head"><div class="doors">{doors}</div>{views}</header>
 '''
 for k, n in PORTES:
@@ -236,11 +241,6 @@ studio = f'''<div class="page"><div class="wrap">
       <p>BEGA est un studio d'architecture installé à Hotton, porté par Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur.</p>
     </div>
 
-    <section class="temps">
-      <div><h2>Lire</h2><p>Sur place, avant de dessiner.</p></div>
-      <div><h2>Imaginer</h2><p>Trouver la clé, puis dessiner le projet à partir d'elle.</p></div>
-      <div><h2>Réaliser</h2><p>Le permis, le chantier, jusqu'au dernier détail.</p></div>
-    </section>
 
     <figure class="duo-f">
       <img src="img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin">

@@ -306,3 +306,11 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
 
 .manif+.essay{margin-top:56px}
 @media (max-width:640px){.manif+.essay{margin-top:36px}}
+
+/* les trois temps, en tête de Lieux : la démarche avant les preuves */
+.temps.temps-l{margin:40px 0 72px}
+.temps-l+.lieux-head .doors{padding-top:0}
+@media (max-width:640px){.temps.temps-l{margin:28px 0 48px}}
+.duo-f{margin-top:96px}
+@media (max-width:640px){.duo-f{margin-top:56px}}
+@media (max-width:640px){.temps.temps-l{gap:18px}.temps-l h2{font-size:30px}}
