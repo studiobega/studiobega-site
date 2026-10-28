@@ -206,7 +206,11 @@ IMG_COL = pic('REF.04')
 shutil.copy(DATA / 'adobe' / 'schema-lire.png', IMG / 'schema-lire.png'); IMG_BANDEAU = '/img/schema-lire.png'
 IDMAP = json.dumps({p['id']: p['pk'] for p in P}, ensure_ascii=False).replace('"', '&quot;')
 hero_links = ''.join(f'<a href="{h}">{t}</a>' for h, t in MENU)
-portes = ''.join(f'<a class="pill" href="/{k}/">{e(n)}</a>' for k, n in PORTES)
+def first_pic(k, code=None):
+    L = [q for q in bykey[k] if PICS.get(q['id'])]
+    if code: L = [q for q in L if q['code'] == code] or L
+    return abs_(PICS[L[0]['id']][0][2]) if L else '/img/hero.jpg'
+portes = ''.join(f'<a class="door" href="/{k}/"><span class="im"><img src="{first_pic(k, "23.14" if k == "territoires" else None)}" alt="" loading="lazy"></span><span class="dn">{e(n)} <span aria-hidden="true">→</span></span></a>' for k, n in PORTES)
 index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
@@ -223,7 +227,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
       <img class="band" src="{IMG_BANDEAU}" alt="Lire le lieu, trouver la clé, faire le projet" loading="lazy">
       <section><h2 class="h">Lire. Imaginer. Réaliser.</h2>{lines("Du territoire à l'intérieur.", "Lire le lieu, trouver la clé, dessiner le projet.", "Puis le construire, jusqu'au dernier détail.")}</section>
       {f'<img class="ill" src="{IMG_COL}" alt="" loading="lazy">' if IMG_COL else ''}
-      <section><h2 class="h">Des projets qui restent.</h2>{lines("Dans leur usage.", "Dans le temps.", "Dans ce qu'ils changent.")}<div class="pills">{portes}</div></section>
+      <section><h2 class="h">Des projets qui restent.</h2>{lines("Dans leur usage.", "Dans le temps.", "Dans ce qu'ils changent.")}<div class="doors">{portes}</div></section>
       <section id="studio"><h2 class="h">Le Studio.</h2>{lines("Architecture & stratégie de lieu.", "Benjamin Gaspard, architecte, trouve la clé sur place.", "Héloïse Collin, architecte d'intérieur, la prolonge à l'intérieur.", "Revaloriser ce qui existe. Construire quand le terrain le demande.", "Installé à Hotton. Projets en Wallonie, à Bruxelles et au Luxembourg.")}</section>
       <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
       <section>{lines("contact@studiobega.be")}<div class="pills"><a class="pill" href="/contact.html">Contact</a></div></section>
