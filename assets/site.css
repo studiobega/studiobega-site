@@ -259,11 +259,22 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
 /* Échelle typographique unique (Newsreader partout, Jost pour le logo et les étiquettes)
    T1 titres de page 56 · T2 clés et noms 28 · T3 textes d'ouverture 24 · texte 19 */
 .lead,.manif{font-size:56px;line-height:1.08;letter-spacing:-.01em;font-weight:400}
-.card .ck,.gp-h .nm,.panel .cle,.step .kc,.blk .two h3,.addr,.line .nm{font-size:28px;line-height:1.25}
+.card .ck,.gp-h .nm,.panel .cle,.blk .two h3,.addr,.line .nm{font-size:28px;line-height:1.25}
 .ct-sub,.thesis p:first-child,.ech-row .en{font-size:24px;line-height:1.35}
 @media (max-width:900px){.lead,.manif{font-size:46px}.card .ck{font-size:26px}}
 @media (max-width:640px){
  .lead,.manif{font-size:36px}
- .card .ck,.gp-h .nm,.panel .cle,.step .kc,.blk .two h3,.addr,.line .nm{font-size:22px}
+ .card .ck,.gp-h .nm,.panel .cle,.blk .two h3,.addr,.line .nm{font-size:22px}
  .ct-sub,.thesis p:first-child,.ech-row .en{font-size:19px}
 }
+
+/* Studio : calme et aligné */
+.thesis{display:flex;flex-direction:column;gap:16px;max-width:760px;margin-bottom:88px}
+.thesis p:first-child{font-size:24px;line-height:1.4}
+.thesis .bio{font-family:'Newsreader',Georgia,serif;font-size:19px;line-height:1.5;color:#6b6b66;max-width:none}
+.fil-band .lab.sec a{color:#141413;border-bottom:1px solid #d9d9d4}
+.fil-band .lab.sec a:hover{border-color:#141413}
+.step img,.step .ph{aspect-ratio:4/3}
+.step.imaginer img{outline:none;background:#f3f2ee;padding:6%;box-sizing:border-box}
+.step figcaption{font-size:18px;line-height:1.45;gap:8px;margin-top:16px}
+@media (max-width:640px){.thesis{margin-bottom:56px}.thesis .bio{font-size:17px}.step figcaption{font-size:17px}}

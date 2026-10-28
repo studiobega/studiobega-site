@@ -218,9 +218,9 @@ steps = ''
 for cls, lab, aid, txt in FIL_SRC:
     ks = [i for i, m in enumerate(mine) if m['id'] == aid]
     img = f'<img src="{fpics[ks[0]][2]}" alt="" loading="lazy">' if (fpics and ks and ks[0] < len(fpics)) else '<span class="ph"></span>'
-    body = f'<span class="kc"><span class="key">{e(fcle)}</span></span>' if txt is None else f'<span>{e(txt)}</span>'
+    body = f'<span><span class="key">{e(fcle)}</span></span>' if txt is None else f'<span>{e(txt)}</span>'
     steps += f'      <figure class="step {cls}">{img}<figcaption><span class="lab">{lab}</span>{body}</figcaption></figure>\n'
-fil_link = f'<a class="fil-l" href="index.html#{fp["id"]}">{e(ph(fp["nom"]))}, {e(ph(fp["lieu"]))}</a>' if fp else ''
+fil_link = f' · <a href="index.html#{fp["id"]}">{e(ph(fp["nom"]))}, {e(ph(fp["lieu"]))}</a>' if fp else ''
 ech = ''
 for lab, c in ECHELLES:
     q = BYCODE.get(c)
@@ -233,7 +233,7 @@ studio = f'''<div class="page"><div class="wrap">
     </div>
 
     <section class="fil-band">
-      <div class="band-h"><span class="lab">Un lieu, trois temps</span>{fil_link}</div>
+      <div class="lab sec">Un lieu, trois temps{fil_link}</div>
       <div class="steps">
 {steps}      </div>
     </section>
