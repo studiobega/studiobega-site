@@ -189,7 +189,7 @@ index_body = f'''<section class="hero" id="hero">
   <div class="nav" aria-hidden="true"><span class="logo">BEGA<span class="dot"></span></span></div>
   <div class="txt">
     <h1>Tout est déjà là.</h1>
-    <p>Lire un lieu. Écouter un programme. Trouver ce qui fait basculer le projet.</p>
+    <p>Lire un lieu. Imaginer sa clé. Le réaliser.</p>
   </div>
 </section>
 <div class="site locked v-img" id="site"><div class="page"><div class="wrap">
