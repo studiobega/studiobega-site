@@ -55,7 +55,7 @@ def save(img, dst, w, q=82):
     dst.parent.mkdir(parents=True, exist_ok=True); img.save(dst, 'JPEG', quality=q, optimize=True, progressive=True)
 
 def photos_for(p):
-    """→ liste de dict {big, mid, th, w, h} (chemins relatifs dist/)."""
+    """→ liste de (grande, vignette) en chemins relatifs dist/."""
     out = []
     mine = sorted([m for m in MAN if m['code'] == p['code']], key=lambda m: m['k'])
     srcs = [(DATA / 'photos' / f"{m['id']}.jpg") for m in mine]
@@ -63,12 +63,10 @@ def photos_for(p):
     if not srcs:
         srcs = [DATA / 'mockup' / f'{b}.jpg' for b in FALLBACK.get(p['code'], []) if (DATA / 'mockup' / f'{b}.jpg').exists()]
     for k, src in enumerate(srcs):
-        big, mid, th = (IMG / p['id'] / f'{k+1}{x}.jpg' for x in ('', '-m', '-t'))
-        if not (big.exists() and mid.exists()) or big.stat().st_mtime < src.stat().st_mtime:
-            im = Image.open(src); save(im, big, 1600); save(im, mid, 900, 80); save(im, th, 480, 78)
-        with Image.open(big) as b: w, h = b.size
-        r = f"img/{p['id']}/{k+1}"
-        out.append({'big': r + '.jpg', 'mid': r + '-m.jpg', 'th': r + '-t.jpg', 'w': w, 'h': h})
+        big, th = IMG / p['id'] / f'{k+1}.jpg', IMG / p['id'] / f'{k+1}-t.jpg'
+        if not big.exists() or big.stat().st_mtime < src.stat().st_mtime:
+            im = Image.open(src); save(im, big, 1600); save(im, th, 480, 78)
+        out.append((f"img/{p['id']}/{k+1}.jpg", f"img/{p['id']}/{k+1}-t.jpg"))
     return out
 
 # ---------- CSS ----------
@@ -109,18 +107,12 @@ def page(title, body, desc, extra_head=''):
 # ---------- LIEUX ----------
 def row(p):
     pics = photos_for(p)
-    thumb = f'<img class="th" src="{pics[0]['th']}" alt="" loading="lazy">' if pics else '<span class="th" aria-hidden="true"></span>'
+    thumb = f'<img class="th" src="{pics[0][1]}" alt="" loading="lazy">' if pics else '<span class="th" aria-hidden="true"></span>'
     nom = ph(p['nom']) or '[Nom du lieu]'
     lieu, typ, an, etat = ph(p['lieu']), p['type'], ph(p['annee']), ph(p['etat'])
     dem, cle, sorti, para = ph(p['dem']), ph(p['cle']), ph(p['sorti']), ph(p['para'])
-    if pics:
-        a = pics[0]
-        first = f'<img class="lead" src="{a["big"]}" width="{a["w"]}" height="{a["h"]}" alt="{e(nom)}" loading="lazy" data-zoom="{a["big"]}">'
-        rest = ''.join(f'<img src="{q["mid"]}" width="{q["w"]}" height="{q["h"]}" alt="{e(nom)}" loading="lazy" data-zoom="{q["big"]}">' for q in pics[1:])
-        picsh = first + (f'<div class="strip">{rest}</div>' if rest else '')
-    else:
-        picsh = ''
-    peek = f' data-peek="{pics[0]["mid"]}"' if pics else ''
+    picsh = ''.join(f'<img src="{b}" alt="{e(nom)}" loading="lazy" data-zoom="{b}">' for b, t in pics) if pics else '<span class="ph" aria-hidden="true"></span>'
+    two = ' two' if len(pics) >= 2 else ''
     liens = [l.split('|', 1) for l in (p['liens'] or '').split('\n') if '|' in l]
     more = ''
     if para or liens:
@@ -133,9 +125,9 @@ def row(p):
     if cle:   dl += f'<div><dt class="lab">La clé</dt><dd class="cle"><span class="key">{e(cle)}</span></dd></div>'
     if sorti: dl += f'<div><dt class="lab">{"Pistes" if multi else "Sorti"}</dt><dd>{sorti_h}</dd></div>'
     return f'''      <article class="row" id="{p['id']}">
-        <button type="button" class="line"{peek} aria-expanded="false" aria-controls="p-{p['id']}">{thumb}<span class="nm">{e(nom)}</span><span class="md"><span class="pl">{e(lieu)}</span><span class="tp">{e(typ)}</span><span class="yr">{e(an)}</span></span><span class="st">{e(etat)}</span></button>
+        <button type="button" class="line" aria-expanded="false" aria-controls="p-{p['id']}">{thumb}<span class="nm">{e(nom)}</span><span class="md"><span class="pl">{e(lieu)}</span><span class="tp">{e(typ)}</span><span class="yr">{e(an)}</span></span><span class="st">{e(etat)}</span></button>
         <div class="pw" id="p-{p['id']}"><div class="pi"><div class="panel">
-            {f'<div class="pics">{picsh}</div>' if picsh else ''}
+            <div class="pics{two}">{picsh}</div>
             <div class="tx"><dl>{dl}</dl>{more}</div>
         </div></div></div>
       </article>
@@ -167,7 +159,6 @@ index_body = f'''<section class="hero" id="hero">
 <div class="site locked" id="site"><div class="page"><div class="wrap">
 {nav('Lieux', home_btn=True)}{lieux}{FOOT}</div></div></div>
 <div class="lb" id="lb" aria-hidden="true"><img src="" alt=""></div>
-<div class="peek" id="peek" aria-hidden="true"><img src="" alt=""></div>
 <script src="assets/site.js" defer></script>'''
 DIST.mkdir(exist_ok=True)
 (DIST / 'index.html').write_text(page('Studio BEGA — Architecture & stratégie de lieu, Ardenne', index_body,
