@@ -230,7 +230,6 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
       <section><h2 class="h">Des projets qui restent.</h2>{lines("Dans leur usage.", "Dans le temps.", "Dans ce qu'ils changent.")}<div class="doors">{portes}</div></section>
       <section id="studio"><h2 class="h">Le Studio.</h2>{lines("Architecture & stratégie de lieu.", "Benjamin Gaspard, architecte, trouve la clé sur place.", "Héloïse Collin, architecte d'intérieur, la prolonge à l'intérieur.", "Revaloriser ce qui existe. Construire quand le terrain le demande.", "Installé à Hotton. Projets en Wallonie, à Bruxelles et au Luxembourg.")}</section>
       <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
-      <section>{lines("contact@studiobega.be")}<div class="pills"><a class="pill" href="/contact.html">Contact</a></div></section>
     </div>
 {FOOT}</div></div>"""
 write('index.html', page('Studio BEGA — Architecture & stratégie de lieu, Ardenne', index_body,
