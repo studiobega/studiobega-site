@@ -6,5 +6,5 @@ jobs:
     steps:
       - run: |
           for u in / /index.html /studio.html /contact.html /studio /contact; do
-            echo "== $u"; curl -sS -o /dev/null -m 20 -w "%{http_code} %{redirect_url} %{time_total}s\n" "https://new.studiobega.be$u" || true
+            r=$(curl -sS -o /dev/null -m 20 -w "%{http_code} %{redirect_url} %{time_total}s" "https://new.studiobega.be$u" 2>&1); echo "::notice::$u -> $r"
           done
