@@ -226,11 +226,19 @@ for lab, c in ECHELLES:
     q = BYCODE.get(c)
     if q: ech += f'<a href="index.html#{q["id"]}"><span class="lab">{lab}</span><span class="en">{e(ph(q["nom"]))}</span><span class="el">{e(ph(q["lieu"]))}</span></a>'
 studio = f'''<div class="page"><div class="wrap">
-{nav('Studio')}    <h1 class="manif">Revaloriser ce qui existe. Construire quand le terrain le demande.</h1>
-    <div class="thesis">
-      <p>Chaque lieu a sa clé : ce qui le rend singulier. Elle se trouve sur place, entre ce que le lieu peut donner et ce que vous voulez en faire. Le projet se dessine à partir d'elle, puis se construit, jusqu'au dernier détail. De la maison au territoire.</p>
-      <p class="bio">Studio fondé à Hotton en 2025 par Benjamin Gaspard, architecte depuis 2013, avec Héloïse Collin, architecte d'intérieur. En Wallonie, à Bruxelles et au Luxembourg.</p>
+{nav('Studio')}    <div class="essay">
+      <p>BEGA est un studio d'architecture fondé à Hotton en 2025 par Benjamin Gaspard, architecte depuis 2013, et Héloïse Collin, architecte d'intérieur.</p>
+      <p>Il travaille sur des lieux : une place de village, un hôtel, une ferme, une maison, un site entier. Tout y est déjà : le relief, l'eau, les murs, ce que les gens en font, et l'envie de celui qui porte le projet.</p>
+      <p>Dans chaque lieu, il y a une clé. C'est ce qui le rend singulier, ce qui réconcilie ce que le lieu peut donner et ce que vous voulez en faire. Elle se trouve sur place. Le projet se dessine à partir d'elle.</p>
+      <p>Demain, on construira moins et on revalorisera ce qui existe. BEGA revalorise ce qui existe, et construit quand le terrain le demande, de la maison au territoire, en Wallonie, à Bruxelles et au Luxembourg.</p>
     </div>
+
+    <section class="temps">
+      <div><h2>Lire</h2><p>Sur place, avant de dessiner.</p></div>
+      <div><h2>Imaginer</h2><p>Trouver la clé, puis dessiner le projet à partir d'elle.</p></div>
+      <div><h2>Réaliser</h2><p>Le permis, le chantier, jusqu'au dernier détail.</p></div>
+    </section>
+
     <figure class="duo-f">
       <img src="img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin">
       <div class="two">
