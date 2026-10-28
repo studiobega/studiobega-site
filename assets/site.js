@@ -13,7 +13,12 @@
     var up = function (instant) {
       if (hero.classList.contains('up')) return;
       if (instant) hero.classList.add('now');
+      window.scrollTo(0, 0);
       hero.classList.add('up'); site.classList.remove('locked');
+      if (!instant) {   // pendant que le rideau monte, la page reste calée en haut : on ne saute aucun texte
+        document.documentElement.classList.add('lock');
+        setTimeout(function () { window.scrollTo(0, 0); document.documentElement.classList.remove('lock'); }, 900);
+      }
     };
     if (h0 === 'accueil') { seen = false; history.replaceState(null, '', '/'); }   // le logo rappelle le rideau
     if (h0 === 'studio' || seen) up(true); else site.classList.add('locked');
@@ -21,6 +26,7 @@
       if (location.hash !== '#accueil') return;
       history.replaceState(null, '', '/'); window.scrollTo(0, 0);
       hero.classList.remove('now', 'up'); site.classList.add('locked');
+      window.scrollTo(0, 0);
     });
     document.getElementById('enter').addEventListener('click', function () { up(); });
     hero.addEventListener('wheel', function (ev) { if (ev.deltaY > 8) up(); }, { passive: true });

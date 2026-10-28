@@ -166,16 +166,17 @@ def fiche(p):
     sorti_h = ''.join(f'<span class="ln">{e(x.strip())}</span>' for x in sorti.split('\n') if x.strip()) if multi else e(sorti)
     dl = ''
     if dem:   dl += f'<div><dt class="lab">Demandé</dt><dd>{e(dem)}</dd></div>'
-    if cle:   dl += f'<div><dt class="lab">La clé</dt><dd class="cle"><span class="key">{e(cle)}</span></dd></div>'
     if sorti: dl += f'<div><dt class="lab">{"Pistes" if multi else "Sorti"}</dt><dd>{sorti_h}</dd></div>'
     liens = [l.split('|', 1) for l in (p['liens'] or '').split('\n') if '|' in l]
     lk = ''.join(f'<a href="{u.strip()}">{e(t.strip())}</a>' for t, u in liens if u.strip() and u.strip() != '#')
     n = len(pics)
     wide = lambda j: j == 0 or (j == n - 1 and (n - 1) % 2 == 1)  # 1re pleine largeur, puis par deux, dernière impaire pleine largeur
-    imgs = ''.join(f'<img{" class=\"w\"" if wide(j) else ""} src="{abs_(b)}" alt="{e(nom)}" loading="lazy" data-zoom="{abs_(b)}">' for j, (b, t, m) in enumerate(pics))
+    imgs = ''.join(f'<img src="{abs_(b)}" alt="{e(nom)}" loading="lazy" data-zoom="{abs_(b)}">' for j, (b, t, m) in enumerate(pics))
     return f"""    <template id="f-{p['id']}">
       <div class="fh"><div><h2 class="nm">{e(nom)}</h2><div class="meta">{e(meta)}</div></div><button type="button" class="fx-x" aria-label="Fermer">×</button></div>
-      <div class="fb"><div class="pics">{imgs}</div><div class="tx"><dl>{dl}</dl>{f'<p class="para">{e(para)}</p>' if para else ''}{f'<div class="links">{lk}</div>' if lk else ''}</div></div>
+      {f'<p class="fcle"><span class="key">{e(cle)}</span></p>' if cle else ''}
+      <div class="tx">{f'<dl>{dl}</dl>' if dl else ''}{f'<p class="para">{e(para)}</p>' if para else ''}{f'<div class="links">{lk}</div>' if lk else ''}</div>
+      <div class="pics">{imgs}</div>
     </template>
 """
 
