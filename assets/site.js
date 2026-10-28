@@ -15,7 +15,13 @@
       if (instant) hero.classList.add('now');
       hero.classList.add('up'); site.classList.remove('locked');
     };
+    if (h0 === 'accueil') { seen = false; history.replaceState(null, '', '/'); }   // le logo rappelle le rideau
     if (h0 === 'studio' || seen) up(true); else site.classList.add('locked');
+    window.addEventListener('hashchange', function () {
+      if (location.hash !== '#accueil') return;
+      history.replaceState(null, '', '/'); window.scrollTo(0, 0);
+      hero.classList.remove('now', 'up'); site.classList.add('locked');
+    });
     document.getElementById('enter').addEventListener('click', function () { up(); });
     hero.addEventListener('wheel', function (ev) { if (ev.deltaY > 8) up(); }, { passive: true });
     var ty = 0;

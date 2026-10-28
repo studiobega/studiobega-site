@@ -90,7 +90,7 @@ def photos_for(p):
     return out
 
 # ---------- gabarit ----------
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap" rel="stylesheet">'
 
 FOOT = """    <footer class="foot">
       <div class="grp"><a href="https://www.instagram.com/studio_bega_/">Instagram</a><a href="https://www.facebook.com/studiobenjamingaspard">Facebook</a><a href="https://be.linkedin.com/company/studiobega">LinkedIn</a></div>
@@ -98,7 +98,7 @@ FOOT = """    <footer class="foot">
     </footer>
 """
 MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/contact.html', 'Contact')]
-LOGO = '<a class="logo" href="/" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
+LOGO = '<a class="logo" href="/#accueil" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
 def nav(on):
     links = ''.join(f'<a href="{h}" class="{"on " if t == on else ""}{"ct" if t == "Contact" else ""}">{t}</a>' for h, t in MENU)
@@ -150,7 +150,9 @@ def card(p):
     pics = PICS.get(p['id'])
     if not pics: return ''
     cle, nom = ph(p['cle']), ph(p['nom'])
-    sub = ' · '.join(x for x in (nom if cle else '', ph(p['lieu'])) if x)
+    # dessous : deux mots, la fonction et le lieu ; la clé parle
+    typ = (p['type'] or '').strip()
+    sub = ' · '.join(x for x in ((typ[:1].upper() + typ[1:]) if typ else '', ph(p['lieu'])) if x)
     return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><span class="im"><img src="{abs_(pics[0][2])}" alt="{e(nom)}" loading="lazy"></span>'
             f'<span class="cap"><span class="ck">{e(cle or nom)}</span><span class="cm">{e(sub)}</span></span></a>\n')
 
