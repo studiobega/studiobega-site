@@ -54,6 +54,20 @@ def save(img, dst, w, q=82):
     if img.width > w: img = img.resize((w, round(img.height * w / img.width)), Image.LANCZOS)
     dst.parent.mkdir(parents=True, exist_ok=True); img.save(dst, 'JPEG', quality=q, optimize=True, progressive=True)
 
+# Schémas dont le jaune est ramené au jaune BEGA (#FFD400), id de pièce jointe Airtable.
+RECOLOR = {'att0sJfbGVF6vDiiV'}
+def bega_yellow(im):
+    """Remplace un jaune terne par #FFD400 en gardant l'anticrénelage (mélange avec le blanc)."""
+    im = im.convert('RGB'); px = im.load(); w, h = im.size
+    for y in range(h):
+        for x in range(w):
+            r, g, b = px[x, y]
+            a = (min(r, g) - b) / 152
+            if a <= 0.04: continue
+            a = min(a, 1.0)
+            px[x, y] = (min(255, round(r + 31 * a)), min(255, round(g + 4 * a)), max(0, round(b - 56 * a)))
+    return im
+
 def photos_for(p):
     """→ liste de (grande 1600, vignette 480, moyenne 900) en chemins relatifs dist/."""
     out = []
@@ -64,8 +78,10 @@ def photos_for(p):
         srcs = [DATA / 'mockup' / f'{b}.jpg' for b in FALLBACK.get(p['code'], []) if (DATA / 'mockup' / f'{b}.jpg').exists()]
     for k, src in enumerate(srcs):
         big, th, mid = (IMG / p['id'] / f'{k+1}{x}.jpg' for x in ('', '-t', '-m'))
-        if not (big.exists() and mid.exists()) or big.stat().st_mtime < src.stat().st_mtime:
-            im = Image.open(src); save(im, big, 1600); save(im, th, 480, 78); save(im, mid, 900, 80)
+        if not (big.exists() and mid.exists()) or big.stat().st_mtime < src.stat().st_mtime or src.stem in RECOLOR:
+            im = Image.open(src)
+            if src.stem in RECOLOR: im = bega_yellow(im)
+            save(im, big, 1600); save(im, th, 480, 78); save(im, mid, 900, 80)
         r = f"img/{p['id']}/{k+1}"
         out.append((r + '.jpg', r + '-t.jpg', r + '-m.jpg'))
     return out
@@ -185,7 +201,7 @@ DIST.mkdir(exist_ok=True)
 # ---------- STUDIO ----------
 # Fil rouge : un même lieu, de la lecture au projet. Photos repérées par leur id de pièce jointe Airtable.
 FIL_CODE, FIL_SRC = '23.14', {'lire': ('attRCS6nTI0fJ9dtW', 'vue drone'),
-                              'imaginer': ('attWYIHieTktr8c8S', 'le dessin'),
+                              'imaginer': ('att0sJfbGVF6vDiiV', 'le schéma'),
                               'realiser': ('attN9EId6PPtfGRFu', 'le projet')}
 BYCODE = {p['code']: p for p in P}
 FIL = {}
