@@ -90,11 +90,11 @@ def photos_for(p):
     return out
 
 # ---------- gabarit ----------
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">'
 
 FOOT = """    <footer class="foot">
-      <div>© 2026 Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
       <div class="grp"><a href="https://www.instagram.com/studio_bega_/">Instagram</a><a href="https://www.facebook.com/studiobenjamingaspard">Facebook</a><a href="https://be.linkedin.com/company/studiobega">LinkedIn</a></div>
+      <div>© Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
     </footer>
 """
 MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/#studio', 'Studio'), ('/contact.html', 'Contact')]
@@ -146,7 +146,7 @@ NAMES = dict(PORTES)
 bykey = {k: sorted([p for p in P if p['pk'] == k and ph(p['nom'])], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 
 def card(p):
-    """Vignette : l'image, la clé en titre, puis le nom réel du lieu."""
+    """Vignette : l'image seule, comme l'ancien site. Au survol (ou dessous sur téléphone) : la clé, puis le nom."""
     pics = PICS.get(p['id'])
     if not pics: return ''
     cle, nom = ph(p['cle']), ph(p['nom'])
@@ -182,7 +182,7 @@ for k, n in PORTES:
     cards = ''.join(card(p) for p in bykey[k])
     fiches = ''.join(fiche(p) for p in bykey[k] if PICS.get(p['id']))
     body = f"""<div class="page"><div class="wrap">
-{nav(n)}    <header class="ph-head"><h1 class="t1">{e(t)}</h1><p class="t3">{e(intro)}</p></header>
+{nav(n)}    <header class="col"><h1 class="h">{e(t)}</h1><p>{e(intro)}</p></header>
     <div class="grid">
 {cards}    </div>
 {fiches}{FOOT}</div></div>
@@ -196,57 +196,43 @@ for src, dst in [('7d27646bb9e84d280aaa51552a3d6afb', 'hero'), ('ec894847fb1cdd2
     if s_.exists():
         save(Image.open(s_), IMG / f'{dst}.jpg', 2000 if dst == 'hero' else 1600, 84)
 
-# ---------- accueil : la photo, puis BEGA se présente, puis les trois portes ----------
-def first_pic(k, code=None):
-    L = [p for p in bykey[k] if PICS.get(p['id'])]
-    if code: L = [p for p in L if p['code'] == code] or L
-    return abs_(PICS[L[0]['id']][0][2]) if L else '/img/hero.jpg'
-tiles = ''.join(f"""      <a class="door" href="/{k}/"><span class="im"><img src="{first_pic(k, '23.14' if k == 'territoires' else None)}" alt="" loading="lazy"></span><span class="dn">{e(n)}</span><span class="dt">{e(DOORS[k][0])}</span></a>
-""" for k, n in PORTES)
+# ---------- accueil : le rideau, puis le discours en colonne, comme l'ancien site ----------
+def pic(code, k=0):
+    q = next((p for p in P if p['code'] == code and PICS.get(p['id'])), None)
+    return abs_(PICS[q['id']][min(k, len(PICS[q['id']]) - 1)][0]) if q else ''
+def lines(*xs): return ''.join(f'<p>{e(x)}</p>' for x in xs)
+IMG_BANDEAU, IMG_COL = pic('23.14'), pic('REF.04')
 IDMAP = json.dumps({p['id']: p['pk'] for p in P}, ensure_ascii=False).replace('"', '&quot;')
 hero_links = ''.join(f'<a href="{h}">{t}</a>' for h, t in MENU)
+portes = ''.join(f'<a class="pill" href="/{k}/">{e(n)}</a>' for k, n in PORTES)
 index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
   <button type="button" class="go" id="enter" aria-label="Entrer"></button>
   <nav class="nav" aria-label="Navigation">{LOGO}<div class="links">{hero_links}</div></nav>
-  <div class="txt">
-    <h1>Tout est déjà là.</h1>
-    <p>Lire un lieu. Imaginer sa clé. Le réaliser.</p>
-  </div>
+  <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
 </section>
 <div class="page site" id="site"><div class="wrap">
-{nav('')}    <section class="studio" id="studio">
-      <h2 class="t1">Revaloriser ce qui existe.<br>Construire quand le terrain le demande.</h2>
-      <div class="essay">
-        <p>Une maison, un gîte, un commerce, un lieu de travail, un espace public.<br>Studio BEGA accompagne les particuliers, les investisseurs, les entreprises et les communes, quand un lieu demande à être transformé, valorisé ou repensé.</p>
-        <p>Un projet commence par une lecture.<br>Ce que le lieu permet. Ce qu'il impose. Ce qu'il peut devenir.<br>Et ce que vous voulez en faire.</p>
-        <p>Entre les deux, il y a une clé : ce qui rend le lieu singulier.<br>Elle se trouve sur place, et le projet se dessine à partir d'elle, du territoire à l'intérieur.</p>
-      </div>
-      <div class="temps">
-        <div><h3>Lire</h3><p>Sur place, avant de dessiner.</p></div>
-        <div><h3>Imaginer</h3><p>Trouver la clé, puis dessiner le projet à partir d'elle.</p></div>
-        <div><h3>Réaliser</h3><p>Le permis, le chantier, jusqu'au dernier détail.</p></div>
-      </div>
-      <figure class="duo">
-        <img src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
-        <div class="two">
-          <div><h3>Benjamin Gaspard</h3><div class="lab">Architecte</div><p>Trouve la clé sur place.</p></div>
-          <div><h3>Héloïse Collin</h3><div class="lab">Architecte d'intérieur</div><p>La prolonge à l'intérieur.</p></div>
-        </div>
-        <figcaption class="t3">Un studio d'architecture à Hotton, en Wallonie, à Bruxelles et au Luxembourg.<br>Des projets qui restent. Dans leur usage, dans le temps, dans ce qu'ils changent.</figcaption>
-      </figure>
-    </section>
-    <section class="doors" aria-label="Les lieux">
-{tiles}    </section>
+{nav('')}    <div class="col">
+      <section><h2 class="h">Des lieux singuliers.</h2>{lines("Une place, un hôtel, une ferme, une maison.", "Chacun a déjà ce qu'il faut pour devenir unique.")}</section>
+      <section><h2 class="h">Des projets à faire évoluer.</h2>{lines("Maison, gîte, commerce, lieu de travail, bien à valoriser ou projet public.", "Studio BEGA accompagne les particuliers, les investisseurs, les entreprises et les communes, quand un lieu demande à être transformé, valorisé ou repensé.")}</section>
+      <section><h2 class="h">Un projet commence par une lecture.</h2>{lines("Ce que le lieu permet.", "Ce qu'il impose.", "Ce qu'il peut devenir.", "Et ce que vous voulez en faire.")}</section>
+      <section><h2 class="h">Puis vient la clé.</h2>{lines("Ce qui rend le lieu singulier.", "Elle se trouve sur place, entre le lieu et votre projet.", "Tout se dessine à partir d'elle.")}</section>
+      {f'<img class="band" src="{IMG_BANDEAU}" alt="" loading="lazy">' if IMG_BANDEAU else ''}
+      <section><h2 class="h">Lire. Imaginer. Réaliser.</h2>{lines("Du territoire à l'intérieur.", "Lire le lieu, trouver la clé, dessiner le projet.", "Puis le construire, jusqu'au dernier détail.")}</section>
+      {f'<img class="ill" src="{IMG_COL}" alt="" loading="lazy">' if IMG_COL else ''}
+      <section><h2 class="h">Des projets qui restent.</h2>{lines("Dans leur usage.", "Dans le temps.", "Dans ce qu'ils changent.")}<div class="pills">{portes}</div></section>
+      <section id="studio"><h2 class="h">Le Studio.</h2>{lines("Architecture & stratégie de lieu.", "Benjamin Gaspard, architecte, trouve la clé sur place.", "Héloïse Collin, architecte d'intérieur, la prolonge à l'intérieur.", "Revaloriser ce qui existe. Construire quand le terrain le demande.", "Installé à Hotton. Projets en Wallonie, à Bruxelles et au Luxembourg.")}</section>
+      <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
+      <section>{lines("contact@studiobega.be", "+32 474 63 43 09")}<div class="pills"><a class="pill" href="/contact.html">Contact</a></div></section>
+    </div>
 {FOOT}</div></div>"""
 write('index.html', page('Studio BEGA — Architecture & stratégie de lieu, Ardenne', index_body,
     "Studio BEGA lit les lieux avant de dessiner : territoires, lieux d'activité, habitat. Architecture et plans directeurs en Wallonie, à Bruxelles et au Luxembourg."))
 
 # ---------- CONTACT ----------
 contact = f"""<div class="page"><div class="wrap">
-{nav('Contact')}    <h1 class="t1">Un lieu à imaginer.</h1>
-    <p class="t3 ct-sub">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
+{nav('Contact')}    <header class="col"><h1 class="h">Un lieu à imaginer.</h1><p>Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p></header>
     <div class="map">
       <img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon">
       <span class="pin" aria-hidden="true"></span>
