@@ -97,7 +97,6 @@ a{color:inherit;text-decoration:none}
  .line .yr{display:none}
  .line .st{grid-column:3;grid-row:1;font-size:13px;text-align:right;padding-top:6px}
  .panel{grid-template-columns:1fr;gap:20px;padding-bottom:36px}
- .panel .pics img:nth-child(n+3),.panel .pics .ph:nth-child(n+3){display:none}
  .panel .more{font-size:16px;gap:10px}
  .panel dl{font-size:18px;gap:14px}
  .panel dl>div{grid-template-columns:1fr;gap:4px}
@@ -155,3 +154,28 @@ button.logo{all:unset;cursor:pointer;font-family:'Jost',Helvetica,Arial,sans-ser
 .map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;display:block}
 .panel .more p{margin:0}
 .site.nt .pw,.site.nt .line,.site.nt .line .th,.site.nt .line .nm,.site.nt .panel{transition:none !important}
+
+/* ---- v2 : l'image d'abord ---- */
+/* fiche ouverte : grande image, bande d'images, puis le texte */
+.panel{display:block;padding:4px 0 64px}
+.panel .pics{display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.panel .pics img{cursor:zoom-in;display:block;background:#e9e8e3}
+.panel .pics .lead{width:auto;max-width:100%;height:auto;max-height:68vh;aspect-ratio:auto;background:none;align-self:flex-start}
+.panel .strip{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.panel .strip img{height:300px;width:auto;flex:none;scroll-snap-align:start;aspect-ratio:auto}
+.panel .tx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 56px;align-items:start}
+.panel .tx>dl:only-child{grid-column:1/-1;max-width:760px}
+.panel .more{margin-top:0;padding-left:0;max-width:none}
+/* survol : la première image du projet suit la souris */
+.peek{position:fixed;left:0;top:0;z-index:15;width:min(34vw,460px);pointer-events:none;opacity:0;transition:opacity .25s ease;will-change:transform}
+.peek.on{opacity:1}
+.peek img{width:100%;height:auto;display:block;box-shadow:0 18px 50px rgba(20,20,19,.18)}
+@media (hover:none),(max-width:899px){.peek{display:none}}
+@media (max-width:900px){.panel .tx{grid-template-columns:1fr;gap:28px}}
+@media (max-width:640px){
+ .panel{padding-bottom:40px}
+ .panel .pics{margin:0 0 24px;gap:8px}
+ .panel .pics .lead{max-height:none}
+ .panel .strip{gap:8px;margin-right:-20px}
+ .panel .strip img{height:200px}
+}
