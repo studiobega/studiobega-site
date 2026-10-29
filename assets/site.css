@@ -65,6 +65,9 @@ header.col p{max-width:680px}
  .mnav-x{all:unset;position:absolute;top:18px;right:20px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:300;line-height:1;cursor:pointer;color:#111}
 }
 
+.col .ex{display:block;margin-top:40px;color:inherit;text-decoration:none}
+.col .exk{display:block;font-style:italic;font-size:24px;line-height:1.35;font-weight:500}
+.col .ex .cm{display:block;margin-top:12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a85}
 /* pied */
 .foot{margin-top:120px;padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12px;color:#444;text-align:center}
 .foot .grp{display:flex;gap:20px;text-transform:uppercase;letter-spacing:.06em}
@@ -153,7 +156,7 @@ html.lock{overflow:hidden}
  .logo{font-size:21px}.logo .dot{width:8px;height:8px}
  .hero .nav{padding:16px 20px}
  .hero .txt{padding:0 20px 36px;gap:10px}
- .hero h1{font-size:28px}.hero p{font-size:17px}
+ .hero h1{font-size:28px}.hero p{font-size:17px;color:#fff;font-weight:500;text-shadow:0 1px 3px rgba(0,0,0,.55),0 0 24px rgba(0,0,0,.45)}
  .h{font-size:28px;margin-bottom:18px}
  .col section{margin-top:88px}.col section:first-child{margin-top:48px}
  .col p{font-size:17px}

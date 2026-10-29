@@ -222,6 +222,10 @@ def first_pic(k, code=None):
     L = [q for q in bykey[k] if PICS.get(q['id'])]
     if code: L = [q for q in L if q['code'] == code] or L
     return abs_(PICS[L[0]['id']][0][2]) if L else '/img/hero.jpg'
+# une seule vraie clé sur l'accueil : Bouillon, lue dans Airtable, lien vers sa fiche
+_ex = next((p for p in P if p['code'] == '23.14' and ph(p['cle'])), None)
+EX = (f'<a class="ex" href="/{_ex["pk"]}/#{_ex["id"]}"><span class="exk"><span class="key">{e(ph(_ex["cle"]))}</span></span>'
+      f'<span class="cm">{e(ph(_ex["nom"]))} · {e(ph(_ex["lieu"]))}</span></a>') if _ex else ''
 portes = ''.join(f'<a class="door" href="/{k}/"><span class="im"><img src="{first_pic(k, "23.14" if k == "territoires" else None)}" alt="" loading="lazy"></span><span class="dn">{e(n)} <span class="ar" aria-hidden="true">→</span></span><span class="dt">{e(DOORS[k][0])}</span></a>' for k, n in PORTES)
 index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
@@ -233,12 +237,11 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
 <div class="page site" id="site"><div class="wrap">
 {nav('')}    <div class="col">
       <section><h2 class="h">Des lieux singuliers.</h2>{lines("Une place, un hôtel, une ferme, une maison.", "Chacun a déjà ce qu'il faut pour devenir unique.")}</section>
-      <section><h2 class="h">Des projets à faire évoluer.</h2>{lines("Maison, gîte, commerce, lieu de travail, bien à valoriser ou projet public.", "Studio BEGA accompagne les particuliers, les investisseurs, les entreprises et les communes, quand un lieu demande à être transformé, valorisé ou repensé.")}</section>
       <img class="wide" src="/img/lire-1.jpg" alt="Benjamin Gaspard sur place, face au paysage" loading="lazy">
       <section><h2 class="h">Un projet commence par une lecture.</h2>{lines("Ce que le lieu permet.", "Ce qu'il impose.", "Ce qu'il peut devenir.", "Et ce que vous voulez en faire.")}</section>
-      <section><h2 class="h">Puis vient la clé.</h2>{lines("Ce qui rend le lieu singulier.", "Elle se trouve sur place, entre le lieu et votre projet.", "Tout se dessine à partir d'elle.")}</section>
+      <section><h2 class="h">Puis vient la clé.</h2>{lines("Ce qui rend le lieu singulier.", "Elle se trouve sur place, entre le lieu et votre projet.")}{EX}</section>
       <img class="band" src="{IMG_BANDEAU}" alt="Lire le lieu, trouver la clé, faire le projet" loading="lazy">
-      <section><h2 class="h">Lire. Imaginer. Réaliser.</h2>{lines("Du territoire à l'intérieur.", "Lire le lieu, trouver la clé, dessiner le projet.", "Puis le construire, jusqu'au dernier détail.")}</section>
+      <section><h2 class="h">Et le lieu se transforme.</h2>{lines("Du plan directeur à l'intérieur.", "Dessiné à partir de la clé, construit jusqu'au dernier détail.")}</section>
       <section><h2 class="h">Des projets qui restent.</h2>{lines("Dans leur usage.", "Dans le temps.", "Dans ce qu'ils changent.")}<div class="doors">{portes}</div></section>
       <section id="studio"><h2 class="h">Le Studio.</h2>{lines("Architecture & stratégie de lieu.", "Benjamin Gaspard, architecte, trouve la clé sur place.", "Héloïse Collin, architecte d'intérieur, la prolonge à l'intérieur.", "Revaloriser ce qui existe. Construire quand le terrain le demande.", "Installé à Hotton. Projets en Wallonie, à Bruxelles et au Luxembourg.")}</section>
       <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
