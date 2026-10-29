@@ -215,7 +215,7 @@ def first_pic(k, code=None):
     L = [q for q in bykey[k] if PICS.get(q['id'])]
     if code: L = [q for q in L if q['code'] == code] or L
     return abs_(PICS[L[0]['id']][0][2]) if L else '/img/hero.jpg'
-portes = ''.join(f'<a class="door" href="/{k}/"><span class="im"><img src="{first_pic(k, "23.14" if k == "territoires" else None)}" alt="" loading="lazy"></span><span class="dn">{e(n)} <span aria-hidden="true">→</span></span></a>' for k, n in PORTES)
+portes = ''.join(f'<a class="door" href="/{k}/"><span class="im"><img src="{first_pic(k, "23.14" if k == "territoires" else None)}" alt="" loading="lazy"></span><span class="dn">{e(n)} <span class="ar" aria-hidden="true">→</span></span><span class="dt">{e(DOORS[k][0])}</span></a>' for k, n in PORTES)
 index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>

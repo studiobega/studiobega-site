@@ -38,13 +38,15 @@ header.col p{max-width:680px}
 .col>img.wide{width:100%;height:auto;border-radius:6px}
 
 /* les trois portes en bas de l'accueil : une image chacune, côte à côte, plus large que la colonne */
-.doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:56px 0 0}
-.door{display:flex;flex-direction:column;gap:12px}
-.door .im{display:block;overflow:hidden;border-radius:6px;background:#e9e8e3}
-.door .im img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:104px 0 0}
+.door{display:flex;flex-direction:column;gap:6px}
+.door .im{display:block;overflow:hidden;border-radius:6px;background:#e9e8e3;margin-bottom:10px}
+.door .im img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .door .dn{font-size:17px;font-weight:600}
-@media (hover:hover){.door:hover .im img{transform:scale(1.03)}}
-@media (max-width:640px){.doors{grid-template-columns:1fr;gap:28px}.door .im img{aspect-ratio:3/2}}
+.door .ar{display:inline-block;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.door .dt{font-size:13px;line-height:1.45;color:#6b6b66}
+@media (hover:hover){.door:hover .im img{transform:scale(1.04)}.door:hover .ar{transform:translateX(6px)}.doors:hover .door:not(:hover) .im img{opacity:.75}.door .im img{transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .4s}}
+@media (max-width:640px){.doors{grid-template-columns:1fr;gap:32px;margin-top:72px}.door .im img{aspect-ratio:3/2}}
 
 /* pied */
 .foot{margin-top:120px;padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12px;color:#444;text-align:center}
