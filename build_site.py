@@ -207,9 +207,8 @@ def lines(*xs): return ''.join(f'<p>{e(x)}</p>' for x in xs)
 IMG_COL = pic('REF.04')
 # le schéma de l'ancien accueil (lire → la clé → le projet), gardé tel quel
 shutil.copy(DATA / 'adobe' / 'schema-lire.png', IMG / 'schema-lire.png'); IMG_BANDEAU = '/img/schema-lire.png'
-# diptyque « lire un lieu » : Benjamin sur place, à gauche puis à droite — les deux images se répondent
-for n_ in (1, 2):
-    save(Image.open(DATA / 'accueil' / f'lire-{n_}.jpg'), IMG / f'lire-{n_}.jpg', 1400, 84)
+# « lire un lieu » : Benjamin sur place, la photo entière, en grand
+save(Image.open(DATA / 'accueil' / 'lire-1.jpg'), IMG / 'lire-1.jpg', 2000, 84)
 IDMAP = json.dumps({p['id']: p['pk'] for p in P}, ensure_ascii=False).replace('"', '&quot;')
 hero_links = ''.join(f'<a href="{h}"{" class=\"ct\"" if t == "Contact" else ""}>{t}</a>' for h, t in MENU)
 def first_pic(k, code=None):
@@ -228,7 +227,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
 {nav('')}    <div class="col">
       <section><h2 class="h">Des lieux singuliers.</h2>{lines("Une place, un hôtel, une ferme, une maison.", "Chacun a déjà ce qu'il faut pour devenir unique.")}</section>
       <section><h2 class="h">Des projets à faire évoluer.</h2>{lines("Maison, gîte, commerce, lieu de travail, bien à valoriser ou projet public.", "Studio BEGA accompagne les particuliers, les investisseurs, les entreprises et les communes, quand un lieu demande à être transformé, valorisé ou repensé.")}</section>
-      <div class="dip"><img src="/img/lire-1.jpg" alt="Benjamin Gaspard sur place, face au paysage" loading="lazy"><img src="/img/lire-2.jpg" alt="Benjamin Gaspard lit le lieu" loading="lazy"></div>
+      <img class="wide" src="/img/lire-1.jpg" alt="Benjamin Gaspard sur place, face au paysage" loading="lazy">
       <section><h2 class="h">Un projet commence par une lecture.</h2>{lines("Ce que le lieu permet.", "Ce qu'il impose.", "Ce qu'il peut devenir.", "Et ce que vous voulez en faire.")}</section>
       <section><h2 class="h">Puis vient la clé.</h2>{lines("Ce qui rend le lieu singulier.", "Elle se trouve sur place, entre le lieu et votre projet.", "Tout se dessine à partir d'elle.")}</section>
       <img class="band" src="{IMG_BANDEAU}" alt="Lire le lieu, trouver la clé, faire le projet" loading="lazy">
