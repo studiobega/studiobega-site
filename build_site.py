@@ -282,7 +282,10 @@ emp = DATA / 'empreinte.txt'
 # anciennes adresses Adobe Portfolio → fiche dans sa porte. RewriteRule [NE] : le « # » de l'ancre passe tel quel
 # (Redirect/RedirectMatch l'encoderaient en %23). Correspondance exacte, sans quoi /studio attraperait /studio.html.
 redir = ['RewriteEngine On', 'RewriteCond %{HTTPS} off', 'RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]',
-         'ErrorDocument 404 /index.html', 'AddDefaultCharset UTF-8', 'AddType audio/mp4 .m4a']
+         'ErrorDocument 404 /index.html', 'AddDefaultCharset UTF-8', 'AddType audio/mp4 .m4a',
+         # les pages se revérifient à chaque visite ; style, script et images versionnés restent en cache
+         '<IfModule mod_headers.c>', '<FilesMatch "\\.(html|json)$">', 'Header set Cache-Control "no-cache"', '</FilesMatch>',
+         '<FilesMatch "\\.(css|js)$">', 'Header set Cache-Control "public, max-age=31536000"', '</FilesMatch>', '</IfModule>']
 R = lambda src, dst: redir.append(f'RewriteRule ^{src}/?$ {dst} [R=301,L,NE]')
 old = json.load(open(DATA / 'old_slugs.json')) if (DATA / 'old_slugs.json').exists() else {}
 bycode = {p['code']: f"/{p['pk']}/#{p['id']}" for p in P}
