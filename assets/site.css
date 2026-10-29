@@ -48,6 +48,23 @@ header.col p{max-width:680px}
 @media (hover:hover){.door:hover .im img{transform:scale(1.04)}.door:hover .ar{transform:translateX(6px)}.doors:hover .door:not(:hover) .im img{opacity:.75}.door .im img{transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .4s}}
 @media (max-width:640px){.doors{grid-template-columns:1fr;gap:32px;margin-top:72px}.door .im img{aspect-ratio:3/2}}
 
+/* menu téléphone */
+.burger{display:none}
+.mnav{display:none}
+@media (max-width:760px){
+ .nav .links{display:none}
+ .burger{all:unset;display:flex;flex-direction:column;justify-content:center;gap:6px;width:30px;height:30px;cursor:pointer}
+ .burger span{display:block;height:2px;background:currentColor;border-radius:1px}
+ .hero .burger{color:#fff}
+ .mnav{display:flex;position:fixed;inset:0;z-index:40;background:#fff;align-items:flex-start;justify-content:center;padding-top:22vh;opacity:0;pointer-events:none;transition:opacity .3s}
+ .mnav.on{opacity:1;pointer-events:auto}
+ .mnav nav{display:flex;flex-direction:column;align-items:center;gap:30px}
+ .mnav a{font-size:24px;letter-spacing:.04em;text-transform:uppercase;color:#111}
+ .mnav a.on{font-weight:700}
+ .mnav a.ct{font-family:'Newsreader',Georgia,serif;font-style:italic;text-transform:none;letter-spacing:0;font-size:28px}
+ .mnav-x{all:unset;position:absolute;top:18px;right:20px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:300;line-height:1;cursor:pointer;color:#111}
+}
+
 /* pied */
 .foot{margin-top:120px;padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12px;color:#444;text-align:center}
 .foot .grp{display:flex;gap:20px;text-transform:uppercase;letter-spacing:.06em}
@@ -132,8 +149,7 @@ html.lock{overflow:hidden}
 }
 @media (max-width:640px){
  .page{padding:0 20px 40px}
- .nav{flex-wrap:wrap;row-gap:10px;padding:16px 0}
- .nav .links{width:100%;justify-content:space-between;gap:0;font-size:14px}
+ .nav{padding:16px 0}
  .logo{font-size:21px}.logo .dot{width:8px;height:8px}
  .hero .nav{padding:16px 20px}
  .hero .txt{padding:0 20px 36px;gap:10px}

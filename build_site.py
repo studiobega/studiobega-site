@@ -100,9 +100,15 @@ FOOT = """    <footer class="foot">
 MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/contact.html', 'Contact')]
 LOGO = '<a class="logo" href="/#accueil" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
+# téléphone : les trois petites barres ouvrent le menu plein écran, comme l'ancien site
+BURGER = '<button type="button" class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>'
+def mobile_menu():
+    items = ''.join(f'<a href="{h}"{" class=\"ct\"" if t == "Contact" else ""}>{t}</a>' for h, t in [('/#accueil', 'Accueil')] + MENU)
+    return f'<div class="mnav" id="mnav" aria-hidden="true"><button type="button" class="mnav-x" aria-label="Fermer le menu">×</button><nav>{items}</nav></div>'
+
 def nav(on):
     links = ''.join(f'<a href="{h}" class="{"on " if t == on else ""}{"ct" if t == "Contact" else ""}">{t}</a>' for h, t in MENU)
-    return f'    <nav class="nav" aria-label="Navigation">\n      {LOGO}\n      <div class="links">{links}</div>\n    </nav>\n'
+    return f'    <nav class="nav" aria-label="Navigation">\n      {LOGO}\n      <div class="links">{links}</div>\n      {BURGER}\n    </nav>\n'
 
 def page(title, body, desc, img='/img/hero.jpg'):
     return f"""<!doctype html>
@@ -119,6 +125,7 @@ def page(title, body, desc, img='/img/hero.jpg'):
 </head>
 <body>
 {body}
+{mobile_menu()}
 <script src="/assets/site.js" defer></script>
 </body>
 </html>
@@ -220,7 +227,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
   <button type="button" class="go" id="enter" aria-label="Entrer"></button>
-  <nav class="nav" aria-label="Navigation">{LOGO}<div class="links">{hero_links}</div></nav>
+  <nav class="nav" aria-label="Navigation">{LOGO}<div class="links">{hero_links}</div>{BURGER}</nav>
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
 </section>
 <div class="page site" id="site"><div class="wrap">

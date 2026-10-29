@@ -2,6 +2,23 @@
 (function () {
   'use strict';
 
+  /* ---- menu téléphone : trois barres → menu plein écran ---- */
+  var mnav = document.getElementById('mnav');
+  if (mnav) {
+    var setM = function (on) {
+      mnav.classList.toggle('on', on); mnav.setAttribute('aria-hidden', on ? 'false' : 'true');
+      document.documentElement.classList.toggle('lock', on);
+      Array.prototype.forEach.call(document.querySelectorAll('.burger'), function (b) { b.setAttribute('aria-expanded', on ? 'true' : 'false'); });
+    };
+    Array.prototype.forEach.call(document.querySelectorAll('.burger'), function (b) { b.addEventListener('click', function (ev) { ev.stopPropagation(); setM(true); }); });
+    mnav.querySelector('.mnav-x').addEventListener('click', function () { setM(false); });
+    Array.prototype.forEach.call(mnav.querySelectorAll('a'), function (a) { a.addEventListener('click', function () { setM(false); }); });
+    var here = location.pathname;
+    Array.prototype.forEach.call(mnav.querySelectorAll('a'), function (a) {
+      var h = a.getAttribute('href'); if (h === here || (h === '/#accueil' && here === '/')) a.classList.add('on');
+    });
+  }
+
   /* ---- accueil : le rideau (la photo) se lève sur la page ---- */
   var hero = document.getElementById('hero'), site = document.getElementById('site');
   if (hero && site) {
