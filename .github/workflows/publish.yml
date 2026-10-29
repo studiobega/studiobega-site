@@ -3,7 +3,8 @@ name: Publier le site
 on:
   workflow_dispatch:        # bouton « Run workflow »
   schedule:
-    - cron: '17 2 * * *'    # chaque nuit, 03:17 heure belge (hiver)
+    - cron: '*/10 * * * *'  # toutes les 10 min : on regarde si Airtable a bougé, on ne reconstruit que si oui
+    - cron: '17 2 * * *'    # chaque nuit, 03:17 heure belge (hiver) : reconstruction complète, quoi qu'il arrive
   push:
     branches: [main]        # toute modification du code republie
 
@@ -12,7 +13,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Airtable a-t-il changé depuis la dernière publication ? (empreinte de la vue « Site » vs build.json en ligne)
+  veille:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.c.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - id: c
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://new.studiobega.be' }}
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ] || [ "${{ github.event.schedule }}" = "17 2 * * *" ]; then
+            echo "go=1" >> $GITHUB_OUTPUT; echo "::notice::Publication demandée (${{ github.event_name }})"; exit 0
+          fi
+          pip install --quiet requests
+          airtable=$(python3 empreinte.py)
+          enligne=$(curl -sS -m 20 "$SITE_URL/build.json" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("empreinte",""))' 2>/dev/null || true)
+          if [ "$airtable" = "$enligne" ]; then
+            echo "go=0" >> $GITHUB_OUTPUT; echo "::notice::Rien de neuf dans Airtable"
+          else
+            echo "go=1" >> $GITHUB_OUTPUT; echo "::notice::Airtable a changé → on publie"
+          fi
+
   build-deploy:
+    needs: veille
+    if: needs.veille.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

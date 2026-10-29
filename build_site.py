@@ -268,6 +268,8 @@ write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue
 (DIST / 'assets').mkdir(exist_ok=True)
 shutil.copy(ROOT / 'assets' / 'site.css', DIST / 'assets' / 'site.css')
 shutil.copy(ROOT / 'assets' / 'site.js', DIST / 'assets' / 'site.js')
+emp = DATA / 'empreinte.txt'
+(DIST / 'build.json').write_text(json.dumps({'empreinte': emp.read_text().strip() if emp.exists() else ''}))
 (DIST / 'favicon.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#141413"/><circle cx="16" cy="16" r="7" fill="#FFD400"/></svg>')
 
 # anciennes adresses Adobe Portfolio → fiche dans sa porte. RewriteRule [NE] : le « # » de l'ancre passe tel quel
