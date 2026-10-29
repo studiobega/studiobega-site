@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          for u in / /index.html /studio.html /contact.html /studio /contact; do
-            r=$(curl -sS -o /dev/null -m 20 -w "%{http_code} %{redirect_url} %{time_total}s" "https://new.studiobega.be$u" 2>&1); echo "::notice::$u -> $r"
+          for h in https://studiobega.be https://www.studiobega.be https://new.studiobega.be; do
+            for u in / /habitat/ /studio.html /contact.html /build.json /esplanadebouillon /touratour; do
+              r=$(curl -sS -o /dev/null -m 20 -w "%{http_code} %{redirect_url} %{time_total}s" "$h$u" 2>&1); echo "::notice::$h$u -> $r"
+            done
           done
