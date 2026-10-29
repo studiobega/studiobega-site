@@ -31,7 +31,7 @@
     var vo = document.getElementById('voice'), voice = null;
     if (vo) voice = (function () {
       var btn = vo.querySelector('.vbtn'), cv = vo.querySelector('canvas'), au = vo.querySelector('audio'), cx = cv.getContext('2d');
-      var data = null, playing = false, raf = 0, seekTo = -1, t0 = performance.now(), IC = 26;
+      var data = null, playing = false, raf = 0, seekTo = -1, t0 = performance.now(), IC = 44, sub = vo.querySelector('.vsub'), cue = -1;
       var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
       fetch(vo.getAttribute('data-env')).then(function (r) { return r.json(); }).then(function (d) { data = d; start(); }).catch(function () {});
       function fit() {
@@ -46,8 +46,11 @@
         var lvl = playing ? (data.env[Math.min(data.env.length - 1, Math.floor(au.currentTime * data.fps))] || 0) : 0;
         var br = playing || calm ? 0 : 0.08 * Math.sin((performance.now() - t0) / 650);
         cx.clearRect(0, 0, W, H); cx.fillStyle = '#fff'; cx.globalAlpha = 0.95;
-        if (playing) { cx.fillRect(2, H / 2 - 6, 3, 12); cx.fillRect(9, H / 2 - 6, 3, 12); }
-        else { cx.beginPath(); cx.moveTo(3, H / 2 - 7); cx.lineTo(14, H / 2); cx.lineTo(3, H / 2 + 7); cx.closePath(); cx.fill(); }
+        if (vo.classList.contains('on')) {                          // après la première écoute : un petit pause / lecture
+          if (playing) { cx.fillRect(13, H / 2 - 6, 3, 12); cx.fillRect(20, H / 2 - 6, 3, 12); }
+          else { cx.beginPath(); cx.moveTo(14, H / 2 - 7); cx.lineTo(25, H / 2); cx.lineTo(14, H / 2 + 7); cx.closePath(); cx.fill(); }
+        }
+        subs(playing ? au.currentTime : -1);
         for (var i = 0; i < n; i++) {
           var d = i + 0.5 - ph, w = Math.exp(-d * d / 5);
           var h = H * (0.14 + 0.42 * data.peaks[i] * (1 + br) + (playing ? 0.5 * lvl * w : 0));
@@ -57,6 +60,13 @@
         }
         cx.globalAlpha = 1;
       }
+      function subs(t) {                                            // la ligne de sous-titre qui correspond au moment
+        var L = data.subs || [], k = -1;
+        for (var i = 0; i < L.length; i++) if (t >= L[i][0] && t < L[i][1] + 0.4) { k = i; break; }
+        if (k === cue) return; cue = k;
+        sub.classList.remove('on');
+        if (k >= 0) setTimeout(function () { if (cue === k) { sub.textContent = L[k][2]; sub.classList.add('on'); } }, 180);
+      }
       function tick() {
         draw();
         if (hero.classList.contains('up') && !playing) { raf = 0; return; }
@@ -65,9 +75,9 @@
       function start() { if (!raf) raf = requestAnimationFrame(tick); }
       function load() { if (!au.getAttribute('src')) { au.src = vo.getAttribute('data-src'); au.load(); } }
       au.addEventListener('loadedmetadata', function () { if (seekTo >= 0) { au.currentTime = seekTo * au.duration; seekTo = -1; } });
-      au.addEventListener('play', function () { playing = true; btn.setAttribute('aria-pressed', 'true'); start(); });
-      au.addEventListener('pause', function () { playing = false; btn.setAttribute('aria-pressed', 'false'); });
-      au.addEventListener('ended', function () { playing = false; au.currentTime = 0; btn.setAttribute('aria-pressed', 'false'); });
+      au.addEventListener('play', function () { playing = true; vo.classList.add('on'); hero.classList.add('talk'); btn.setAttribute('aria-pressed', 'true'); start(); });
+      au.addEventListener('pause', function () { playing = false; hero.classList.remove('talk'); draw(); btn.setAttribute('aria-pressed', 'false'); });
+      au.addEventListener('ended', function () { playing = false; hero.classList.remove('talk'); au.currentTime = 0; draw(); btn.setAttribute('aria-pressed', 'false'); });
       btn.addEventListener('click', function (ev) {
         ev.stopPropagation(); load();
         var r = cv.getBoundingClientRect(), x = ev.clientX - r.left;
@@ -96,7 +106,7 @@
       if (hero.classList.contains('up')) return;
       if (instant) hero.classList.add('now');
       window.scrollTo(0, 0);
-      hero.classList.add('up'); site.classList.remove('locked');
+      hero.classList.add('up'); site.classList.remove('locked'); upAt = Date.now();
       if (!instant) {   // pendant que le rideau monte, la page reste calée en haut : on ne saute aucun texte
         document.documentElement.classList.add('lock');
         setTimeout(function () { window.scrollTo(0, 0); document.documentElement.classList.remove('lock'); }, 900);
@@ -104,13 +114,20 @@
     };
     if (h0 === 'accueil') { seen = false; history.replaceState(null, '', '/'); }   // le logo rappelle le rideau
     if (h0 === 'studio' || seen) up(true); else site.classList.add('locked');
-    window.addEventListener('hashchange', function () {
-      if (location.hash !== '#accueil') return;
+    var upAt = 0;
+    var down = function () {                                         // le rideau redescend
+      if (!hero.classList.contains('up')) return;
       history.replaceState(null, '', '/'); window.scrollTo(0, 0);
       hero.classList.remove('now', 'up'); site.classList.add('locked');
-      window.scrollTo(0, 0);
       if (voice) voice.wake();
-    });
+    };
+    window.addEventListener('hashchange', function () { if (location.hash === '#accueil') down(); });
+    // on remonte tout en haut de l'accueil et on continue de remonter : le rideau revient
+    var calmNow = function () { return Date.now() - upAt > 1000 && window.scrollY <= 0 && !document.documentElement.classList.contains('lock'); };
+    window.addEventListener('wheel', function (ev) { if (ev.deltaY < -8 && hero.classList.contains('up') && calmNow()) down(); }, { passive: true });
+    var sy = null;
+    window.addEventListener('touchstart', function (ev) { sy = hero.classList.contains('up') && window.scrollY <= 0 ? ev.touches[0].clientY : null; }, { passive: true });
+    window.addEventListener('touchmove', function (ev) { if (sy !== null && ev.touches[0].clientY - sy > 70 && calmNow()) { sy = null; down(); } }, { passive: true });
     document.getElementById('enter').addEventListener('click', function () { up(); });
     hero.addEventListener('wheel', function (ev) { if (ev.deltaY > 8) up(); }, { passive: true });
     var ty = 0;
