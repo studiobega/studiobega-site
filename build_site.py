@@ -212,6 +212,9 @@ def pic(code, k=0):
     return abs_(PICS[q['id']][min(k, len(PICS[q['id']]) - 1)][0]) if q else ''
 def lines(*xs): return ''.join(f'<p>{e(x)}</p>' for x in xs)
 IMG_COL = pic('REF.04')
+# la voix du rideau : un extrait de Benjamin sur l'esplanade de Bouillon, et son enveloppe (la forme qui vibre)
+(DIST / 'audio').mkdir(exist_ok=True)
+for x in ('bouillon.m4a', 'bouillon.json'): shutil.copy(DATA / 'voix' / x, DIST / 'audio' / x)
 # le schéma de l'ancien accueil (lire → la clé → le projet), gardé tel quel
 shutil.copy(DATA / 'adobe' / 'schema-lire.png', IMG / 'schema-lire.png'); IMG_BANDEAU = '/img/schema-lire.png'
 # « lire un lieu » : Benjamin sur place, la photo entière, en grand
@@ -231,6 +234,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <div class="veil" aria-hidden="true"></div>
   <button type="button" class="go" id="enter" aria-label="Entrer"></button>
   <nav class="nav" aria-label="Studio BEGA">{LOGO}</nav>
+  <div class="voice" id="voice" data-src="/audio/bouillon.m4a" data-env="/audio/bouillon.json"><button type="button" class="vbtn" aria-label="Écouter Benjamin Gaspard sur l'esplanade de Bouillon"><canvas width="240" height="44" aria-hidden="true"></canvas></button><audio preload="none"></audio></div>
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
 </section>
 <div class="page site" id="site"><div class="wrap">
@@ -275,7 +279,7 @@ emp = DATA / 'empreinte.txt'
 # anciennes adresses Adobe Portfolio → fiche dans sa porte. RewriteRule [NE] : le « # » de l'ancre passe tel quel
 # (Redirect/RedirectMatch l'encoderaient en %23). Correspondance exacte, sans quoi /studio attraperait /studio.html.
 redir = ['RewriteEngine On', 'RewriteCond %{HTTPS} off', 'RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]',
-         'ErrorDocument 404 /index.html', 'AddDefaultCharset UTF-8']
+         'ErrorDocument 404 /index.html', 'AddDefaultCharset UTF-8', 'AddType audio/mp4 .m4a']
 R = lambda src, dst: redir.append(f'RewriteRule ^{src}/?$ {dst} [R=301,L,NE]')
 old = json.load(open(DATA / 'old_slugs.json')) if (DATA / 'old_slugs.json').exists() else {}
 bycode = {p['code']: f"/{p['pk']}/#{p['id']}" for p in P}

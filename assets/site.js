@@ -27,7 +27,72 @@
     if (h0 && map[h0]) { location.replace('/' + map[h0] + '/#' + h0); return; }   // anciens liens index.html#lieu
     // le rideau accueille chaque arrivée sur le site ; il reste levé quand on revient à l'accueil depuis une autre page
     var seen = !!document.referrer && document.referrer.indexOf(location.origin) === 0;
+    /* la voix : un extrait de Benjamin, une forme blanche qui vibre avec lui */
+    var vo = document.getElementById('voice'), voice = null;
+    if (vo) voice = (function () {
+      var btn = vo.querySelector('.vbtn'), cv = vo.querySelector('canvas'), au = vo.querySelector('audio'), cx = cv.getContext('2d');
+      var data = null, playing = false, raf = 0, seekTo = -1, t0 = performance.now(), IC = 26;
+      var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      fetch(vo.getAttribute('data-env')).then(function (r) { return r.json(); }).then(function (d) { data = d; start(); }).catch(function () {});
+      function fit() {
+        var k = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+        if (cv.width !== Math.round(w * k)) { cv.width = Math.round(w * k); cv.height = Math.round(h * k); }
+        cx.setTransform(k, 0, 0, k, 0, 0);
+      }
+      function draw() {
+        if (!data) return; fit();
+        var W = cv.clientWidth, H = cv.clientHeight, n = data.peaks.length, step = (W - IC) / n, bw = Math.max(1.5, step * 0.5);
+        var dur = au.duration || data.dur, p = Math.min(1, (au.currentTime || 0) / dur), ph = p * n;
+        var lvl = playing ? (data.env[Math.min(data.env.length - 1, Math.floor(au.currentTime * data.fps))] || 0) : 0;
+        var br = playing || calm ? 0 : 0.08 * Math.sin((performance.now() - t0) / 650);
+        cx.clearRect(0, 0, W, H); cx.fillStyle = '#fff'; cx.globalAlpha = 0.95;
+        if (playing) { cx.fillRect(2, H / 2 - 6, 3, 12); cx.fillRect(9, H / 2 - 6, 3, 12); }
+        else { cx.beginPath(); cx.moveTo(3, H / 2 - 7); cx.lineTo(14, H / 2); cx.lineTo(3, H / 2 + 7); cx.closePath(); cx.fill(); }
+        for (var i = 0; i < n; i++) {
+          var d = i + 0.5 - ph, w = Math.exp(-d * d / 5);
+          var h = H * (0.14 + 0.42 * data.peaks[i] * (1 + br) + (playing ? 0.5 * lvl * w : 0));
+          h = Math.min(H, Math.max(2, h));
+          cx.globalAlpha = (p > 0 && i < ph) ? 1 : 0.6;
+          cx.fillRect(IC + i * step, (H - h) / 2, bw, h);
+        }
+        cx.globalAlpha = 1;
+      }
+      function tick() {
+        draw();
+        if (hero.classList.contains('up') && !playing) { raf = 0; return; }
+        raf = requestAnimationFrame(tick);
+      }
+      function start() { if (!raf) raf = requestAnimationFrame(tick); }
+      function load() { if (!au.getAttribute('src')) { au.src = vo.getAttribute('data-src'); au.load(); } }
+      au.addEventListener('loadedmetadata', function () { if (seekTo >= 0) { au.currentTime = seekTo * au.duration; seekTo = -1; } });
+      au.addEventListener('play', function () { playing = true; btn.setAttribute('aria-pressed', 'true'); start(); });
+      au.addEventListener('pause', function () { playing = false; btn.setAttribute('aria-pressed', 'false'); });
+      au.addEventListener('ended', function () { playing = false; au.currentTime = 0; btn.setAttribute('aria-pressed', 'false'); });
+      btn.addEventListener('click', function (ev) {
+        ev.stopPropagation(); load();
+        var r = cv.getBoundingClientRect(), x = ev.clientX - r.left;
+        if (ev.detail !== 0 && x > IC && x <= r.width) {          // un clic sur la forme : on y va
+          var f = (x - IC) / (r.width - IC);
+          if (au.readyState >= 1) au.currentTime = f * au.duration; else seekTo = f;
+          au.play().catch(function () {}); return;
+        }
+        if (playing) au.pause(); else au.play().catch(function () {});
+      });
+      ['touchstart', 'touchmove'].forEach(function (t) { btn.addEventListener(t, function (ev) { ev.stopPropagation(); }, { passive: true }); });
+      window.addEventListener('resize', draw);
+      return {
+        hush: function () {                                        // le rideau se lève : la voix s'efface
+          if (!playing) return;
+          var v = 1, iv = setInterval(function () {
+            v -= 0.1; try { au.volume = Math.max(0, v); } catch (e) {}
+            if (v <= 0) { clearInterval(iv); au.pause(); try { au.volume = 1; } catch (e) {} }
+          }, 50);
+        },
+        wake: start
+      };
+    })();
     var up = function (instant) {
+      if (voice) voice.hush();
       if (hero.classList.contains('up')) return;
       if (instant) hero.classList.add('now');
       window.scrollTo(0, 0);
@@ -44,6 +109,7 @@
       history.replaceState(null, '', '/'); window.scrollTo(0, 0);
       hero.classList.remove('now', 'up'); site.classList.add('locked');
       window.scrollTo(0, 0);
+      if (voice) voice.wake();
     });
     document.getElementById('enter').addEventListener('click', function () { up(); });
     hero.addEventListener('wheel', function (ev) { if (ev.deltaY > 8) up(); }, { passive: true });
