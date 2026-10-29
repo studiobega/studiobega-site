@@ -10,10 +10,13 @@ jobs:
               r=$(curl -sS -o /dev/null -m 20 -w "%{http_code} %{redirect_url} %{time_total}s" "$h$u" 2>&1 || true); echo "::notice::$h$u -> $r"
             done
           done
+      - run: |
           for h in https://studiobega.be https://new.studiobega.be; do
-            v=$(curl -sS -m 20 "$h/" | grep -c 'id="voice"' || true)
+            v=$(curl -ksS -m 20 "$h/" | grep -c 'id="voice"' || true)
             a=$(curl -sS -o /dev/null -m 20 -w "%{http_code} %{content_type} %{size_download}" "$h/audio/bouillon.m4a" || true)
-            j=$(curl -sS -m 20 "$h/assets/site.js" | grep -c 'hush' || true)
-            c=$(curl -sSI -m 20 "$h/assets/site.js" | grep -i -E 'cache-control|expires|last-modified' | tr '\r\n' '  ' || true)
+            j=$(curl -ksS -m 20 "$h/assets/site.js" | grep -c 'hush' || true)
+            c=$(curl -ksSI -m 20 "$h/assets/site.js" | grep -i -E 'cache-control|expires|last-modified' | tr '\r\n' '  ' || true)
+            e=$(curl -sS -o /dev/null -m 20 "$h/" 2>&1 | head -c 120 || true)
+            echo "::notice::$h ssl=[$e]"
             echo "::notice::$h voix-html=$v audio=[$a] js-voix=$j cache=[$c]"
           done
