@@ -217,7 +217,6 @@ shutil.copy(DATA / 'adobe' / 'schema-lire.png', IMG / 'schema-lire.png'); IMG_BA
 # « lire un lieu » : Benjamin sur place, la photo entière, en grand
 save(Image.open(DATA / 'accueil' / 'lire-1.jpg'), IMG / 'lire-1.jpg', 2000, 84)
 IDMAP = json.dumps({p['id']: p['pk'] for p in P}, ensure_ascii=False).replace('"', '&quot;')
-hero_links = ''.join(f'<a href="{h}"{" class=\"ct\"" if t == "Contact" else ""}>{t}</a>' for h, t in MENU)
 def first_pic(k, code=None):
     L = [q for q in bykey[k] if PICS.get(q['id'])]
     if code: L = [q for q in L if q['code'] == code] or L
@@ -231,7 +230,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
   <button type="button" class="go" id="enter" aria-label="Entrer"></button>
-  <nav class="nav" aria-label="Navigation">{LOGO}<div class="links">{hero_links}</div>{BURGER}</nav>
+  <nav class="nav" aria-label="Studio BEGA">{LOGO}</nav>
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
 </section>
 <div class="page site" id="site"><div class="wrap">
