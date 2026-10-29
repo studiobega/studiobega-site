@@ -13,7 +13,7 @@ Sortie
 
 Usage : python3 -I build_site.py
 """
-import json, html, os, re, shutil, unicodedata
+import json, html, os, re, shutil, unicodedata, hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -110,6 +110,9 @@ def nav(on):
     links = ''.join(f'<a href="{h}" class="{"on " if t == on else ""}{"ct" if t == "Contact" else ""}">{t}</a>' for h, t in MENU)
     return f'    <nav class="nav" aria-label="Navigation">\n      {LOGO}\n      <div class="links">{links}</div>\n      {BURGER}\n    </nav>\n'
 
+# version des feuilles : change dès que le CSS ou le JS change, les navigateurs reprennent alors la nouvelle version
+VER = hashlib.sha1(b''.join((ROOT / 'assets' / x).read_bytes() for x in ('site.css', 'site.js'))).hexdigest()[:8]
+
 def page(title, body, desc, img='/img/hero.jpg'):
     return f"""<!doctype html>
 <html lang="fr">
@@ -121,12 +124,12 @@ def page(title, body, desc, img='/img/hero.jpg'):
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://studiobega.be{img}"><meta property="og:type" content="website">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 {FONTS}
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/site.css?v={VER}">
 </head>
 <body>
 {body}
 {mobile_menu()}
-<script src="/assets/site.js" defer></script>
+<script src="/assets/site.js?v={VER}" defer></script>
 </body>
 </html>
 """
