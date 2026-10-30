@@ -215,9 +215,6 @@ def pic(code, k=0):
     return abs_(PICS[q['id']][min(k, len(PICS[q['id']]) - 1)][0]) if q else ''
 def lines(*xs): return ''.join(f'<p>{e(x)}</p>' for x in xs)
 IMG_COL = pic('REF.04')
-# la voix du rideau : un extrait de Benjamin sur l'esplanade de Bouillon, et son enveloppe (la forme qui vibre)
-(DIST / 'audio').mkdir(exist_ok=True)
-for x in ('bouillon.m4a', 'bouillon.json'): shutil.copy(DATA / 'voix' / x, DIST / 'audio' / x)
 # le schéma de l'ancien accueil (lire → la clé → le projet), gardé tel quel
 shutil.copy(DATA / 'adobe' / 'schema-lire.png', IMG / 'schema-lire.png'); IMG_BANDEAU = '/img/schema-lire.png'
 # « lire un lieu » : Benjamin sur place, la photo entière, en grand
@@ -237,9 +234,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <div class="veil" aria-hidden="true"></div>
   <button type="button" class="go" id="enter" aria-label="Entrer"></button>
   <nav class="nav" aria-label="Studio BEGA">{LOGO}</nav>
-  <div class="voice" id="voice" data-src="/audio/bouillon.m4a" data-env="/audio/bouillon.json"><button type="button" class="vbtn" aria-label="Écouter Benjamin Gaspard sur l'esplanade de Bouillon"><span class="vring" aria-hidden="true"></span><canvas width="280" height="46" aria-hidden="true"></canvas></button><div class="vcap" aria-hidden="true">Bouillon, raconté par Benjamin · 35 s</div><div class="vsub" aria-hidden="true"></div><audio preload="none"></audio></div>
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
-  <nav class="hdoors" aria-label="Lieux">{''.join(f'<a href="/{k}/">{e(n)}</a>' for k, n in PORTES)}</nav>
 </section>
 <div class="page site" id="site"><div class="wrap">
 {nav('')}    <div class="col">
@@ -283,7 +278,7 @@ emp = DATA / 'empreinte.txt'
 # anciennes adresses Adobe Portfolio → fiche dans sa porte. RewriteRule [NE] : le « # » de l'ancre passe tel quel
 # (Redirect/RedirectMatch l'encoderaient en %23). Correspondance exacte, sans quoi /studio attraperait /studio.html.
 redir = ['RewriteEngine On', 'RewriteCond %{HTTPS} off', 'RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]',
-         'ErrorDocument 404 /index.html', 'AddDefaultCharset UTF-8', 'AddType audio/mp4 .m4a',
+         'ErrorDocument 404 /index.html', 'AddDefaultCharset UTF-8',
          # les pages se revérifient à chaque visite ; style, script et images versionnés restent en cache
          '<IfModule mod_headers.c>', '<FilesMatch "\\.(html|json)$">', 'Header set Cache-Control "no-cache"', '</FilesMatch>',
          '<FilesMatch "\\.(css|js)$">', 'Header set Cache-Control "public, max-age=31536000"', '</FilesMatch>', '</IfModule>']
