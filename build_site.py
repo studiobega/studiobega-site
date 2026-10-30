@@ -237,7 +237,7 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <div class="veil" aria-hidden="true"></div>
   <button type="button" class="go" id="enter" aria-label="Entrer"></button>
   <nav class="nav" aria-label="Studio BEGA">{LOGO}</nav>
-  <div class="voice" id="voice" data-src="/audio/bouillon.m4a" data-env="/audio/bouillon.json"><button type="button" class="vbtn" aria-label="Écouter Benjamin Gaspard sur l'esplanade de Bouillon"><span class="vring" aria-hidden="true"></span><canvas width="280" height="46" aria-hidden="true"></canvas></button><div class="vcap" aria-hidden="true">Bouillon, raconté par Benjamin · 1 min</div><div class="vsub" aria-hidden="true"></div><audio preload="none"></audio></div>
+  <div class="voice" id="voice" data-src="/audio/bouillon.m4a" data-env="/audio/bouillon.json"><button type="button" class="vbtn" aria-label="Écouter Benjamin Gaspard sur l'esplanade de Bouillon"><span class="vring" aria-hidden="true"></span><canvas width="280" height="46" aria-hidden="true"></canvas></button><div class="vcap" aria-hidden="true">Bouillon, raconté par Benjamin · 35 s</div><div class="vsub" aria-hidden="true"></div><audio preload="none"></audio></div>
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
   <nav class="hdoors" aria-label="Lieux">{''.join(f'<a href="/{k}/">{e(n)}</a>' for k, n in PORTES)}</nav>
 </section>
