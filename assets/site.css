@@ -81,9 +81,9 @@ header.col p{max-width:680px}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,20,19,.40) 0%,rgba(20,20,19,.10) 28%,rgba(20,20,19,.10) 48%,rgba(20,20,19,.70) 100%)}
 .hero .go{all:unset;position:absolute;inset:0;z-index:1;cursor:pointer}
 .hero .nav{position:absolute;top:0;left:0;right:0;padding:26px 40px;z-index:3;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
-.hero .txt{position:absolute;z-index:2;pointer-events:none;left:0;right:0;bottom:0;padding:0 40px 48px;display:flex;flex-direction:column;gap:2px}
+.hero .txt{position:absolute;z-index:2;pointer-events:none;left:0;right:0;bottom:0;padding:0 max(40px,7vw) max(64px,11vh);display:flex;flex-direction:column;gap:6px}
 /* le rideau : BEGA et deux phrases, même voix, aucun titre */
-.hero h1,.hero p{margin:0;font-size:24px;line-height:1.45;font-weight:500;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 28px rgba(0,0,0,.45);animation:bega-rise 1.4s ease-out .5s both}
+.hero h1,.hero p{margin:0;font-size:38px;line-height:1.2;font-weight:700;letter-spacing:-.005em;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 28px rgba(0,0,0,.45);animation:bega-rise 1.4s ease-out .5s both}
 .hero p{animation-delay:1.1s}
 .site.locked{height:100vh;overflow:hidden}
 html:has(.site.locked){overflow:hidden}
@@ -156,8 +156,8 @@ html.lock{overflow:hidden}
  .nav{padding:16px 0}
  .logo{font-size:21px}.logo .dot{width:8px;height:8px}
  .hero .nav{padding:16px 20px}
- .hero .txt{padding:0 20px 36px;gap:2px}
- .hero h1,.hero p{font-size:19px}
+ .hero .txt{padding:0 28px 76px;gap:4px}
+ .hero h1,.hero p{font-size:28px}
  .h{font-size:28px;margin-bottom:18px}
  .col section{margin-top:88px}.col section:first-child{margin-top:48px}
  .col p{font-size:17px}
