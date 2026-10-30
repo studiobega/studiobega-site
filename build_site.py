@@ -274,7 +274,7 @@ shutil.copy(ROOT / 'assets' / 'site.css', DIST / 'assets' / 'site.css')
 shutil.copy(ROOT / 'assets' / 'site.js', DIST / 'assets' / 'site.js')
 emp = DATA / 'empreinte.txt'
 (DIST / 'build.json').write_text(json.dumps({'empreinte': emp.read_text().strip() if emp.exists() else ''}))
-# favicon : le B du logo et son point jaune, sans fond (PNG : Safari ignore les SVG)
+# favicon : le gros rond jaune, seul, sans fond (PNG : Safari ignore les SVG)
 shutil.copy(ROOT / 'assets' / 'favicon.png', DIST / 'favicon.png'); shutil.copy(ROOT / 'assets' / 'apple-touch-icon.png', DIST / 'apple-touch-icon.png')
 
 # anciennes adresses Adobe Portfolio → fiche dans sa porte. RewriteRule [NE] : le « # » de l'ancre passe tel quel
