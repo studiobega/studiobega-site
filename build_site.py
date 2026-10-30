@@ -218,7 +218,8 @@ IMG_COL = pic('REF.04')
 # le schéma de l'ancien accueil (lire → la clé → le projet), gardé tel quel
 shutil.copy(DATA / 'adobe' / 'schema-lire.png', IMG / 'schema-lire.png'); IMG_BANDEAU = '/img/schema-lire.png'
 # « lire un lieu » : Benjamin sur place, la photo entière, en grand
-save(Image.open(DATA / 'accueil' / 'lire-1.jpg'), IMG / 'lire-1.jpg', 2000, 84)
+_l1 = Image.open(DATA / 'accueil' / 'lire-1.jpg'); _l1 = _l1.crop((0, int(_l1.height * .30), _l1.width, _l1.height))  # ciel blanc rogné : il se fondait dans la page
+save(_l1, IMG / 'lire-1.jpg', 2000, 84)
 IDMAP = json.dumps({p['id']: p['pk'] for p in P}, ensure_ascii=False).replace('"', '&quot;')
 def first_pic(k, code=None):
     L = [q for q in bykey[k] if PICS.get(q['id'])]
