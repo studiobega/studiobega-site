@@ -3,7 +3,7 @@ name: Publier le site
 on:
   workflow_dispatch:        # bouton « Run workflow » (ou Claude)
   schedule:
-    - cron: '23 * * * *'    # toutes les heures (dépôt privé = minutes comptées) → passer à '*/5 * * * *' dès que le dépôt est public
+    - cron: '*/5 * * * *'   # toutes les 5 min : on regarde si Airtable a bougé (fiches, photos, ordre), on ne reconstruit que si oui — dépôt public, minutes gratuites
     - cron: '17 2 * * *'    # chaque nuit, 03:17 heure belge (hiver) : reconstruction complète, quoi qu'il arrive (filet de sécurité)
   push:
     branches: [main]        # toute modification du code republie
