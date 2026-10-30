@@ -122,7 +122,7 @@ def page(title, body, desc, img='/img/hero.jpg'):
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://studiobega.be{img}"><meta property="og:type" content="website">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {FONTS}
 <link rel="stylesheet" href="/assets/site.css?v={VER}">
 </head>
@@ -274,7 +274,8 @@ shutil.copy(ROOT / 'assets' / 'site.css', DIST / 'assets' / 'site.css')
 shutil.copy(ROOT / 'assets' / 'site.js', DIST / 'assets' / 'site.js')
 emp = DATA / 'empreinte.txt'
 (DIST / 'build.json').write_text(json.dumps({'empreinte': emp.read_text().strip() if emp.exists() else ''}))
-(DIST / 'favicon.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#141413"/><circle cx="16" cy="16" r="7" fill="#FFD400"/></svg>')
+# favicon : le B du logo et son point jaune, sans fond (PNG : Safari ignore les SVG)
+shutil.copy(ROOT / 'assets' / 'favicon.png', DIST / 'favicon.png'); shutil.copy(ROOT / 'assets' / 'apple-touch-icon.png', DIST / 'apple-touch-icon.png')
 
 # anciennes adresses Adobe Portfolio → fiche dans sa porte. RewriteRule [NE] : le « # » de l'ancre passe tel quel
 # (Redirect/RedirectMatch l'encoderaient en %23). Correspondance exacte, sans quoi /studio attraperait /studio.html.
