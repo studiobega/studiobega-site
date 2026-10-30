@@ -1,10 +1,9 @@
 name: Publier le site
 
 on:
-  workflow_dispatch:        # bouton « Run workflow »
+  workflow_dispatch:        # déclenché par Make dès qu'une fiche « Site » bouge dans Airtable (ou case « Site · Publier »)
   schedule:
-    - cron: '*/10 * * * *'  # toutes les 10 min : on regarde si Airtable a bougé, on ne reconstruit que si oui
-    - cron: '17 2 * * *'    # chaque nuit, 03:17 heure belge (hiver) : reconstruction complète, quoi qu'il arrive
+    - cron: '17 2 * * *'    # chaque nuit, 03:17 heure belge (hiver) : reconstruction complète, quoi qu'il arrive (filet de sécurité)
   push:
     branches: [main]        # toute modification du code republie
 
@@ -13,7 +12,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Airtable a-t-il changé depuis la dernière publication ? (empreinte de la vue « Site » vs build.json en ligne)
+  # Tampon : on attend 90 s avant de construire ; si une autre modification arrive entre-temps,
+  # elle annule celle-ci (concurrency) et repart pour 90 s → une seule construction par salve d'édition.
+  # Push et reconstruction de nuit : on publie sans condition.
   veille:
     runs-on: ubuntu-latest
     outputs:
@@ -28,8 +29,12 @@ jobs:
           AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
           SITE_URL: ${{ vars.SITE_URL || 'https://new.studiobega.be' }}
         run: |
-          if [ "${{ github.event_name }}" != "schedule" ] || [ "${{ github.event.schedule }}" = "17 2 * * *" ]; then
-            echo "go=1" >> $GITHUB_OUTPUT; echo "::notice::Publication demandée (${{ github.event_name }})"; exit 0
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            sleep 90
+            echo "go=1" >> $GITHUB_OUTPUT; echo "::notice::Publication demandée par Airtable"; exit 0
+          fi
+          if [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "go=1" >> $GITHUB_OUTPUT; echo "::notice::Publication (${{ github.event_name }})"; exit 0
           fi
           pip install --quiet requests
           airtable=$(python3 empreinte.py)
