@@ -242,8 +242,8 @@ index_body = f"""<section class="hero" id="hero" data-map="{IDMAP}">
       <img class="wide" src="/img/lire-1.jpg" alt="Benjamin Gaspard sur place, face au paysage" loading="lazy">
       <section><h2 class="h">Un projet commence par une lecture.</h2>{lines("Ce que le lieu permet.", "Ce qu'il impose.", "Ce qu'il peut devenir.", "Et ce que vous voulez en faire.")}</section>
       <section><h2 class="h">Puis vient la clé.</h2>{lines("Ce qui rend le lieu singulier.", "Elle se trouve sur place, entre le lieu et votre projet.")}{EX}</section>
-      <img class="band" src="{IMG_BANDEAU}" alt="Lire le lieu, trouver la clé, faire le projet" loading="lazy">
       <section><h2 class="h">Et le lieu se transforme.</h2>{lines("Du plan directeur à l'intérieur.", "Dessiné à partir de la clé, construit jusqu'au dernier détail.")}</section>
+      <img class="band" src="{IMG_BANDEAU}" alt="Lire le lieu, trouver la clé, faire le projet" loading="lazy">
       <section><h2 class="h">Des projets qui restent.</h2>{lines("Dans leur usage.", "Dans le temps.", "Dans ce qu'ils changent.")}<div class="doors">{portes}</div></section>
       <section id="studio"><h2 class="h">Le Studio.</h2>{lines("Architecture & stratégie de lieu.", "Benjamin Gaspard, architecte, trouve la clé sur place.", "Héloïse Collin, architecte d'intérieur, la prolonge à l'intérieur.", "Revaloriser ce qui existe. Construire quand le terrain le demande.", "Installé à Hotton. Projets en Wallonie, à Bruxelles et au Luxembourg.")}</section>
       <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
