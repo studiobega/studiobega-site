@@ -185,7 +185,7 @@ def fiche(p):
     return f"""    <template id="f-{p['id']}">
       <div class="fh"><div><h2 class="nm">{e(nom)}</h2><div class="meta">{e(meta)}</div></div><button type="button" class="fx-x" aria-label="Fermer">×</button></div>
       {f'<p class="fcle"><span class="key">{e(cle)}</span></p>' if cle else ''}
-      <div class="tx">{f'<dl>{dl}</dl>' if dl else ''}{f'<p class="para">{e(para)}</p>' if para else ''}{f'<div class="links">{lk}</div>' if lk else ''}</div>
+      <div class="tx{' two' if para else ''}">{f'<dl>{dl}</dl>' if dl else ''}{f'<div class="det"><div class="lab">En détail</div><p class="para">{e(para)}</p>{f'<div class="links">{lk}</div>' if lk else ''}</div>' if para else (f'<div class="links">{lk}</div>' if lk else '')}</div>
       <div class="pics">{imgs}</div>
     </template>
 """
