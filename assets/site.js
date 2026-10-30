@@ -22,6 +22,7 @@
   /* ---- accueil : le rideau (la photo) se lève sur la page ---- */
   var hero = document.getElementById('hero'), site = document.getElementById('site');
   if (hero && site) {
+    var tint = function (c) { var m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', c); };   // barres Safari iOS : sombres sur le rideau, blanches sur la page
     var map = {}; try { map = JSON.parse(hero.getAttribute('data-map') || '{}'); } catch (e) {}
     var h0 = location.hash.slice(1);
     if (h0 && map[h0]) { location.replace('/' + map[h0] + '/#' + h0); return; }   // anciens liens index.html#lieu
@@ -31,19 +32,19 @@
       if (hero.classList.contains('up')) return;
       if (instant) hero.classList.add('now');
       window.scrollTo(0, 0);
-      hero.classList.add('up'); site.classList.remove('locked'); upAt = Date.now();
+      hero.classList.add('up'); site.classList.remove('locked'); upAt = Date.now(); tint('#ffffff');
       if (!instant) {   // pendant que le rideau monte, la page reste calée en haut : on ne saute aucun texte
         document.documentElement.classList.add('lock');
         setTimeout(function () { window.scrollTo(0, 0); document.documentElement.classList.remove('lock'); }, 900);
       }
     };
     if (h0 === 'accueil') { seen = false; history.replaceState(null, '', '/'); }   // le logo rappelle le rideau
-    if (h0 === 'studio' || seen) up(true); else site.classList.add('locked');
+    if (h0 === 'studio' || seen) up(true); else { site.classList.add('locked'); tint('#2a2a28'); }
     var upAt = 0;
     var down = function () {                                         // le rideau redescend
       if (!hero.classList.contains('up')) return;
       history.replaceState(null, '', '/'); window.scrollTo(0, 0);
-      hero.classList.remove('now', 'up'); site.classList.add('locked');
+      hero.classList.remove('now', 'up'); site.classList.add('locked'); tint('#2a2a28');
     };
     window.addEventListener('hashchange', function () { if (location.hash === '#accueil') down(); });
     // on remonte tout en haut de l'accueil et on continue de remonter : le rideau revient

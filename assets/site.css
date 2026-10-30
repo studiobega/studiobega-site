@@ -1,6 +1,7 @@
 /* Un seul arrondi pour tout le site : 6px (vignettes, portes, fiche, photos, carte). */
 /* studiobega.be — mise en page de l'ancien site : une police (Jost), titres gras, phrases courtes
    en colonne centrée, images en grand, grilles d'images. Jaune : le logo et la clé. */
+html{background:#fff}
 body{margin:0;background:#fff;color:#111;font-family:'Jost',Helvetica,Arial,sans-serif}
 a{color:inherit;text-decoration:none}
 a:focus-visible,button:focus-visible{outline:2px solid #111;outline-offset:4px}
@@ -77,8 +78,8 @@ header.col p{max-width:680px}
 .foot a:hover{color:#111}
 
 /* accueil : le rideau (la photo) se lève sur la page */
-.hero{position:fixed;inset:0;z-index:20;overflow:hidden;background:#2a2a28;color:#fff;transition:transform .85s cubic-bezier(.76,0,.24,1);touch-action:none}
-.hero.up{transform:translateY(-100%);pointer-events:none}
+.hero{position:fixed;inset:0;z-index:20;overflow:hidden;background:#2a2a28;color:#fff;transition:transform .85s cubic-bezier(.76,0,.24,1),visibility 0s linear .85s;touch-action:none}
+.hero.up{transform:translateY(-100%);pointer-events:none;visibility:hidden}
 .hero.now{transition:none}
 .hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 40%;animation:bega-zoom 26s ease-out forwards}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,20,19,.40) 0%,rgba(20,20,19,.10) 28%,rgba(20,20,19,.10) 48%,rgba(20,20,19,.70) 100%)}
