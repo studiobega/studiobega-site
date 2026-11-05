@@ -142,7 +142,10 @@ def write(path, html_):
 
 DIST.mkdir(exist_ok=True)
 PICS = {p['id']: photos_for(p) for p in P}
-abs_ = lambda r: '/' + r
+def abs_(r):
+    """chemin absolu + empreinte du contenu (?v=…) : une photo remplacée change d'URL, le navigateur ne garde pas l'ancienne."""
+    f = DIST / r
+    return '/' + r + (f"?v={hashlib.sha1(f.read_bytes()).hexdigest()[:8]}" if f.exists() else '')
 
 # ---------- les trois portes ----------
 # Chaque porte : une phrase, quelques lignes qui posent la démarche pour ce public, puis la grille d'images.
