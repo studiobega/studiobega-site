@@ -10,7 +10,7 @@ on:
 
 concurrency:
   group: publish
-  cancel-in-progress: true
+  cancel-in-progress: false   # une publication en cours n'est jamais annulée par la veille des 5 min
 
 jobs:
   # Airtable a-t-il changé depuis la dernière publication ? (empreinte de la vue « Site » vs build.json en ligne)

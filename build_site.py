@@ -289,7 +289,7 @@ if V2:
     from itertools import zip_longest
     rows = [[q for q in bykey[k] if PICS.get(q['id'])] for k, _ in PORTES]
     tous = [q for trio in zip_longest(*rows) for q in trio if q]
-    tabs = ''.join(f'<a href="/{k}/">{e(n)}<sup>{len(bykey[k])}</sup></a>' for k, n in PORTES)
+    tabs = ''.join(f'<a href="/{k}/">{e(n)}<sup>{len(r)}</sup></a>' for (k, n), r in zip(PORTES, rows))   # = ce que montre la galerie
     tiles = ''.join(f'<a class="tl" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{abs_(PICS[q["id"]][0][2])}" alt="{e(ph(q["nom"]))}" loading="lazy"></span>'
                     f'<span class="nm">{e(ph(q["nom"]))}</span><span class="cm">{e(ph(q["lieu"]))}</span></a>' for q in tous)
     moments = f'<div class="ix"><div class="tabs">{tabs}</div><div class="tiles">{tiles}</div></div>\n'
