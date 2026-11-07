@@ -285,15 +285,15 @@ if V2:
     import sys; sys.path.insert(0, str(ROOT)); import carte
 
     def moment(k, n, code=None):
+        """Un projet, comme chez les bureaux de référence : l'image ouvre sa fiche ; la porte n'est qu'une mention."""
         L = [q for q in bykey[k] if PICS.get(q['id']) and ph(q['cle'])]
         if code: L = [q for q in L if q['code'] == code] or L
         if not L: return ''
-        q = L[0]; nb = len(bykey[k])
-        return (f'    <section class="mo"><a class="mo-a" href="/{k}/">'
+        q = L[0]
+        return (f'    <section class="mo"><a class="mo-a" href="/{k}/#{q["id"]}">'
                 f'<span class="im"><img src="{abs_(PICS[q["id"]][0][0])}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
-                f'<span class="mt"><span class="dn">{e(n)}</span><span class="nb">{nb} lieux <span class="ar" aria-hidden="true">→</span></span></span></a>'
-                f'<p class="mk"><span class="key">{e(ph(q["cle"]))}</span></p>'
-                f'<p class="mp">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</p></section>\n')
+                f'<span class="mk"><span class="key">{e(ph(q["cle"]))}</span></span>'
+                f'<span class="mp">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a></section>\n')
     moments = ''.join(moment(k, n, '23.14' if k == 'territoires' else None) for k, n in PORTES)
     index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
