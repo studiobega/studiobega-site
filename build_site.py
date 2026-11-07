@@ -284,12 +284,15 @@ write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue
 if V2:
     import sys; sys.path.insert(0, str(ROOT)); import carte
 
-    # Accueil : les trois portes du site actuel, côte à côte, en pleine largeur (image, nom, phrase, nombre de lieux)
-    def porte(k, n):
-        return (f'<a class="door" href="/{k}/"><span class="im"><img src="{first_pic(k, "23.14" if k == "territoires" else None)}" alt="" loading="lazy"></span>'
-                f'<span class="dn">{e(n)} <span class="ar" aria-hidden="true">→</span></span><span class="dt">{e(DOORS[k][0])}</span>'
-                f'<span class="dc">{len(bykey[k])} lieux</span></a>')
-    moments = '<div class="doors big">' + ''.join(porte(k, n) for k, n in PORTES) + '</div>\n'
+    # Accueil, sur le modèle des bureaux de référence (Assemble, Carmody Groarke) : tous les projets en grille,
+    # les trois portes en mots au-dessus. Les portes sont mêlées (une de chaque, à tour de rôle) pour montrer l'étendue.
+    from itertools import zip_longest
+    rows = [[q for q in bykey[k] if PICS.get(q['id'])] for k, _ in PORTES]
+    tous = [q for trio in zip_longest(*rows) for q in trio if q]
+    tabs = ''.join(f'<a href="/{k}/">{e(n)}<sup>{len(bykey[k])}</sup></a>' for k, n in PORTES)
+    tiles = ''.join(f'<a class="tl" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{abs_(PICS[q["id"]][0][2])}" alt="{e(ph(q["nom"]))}" loading="lazy"></span>'
+                    f'<span class="nm">{e(ph(q["nom"]))}</span><span class="cm">{e(ph(q["lieu"]))}</span></a>' for q in tous)
+    moments = f'<div class="ix"><div class="tabs">{tabs}</div><div class="tiles">{tiles}</div></div>\n'
     index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
@@ -298,8 +301,7 @@ if V2:
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
 </section>
 <div class="page site" id="site"><div class="wrap">
-{nav('')}  <div class="mos">
-{moments}  </div>
+{nav('')}{moments}
 {FOOT}</div></div>"""
     write('index.html', page('Studio BEGA — Architecture & stratégie de lieu, Wallonie', index2,
         "Studio BEGA lit les lieux, trouve leur clé et les réalise : territoires, lieux d'activité, habitat. Architecture, plans directeurs et intérieurs, partout en Wallonie."))
