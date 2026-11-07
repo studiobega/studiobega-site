@@ -351,34 +351,33 @@ if V2:
             ("Cinéma Plaza", "Hotton", "Marché public"),
             ("Centre culturel", "Hotton", "Plan directeur de rénovation"),
             ("Grand-Rue", "Martelange", "Espace public")]
-    refs_h = ''.join((f'<a class="rf" href="{lien(n)}">' if lien(n) else '<div class="rf">') +
-                     f'<span class="rn">{e(n)}</span><span>{e(l)}</span><span>{e(d)}</span>' + ('</a>' if lien(n) else '</div>') for n, l, d in refs)
-    def row(lab, body, cls=''):
-        return f'<section class="srow {cls}"><h2 class="slab">{e(lab)}</h2><div class="sbody">{body}</div></section>'
+    # Une seule taille de texte pour tout le corps de page, deux couleurs (noir, gris) : net sur ordinateur comme sur téléphone.
+    def item(n, rest, href=None):
+        inner = f'<span class="n">{e(n)}</span><span class="g">{e(rest)}</span>'
+        return f'<a class="it" href="{href}">{inner}</a>' if href else f'<div class="it">{inner}</div>'
+    refs_h = ''.join(item(n, f'{l} · {d}', lien(n)) for n, l, d in refs)
+    def row(lab, body):
+        return f'<section class="srow"><h2 class="slab">{e(lab)}</h2><div class="sbody">{body}</div></section>'
     studio_rows = (
-        row("Le studio", "<p>Studio BEGA est un studio d'architecture installé à Hotton, en Ardenne. Il conçoit des plans directeurs, des espaces publics, des lieux d'activité, des maisons et des intérieurs, partout en Wallonie et au-delà.</p>"
-                         "<p>Il mène la mission entière : lecture et plan directeur, permis, dossiers d'exécution, marchés de travaux, suivi de chantier. Pour des communes et des institutions publiques, des opérateurs touristiques, des promoteurs et des particuliers.</p>"
-                         "<p>Revaloriser ce qui existe. Construire quand le terrain le demande.</p>") +
-        row("La méthode", '<div class="tps">'
-            '<div><h3>Lire</h3><p>Sur place : le relief, l\'eau, les usages, ceux qui traversent le lieu. Puis le programme du maître d\'ouvrage.</p></div>'
-            '<div><h3>Imaginer</h3><p>De cette lecture sort <span class="key">la clé : l\'idée qui rend le lieu singulier</span>.</p></div>'
-            '<div><h3>Réaliser</h3><p>Tout le projet se dessine à partir d\'elle, de l\'esquisse au dernier détail de chantier.</p></div></div>') +
-        row("Références", f'<div class="rfs">{refs_h}</div>') +
-        row("Équipe", '<div class="tm"><div><span class="rn">Benjamin Gaspard</span><span>Architecte, fondateur. Conduit chaque lecture.</span></div>'
-                      '<div><span class="rn">Héloïse Collin</span><span>Architecte d\'intérieur. Prolonge la clé à l\'intérieur : matières, lumière, usages.</span></div></div>'))
+        row("Le studio", "<p>Studio d'architecture installé à Hotton. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et au-delà. De la première lecture du lieu jusqu'au chantier, pour des communes, des opérateurs, des promoteurs et des particuliers.</p>") +
+        row("La méthode", item("Lire", "le lieu sur place, puis le programme du maître d'ouvrage.") +
+                          '<div class="it"><span class="n">Imaginer</span><span class="g"><span class="key">la clé</span>, l\'idée qui rend le lieu singulier.</span></div>' +
+                          item("Réaliser", "le projet, de l'esquisse au dernier détail de chantier.")) +
+        row("Références", refs_h) +
+        row("Équipe", item("Benjamin Gaspard", "Architecte, fondateur") + item("Héloïse Collin", "Architecte d'intérieur")))
     studio = f"""<div class="page"><div class="wrap">
 {nav('Studio')}    <div class="st">
-      <h1 class="sh1">Studio BEGA lit les lieux, trouve leur clé et les réalise.</h1>
+      <header class="shd"><h1 class="sh1">Studio BEGA lit les lieux, trouve leur clé et les réalise.</h1>
+      <p class="sub">Revaloriser ce qui existe. Construire quand le terrain le demande.</p></header>
       <img class="duo" src="/img/duo.jpg" alt="Héloïse Collin et Benjamin Gaspard" loading="lazy">
       {studio_rows}
       <section class="srow" id="contact"><h2 class="slab">Contact</h2><div class="sbody">
         <div class="map"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></div>
-        <p class="hq">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
-        <dl class="addr">
-          <div><dt>Mail</dt><dd><a href="mailto:contact@studiobega.be">contact@studiobega.be</a></dd></div>
-          <div><dt>Téléphone</dt><dd><a href="tel:+32474634309">+32 474 63 43 09</a></dd></div>
-          <div><dt>Studio</dt><dd>Rue Simon 43<br>6990 Hotton, Belgique</dd></div>
-        </dl></div></section>
+        <p>Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
+        <div class="it"><a class="n" href="mailto:contact@studiobega.be">contact@studiobega.be</a></div>
+        <div class="it"><a class="n" href="tel:+32474634309">+32 474 63 43 09</a></div>
+        <div class="it"><span class="n">Rue Simon 43, 6990 Hotton</span></div>
+      </div></section>
     </div>
 {FOOT}</div></div>"""
     write('studio/index.html', page('Studio — Studio BEGA', studio,
