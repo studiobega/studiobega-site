@@ -126,39 +126,26 @@
   if (h) open(h);
 })();
 
-// carte des lieux : un point → une carte de visite posée sur la carte (vignette, nom) ; un clic ouvre la fiche sur place
+// carte des lieux : un point par lieu ; au survol, son nom ; au clic, sa fiche (ouverte par la délégation des fiches)
 (function () {
   var c = document.getElementById('carte'); if (!c) return;
-  var out = c.querySelector('.cl'), cur = null, pop = document.createElement('div');
-  pop.className = 'pop'; pop.hidden = true; c.appendChild(pop);
-  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-  function items(g) { return g.getAttribute('data-l').split('|').map(function (x) { var a = x.split('§'), b = (a[1] || '').split('~'); return { n: a[0], id: b[0], t: b[1], k: b[2] }; }); }
-  function show(g, place) {
-    if (cur) cur.classList.remove('on'); cur = g; g.classList.add('on');
-    var f = c.getAttribute('data-f') || '', L = items(g).filter(function (i) { return !f || i.k === f; });
-    var h = '<div class="pop-h">' + esc(g.getAttribute('data-n')) + '<span>' + L.length + ' lieu' + (L.length > 1 ? 'x' : '') + '</span></div>' +
-      L.map(function (i) { return i.t ? '<a href="#' + esc(i.id) + '" data-open="' + esc(i.id) + '"><img src="' + esc(i.t) + '" alt="" loading="lazy"><span>' + esc(i.n) + '</span></a>' : '<div class="pop-i"><span>' + esc(i.n) + '</span></div>'; }).join('');
-    pop.innerHTML = h; pop.hidden = false;
-    if (out) out.textContent = '';
-    if (place) {
-      var r = g.querySelector('circle:not(.hit)').getBoundingClientRect(), R = c.getBoundingClientRect();
-      var x = r.left + r.width / 2 - R.left, y = r.top + r.height / 2 - R.top;
-      var w = pop.offsetWidth, left = Math.min(Math.max(x - w / 2, 0), R.width - w);
-      pop.style.left = left + 'px'; pop.style.top = (y + 16) + 'px';
-    }
+  var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; c.appendChild(tip);
+  function show(g) {
+    var r = g.querySelector('circle').getBoundingClientRect(), R = c.getBoundingClientRect();
+    tip.textContent = g.getAttribute('data-lab'); tip.hidden = false;
+    var x = r.left + r.width / 2 - R.left, w = tip.offsetWidth;
+    tip.style.left = Math.min(Math.max(x - w / 2, 0), R.width - w) + 'px'; tip.style.top = (r.top - R.top - 34) + 'px';
   }
-  function hide() { pop.hidden = true; if (cur) cur.classList.remove('on'); cur = null; }
   Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) {
-    g.addEventListener('click', function (ev) { ev.stopPropagation(); if (cur === g && !pop.hidden) hide(); else show(g, true); });
-    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); show(g, true); } });
+    g.addEventListener('mouseenter', function () { show(g); });
+    g.addEventListener('mouseleave', function () { tip.hidden = true; });
+    g.addEventListener('focus', function () { show(g); });
+    g.addEventListener('blur', function () { tip.hidden = true; });
+    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
   });
-  c.addEventListener('click', function (ev) { if (!ev.target.closest('.pop') && !ev.target.closest('.pt')) hide(); });
-  // filtre des portes (accueil) : on ne garde que les points qui ont au moins un lieu de la porte choisie
-  c.filtre = function (f) {
-    c.setAttribute('data-f', f || ''); hide();
-    Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) {
-      g.style.display = !f || items(g).some(function (i) { return i.k === f; }) ? '' : 'none';
-    });
+  c.filtre = function (f) {   // filtre des portes : on ne garde que les lieux de la porte choisie
+    tip.hidden = true;
+    Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) { g.style.display = !f || g.getAttribute('data-k') === f ? '' : 'none'; });
   };
 })();
 

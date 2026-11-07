@@ -300,12 +300,42 @@ a.it:hover .n{text-decoration:underline;text-underline-offset:4px}
 .page:has(.sx){overflow-x:clip}
 @media (max-width:760px){.sx{padding:28px 0 32px}.sx .sh1{font-size:30px}.sx .sub{font-size:16px}.fxs{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px;margin-top:36px}.fx b{font-size:34px}.fx span{font-size:14px}.sbody .lead{font-size:18px}.tps3{grid-template-columns:1fr;gap:24px}.tp h3{font-size:19px}}
 
-/* carte : la carte de visite d'un lieu, posée sous le point */
+/* carte : un point par lieu, son nom au survol */
 .carte{position:relative}
-.carte .pop{position:absolute;z-index:3;width:260px;background:#fff;border:1px solid #111;border-radius:6px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-.carte .pop-h{display:flex;justify-content:space-between;align-items:baseline;font-weight:600;font-size:15px;margin-bottom:10px}
-.carte .pop-h span{font-weight:400;font-size:13px;color:#6b6b66}
-.carte .pop a,.carte .pop-i{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid #eeede8;font-size:14px;line-height:1.3}
-.carte .pop a img{width:56px;height:42px;object-fit:cover;border-radius:4px;flex:none;background:#e9e8e3}
-.carte .pop a:hover span{text-decoration:underline;text-underline-offset:3px}
-.carte .pop{max-height:320px;overflow:auto}
+.carte .pt circle:first-child{fill:#111}
+.carte .pt:hover circle:first-child,.carte .pt:focus-visible circle:first-child{fill:#FFD400;stroke:#111;stroke-width:1.2}
+.carte .st{fill:none;stroke:#111;stroke-width:.8;stroke-dasharray:2 2;pointer-events:none}
+.carte .stl{font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:13px;fill:#111;pointer-events:none}
+.carte .tip{position:absolute;z-index:3;background:#111;color:#fff;font-size:13px;line-height:1;padding:7px 10px;border-radius:4px;white-space:nowrap;pointer-events:none}
+
+/* téléphone : rendu des sites d'auteur — barre de filtres collée en haut, images bord à bord, texte resserré */
+@media (max-width:760px){
+ .pj{padding-top:8px}
+ .bar{position:sticky;top:64px;z-index:4;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+   margin:0 -20px 24px;padding:10px 20px 10px;flex-direction:column;align-items:stretch;gap:8px;border-bottom:1px solid #eeede8}
+ .flt{font-size:20px;gap:18px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+ .flt::-webkit-scrollbar{display:none}
+ .flt button{flex:none}
+ .flt sup{font-size:10px;vertical-align:9px}
+ .vws{justify-content:flex-start;font-size:13px;gap:16px}
+ .sec{margin:0 0 28px}.sec .sp{font-size:18px;margin-bottom:6px}.sec p{font-size:14px;line-height:1.55}
+ .flow{gap:44px}
+ .rw.r2,.rw.r3{gap:44px}
+ .sq .im{margin:0 -20px 12px;border-radius:0}
+ .r1 .im img,.r2 .im img,.r3 .im img{aspect-ratio:4/5}
+ .sq .ck,.r1 .ck{font-size:17px;line-height:1.4}
+ .sq .cm{font-size:12px;margin-top:6px}
+ .li{padding:13px 0;font-size:15px}
+ .carte .stl{font-size:20px}
+ /* Studio */
+ .sx{padding:24px 0 28px}.sx .kick{font-size:12px;margin-bottom:12px}.sx .sh1{font-size:27px;line-height:1.15}.sx .sub{font-size:15px}
+ .fxs{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:28px;padding-top:14px}
+ .fx b{font-size:26px;margin-bottom:4px}.fx span{font-size:12px;line-height:1.3;display:block}
+ .st img.duo{width:calc(100% + 40px);margin:0 -20px 36px;border-radius:0;aspect-ratio:4/3}
+ .srow{padding:12px 0 36px;gap:8px}
+ .slab{font-size:13px}
+ .sbody .lead{font-size:17px}.sbody p{font-size:15px}
+ .tps3{gap:18px}.tp{display:grid;grid-template-columns:28px 1fr;column-gap:8px}.tp .num{margin:2px 0 0;font-size:12px}.tp h3{font-size:17px;margin:0 0 4px}.tp p{grid-column:2;font-size:15px}
+ .sbody .map{width:calc(100% + 40px);margin:0 -20px 16px}.sbody .map,.sbody .map img{border-radius:0}
+ .sbody .cta{font-size:22px}
+}

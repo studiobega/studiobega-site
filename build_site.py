@@ -308,7 +308,7 @@ if V2:
     while i < len(tous):
         size = (1, 2, 3)[n % 3]; grp = tous[i:i + size]; i += size; n += 1
         seq.append(f'<div class="rw r{len(grp)}">' + ''.join(tile(q, len(grp) == 1) for q in grp) + '</div>')
-    flt = f'<button type="button" class="on" data-f="">Tout<sup>{len(tous)}</sup></button>' + ''.join(
+    flt = f'<button type="button" class="on" data-f="">Tous<sup>{len(tous)}</sup></button>' + ''.join(
         f'<button type="button" data-f="{k}">{e(n)}<sup>{len(r)}</sup></button>' for (k, n), r in zip(PORTES, rows))
     vws = '<button type="button" class="on" data-v="img">Images</button><button type="button" data-v="list">Liste</button><button type="button" data-v="map">Carte</button>'
     TOUT = ("Des lieux singuliers, à toutes les échelles.",
@@ -353,7 +353,7 @@ if V2:
     nb_comm = carte.communes([p for p in P if ph(p['nom']) and ph(p['lieu']) and PICS.get(p['id'])])
     facts = (f'<div class="fx"><b>{nb_lieux}</b><span>lieux</span></div>'
              f'<div class="fx"><b>{nb_comm}</b><span>communes</span></div>'
-             f'<div class="fx"><b>3</b><span>échelles : territoire, activité, habitat</span></div>'
+             f'<div class="fx"><b>3</b><span>échelles</span></div>'
              f'<div class="fx"><b>1</b><span>clé par lieu</span></div>')
     tps = [("01", "Lire", "Sur place : le relief, l'eau, les usages, ceux qui traversent le lieu. Puis le programme du maître d'ouvrage."),
            ("02", "Imaginer", "<span class=\"key\">La clé</span> : l'idée qui rend le lieu singulier, trouvée entre ce que le lieu permet et ce que vous voulez en faire."),
