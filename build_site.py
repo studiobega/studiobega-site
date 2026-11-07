@@ -311,7 +311,8 @@ if V2:
     flt = f'<button type="button" class="on" data-f="">Tout<sup>{len(tous)}</sup></button>' + ''.join(
         f'<button type="button" data-f="{k}">{e(n)}<sup>{len(r)}</sup></button>' for (k, n), r in zip(PORTES, rows))
     vws = '<button type="button" class="on" data-v="img">Images</button><button type="button" data-v="list">Liste</button><button type="button" data-v="map">Carte</button>'
-    intros = ''.join(f'<div class="sec" data-for="{k}" hidden><h2 class="h">{e(DOORS[k][0])}</h2><p>{e(DOORS[k][1])}</p></div>' for k, _ in PORTES)
+    # sur l'accueil, le filtre n'affiche que la phrase du secteur ; le texte complet reste en tête de chaque galerie
+    intros = ''.join(f'<p class="sec" data-for="{k}" hidden>{e(DOORS[k][0])}</p>' for k, _ in PORTES)
     lst = ''.join(f'<a class="li" data-k="{q["pk"]}" href="/{q["pk"]}/#{q["id"]}"><span class="ln">{e(ph(q["nom"]))}</span><span>{e(ph(q["lieu"]))}</span>'
                   f'<span>{e(NAMES[q["pk"]])}</span><span>{e(ph(q["annee"]))}</span></a>' for q in tous)
     CARTE, _inc = carte.build([p for p in P if ph(p['nom']) and ph(p['lieu'])], lambda p: f"{BASE}/{p['pk']}/#{p['id']}", DATA / 'carte' / 'fond.json')
