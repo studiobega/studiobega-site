@@ -284,15 +284,17 @@ write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue
 if V2:
     import sys; sys.path.insert(0, str(ROOT)); import carte
 
-    # Accueil, sur le modèle des bureaux de référence (Assemble, Carmody Groarke) : tous les projets en grille,
-    # les trois portes en mots au-dessus. Les portes sont mêlées (une de chaque, à tour de rôle) pour montrer l'étendue.
+    # Accueil : un projet par écran (image pleine largeur, nom et lieu dessous), puis les trois galeries en mots.
+    # Sélection : les trois premiers de chaque porte dans l'ordre de la vue Airtable « Site », alternés.
     from itertools import zip_longest
     rows = [[q for q in bykey[k] if PICS.get(q['id'])] for k, _ in PORTES]
-    tous = [q for trio in zip_longest(*rows) for q in trio if q]
+    sel = [q for trio in zip_longest(*[r[:3] for r in rows]) for q in trio if q]
+    screens = ''.join(
+        f'<a class="sc" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{abs_(PICS[q["id"]][0][0])}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}"{" loading=\"lazy\"" if i else ""}></span>'
+        f'<span class="cp"><span class="nm">{e(ph(q["nom"]))}</span><span class="cm">{e(ph(q["lieu"]))}</span><span class="pt">{e(NAMES[q["pk"]])}</span></span></a>'
+        for i, q in enumerate(sel))
     tabs = ''.join(f'<a href="/{k}/">{e(n)}<sup>{len(r)}</sup></a>' for (k, n), r in zip(PORTES, rows))   # = ce que montre la galerie
-    tiles = ''.join(f'<a class="tl" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{abs_(PICS[q["id"]][0][2])}" alt="{e(ph(q["nom"]))}" loading="lazy"></span>'
-                    f'<span class="nm">{e(ph(q["nom"]))}</span><span class="cm">{e(ph(q["lieu"]))}</span></a>' for q in tous)
-    moments = f'<div class="ix"><div class="tabs">{tabs}</div><div class="tiles">{tiles}</div></div>\n'
+    moments = f'<div class="scs">{screens}</div><div class="ix"><div class="tabs">{tabs}</div></div>\n'
     index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
