@@ -284,17 +284,12 @@ write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue
 if V2:
     import sys; sys.path.insert(0, str(ROOT)); import carte
 
-    def moment(k, n, code=None):
-        """Un projet, comme chez les bureaux de référence : l'image ouvre sa fiche ; la porte n'est qu'une mention."""
-        L = [q for q in bykey[k] if PICS.get(q['id']) and ph(q['cle'])]
-        if code: L = [q for q in L if q['code'] == code] or L
-        if not L: return ''
-        q = L[0]
-        return (f'    <section class="mo"><a class="mo-a" href="/{k}/#{q["id"]}">'
-                f'<span class="im"><img src="{abs_(PICS[q["id"]][0][0])}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
-                f'<span class="mk"><span class="key">{e(ph(q["cle"]))}</span></span>'
-                f'<span class="mp">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a></section>\n')
-    moments = ''.join(moment(k, n, '23.14' if k == 'territoires' else None) for k, n in PORTES)
+    # Accueil : les trois portes du site actuel, côte à côte, en pleine largeur (image, nom, phrase, nombre de lieux)
+    def porte(k, n):
+        return (f'<a class="door" href="/{k}/"><span class="im"><img src="{first_pic(k, "23.14" if k == "territoires" else None)}" alt="" loading="lazy"></span>'
+                f'<span class="dn">{e(n)} <span class="ar" aria-hidden="true">→</span></span><span class="dt">{e(DOORS[k][0])}</span>'
+                f'<span class="dc">{len(bykey[k])} lieux</span></a>')
+    moments = '<div class="doors big">' + ''.join(porte(k, n) for k, n in PORTES) + '</div>\n'
     index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>

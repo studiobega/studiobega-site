@@ -221,3 +221,10 @@ html.lock{overflow:hidden}
 .col header.sh+img.ill{margin-top:72px}
 .col .addr{margin-top:40px}
 .lieux{margin-top:128px}
+
+/* refonte : les trois portes en grand, juste après le rideau */
+.doors.big{margin:40px 0 0;gap:24px}
+.doors.big .dn{font-size:26px;font-weight:700}
+.doors.big .dt{font-size:16px;color:#111}
+.doors.big .dc{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:#6b6b66;margin-top:4px}
+@media (max-width:640px){.doors.big{margin-top:16px;gap:48px}.doors.big .dn{font-size:22px}}
