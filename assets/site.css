@@ -276,3 +276,7 @@ html.lock{overflow:hidden}
 a.it:hover .n{text-decoration:underline;text-underline-offset:4px}
 .sbody .map{margin:0 0 18px}
 @media (max-width:760px){.st{padding-top:20px;--fs:16px}.shd{margin-bottom:28px}.sh1{font-size:28px}.st img.duo{aspect-ratio:4/3;margin-bottom:40px}.srow{grid-template-columns:1fr;gap:10px;padding:14px 0 40px}.it{flex-direction:column;gap:0}.it .n{min-width:0}}
+.sbody .cta{display:block;font-size:32px;font-weight:600;letter-spacing:-.01em;line-height:1.25;padding:6px 0}
+.sbody .cta:hover{text-decoration:underline;text-underline-offset:6px}
+.sbody .adr{margin-top:12px;color:#6b6b66}
+@media (max-width:760px){.sbody .cta{font-size:24px}}

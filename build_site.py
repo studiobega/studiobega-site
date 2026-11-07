@@ -342,20 +342,10 @@ if V2:
 
     # Studio, sur le modèle des pages « Office » des bureaux d'auteur : une phrase forte, la photo du duo en grand,
     # puis une grille éditoriale — rubrique à gauche, contenu à droite, filets fins — alignée sur le logo.
-    def lien(nom):
-        q = next((p for p in P if ph(p['nom']) == nom and PICS.get(p['id'])), None)
-        return f'/{q["pk"]}/#{q["id"]}' if q else None
-    refs = [("Esplanade du château", "Bouillon", "Espace public, marché remporté en procédure ouverte"),
-            ("Bastogne War Museum", "Bastogne", "Plan directeur"),
-            ("Centre d'interprétation", "La Roche-en-Ardenne", "Architecture et scénographie"),
-            ("Cinéma Plaza", "Hotton", "Marché public"),
-            ("Centre culturel", "Hotton", "Plan directeur de rénovation"),
-            ("Grand-Rue", "Martelange", "Espace public")]
     # Une seule taille de texte pour tout le corps de page, deux couleurs (noir, gris) : net sur ordinateur comme sur téléphone.
     def item(n, rest, href=None):
         inner = f'<span class="n">{e(n)}</span><span class="g">{e(rest)}</span>'
         return f'<a class="it" href="{href}">{inner}</a>' if href else f'<div class="it">{inner}</div>'
-    refs_h = ''.join(item(n, f'{l} · {d}', lien(n)) for n, l, d in refs)
     def row(lab, body):
         return f'<section class="srow"><h2 class="slab">{e(lab)}</h2><div class="sbody">{body}</div></section>'
     studio_rows = (
@@ -363,7 +353,6 @@ if V2:
         row("La méthode", item("Lire", "le lieu sur place, puis le programme du maître d'ouvrage.") +
                           '<div class="it"><span class="n">Imaginer</span><span class="g"><span class="key">la clé</span>, l\'idée qui rend le lieu singulier.</span></div>' +
                           item("Réaliser", "le projet, de l'esquisse au dernier détail de chantier.")) +
-        row("Références", refs_h) +
         row("Équipe", item("Benjamin Gaspard", "Architecte, fondateur") + item("Héloïse Collin", "Architecte d'intérieur")))
     studio = f"""<div class="page"><div class="wrap">
 {nav('Studio')}    <div class="st">
@@ -374,9 +363,9 @@ if V2:
       <section class="srow" id="contact"><h2 class="slab">Contact</h2><div class="sbody">
         <div class="map"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></div>
         <p>Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
-        <div class="it"><a class="n" href="mailto:contact@studiobega.be">contact@studiobega.be</a></div>
-        <div class="it"><a class="n" href="tel:+32474634309">+32 474 63 43 09</a></div>
-        <div class="it"><span class="n">Rue Simon 43, 6990 Hotton</span></div>
+        <a class="cta" href="tel:+32474634309">+32 474 63 43 09</a>
+        <a class="cta" href="mailto:contact@studiobega.be">contact@studiobega.be</a>
+        <p class="adr">Rue Simon 43, 6990 Hotton</p>
       </div></section>
     </div>
 {FOOT}</div></div>"""
