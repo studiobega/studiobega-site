@@ -302,7 +302,7 @@ if V2:
     tous = [q for trio in zip_longest(*rows) for q in trio if q]
     def tile(q, big):
         cle = ph(q['cle']); B, M = abs_(PICS[q['id']][0][0]), abs_(PICS[q['id']][0][2])
-        return (f'<a class="sq" data-k="{q["pk"]}" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{B if big else M}" data-b="{B}" data-m="{M}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
+        return (f'<a class="sq" data-k="{q["pk"]}" data-open="{q["id"]}" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{B if big else M}" data-b="{B}" data-m="{M}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
                 f'{f"<span class=\"ck\">{e(cle)}</span>" if cle else ""}<span class="cm">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a>')
     seq, i, n = [], 0, 0
     while i < len(tous):
@@ -311,8 +311,11 @@ if V2:
     flt = f'<button type="button" class="on" data-f="">Tout<sup>{len(tous)}</sup></button>' + ''.join(
         f'<button type="button" data-f="{k}">{e(n)}<sup>{len(r)}</sup></button>' for (k, n), r in zip(PORTES, rows))
     vws = '<button type="button" class="on" data-v="img">Images</button><button type="button" data-v="list">Liste</button><button type="button" data-v="map">Carte</button>'
-    intros = ''.join(f'<div class="sec" data-for="{k}" hidden><p class="sp">{e(DOORS[k][0])}</p><p>{e(DOORS[k][1])}</p></div>' for k, _ in PORTES)
-    lst = ''.join(f'<a class="li" data-k="{q["pk"]}" href="/{q["pk"]}/#{q["id"]}"><span class="ln">{e(ph(q["nom"]))}</span><span>{e(ph(q["lieu"]))}</span>'
+    TOUT = ("Des lieux singuliers, à toutes les échelles.",
+            "Une vallée, une place, un musée, un café, une maison, une pièce. Chaque projet part de ce qui est déjà là et se dessine à partir de sa clé.")
+    intros = f'<div class="sec" data-for=""><p class="sp">{e(TOUT[0])}</p><p>{e(TOUT[1])}</p></div>' + ''.join(
+        f'<div class="sec" data-for="{k}" hidden><p class="sp">{e(DOORS[k][0])}</p><p>{e(DOORS[k][1])}</p></div>' for k, _ in PORTES)
+    lst = ''.join(f'<a class="li" data-k="{q["pk"]}" data-open="{q["id"]}" href="/{q["pk"]}/#{q["id"]}"><span class="ln">{e(ph(q["nom"]))}</span><span>{e(ph(q["lieu"]))}</span>'
                   f'<span>{e(NAMES[q["pk"]])}</span><span>{e(ph(q["annee"]))}</span></a>' for q in tous)
     CARTE, _inc = carte.build([p for p in P if ph(p['nom']) and ph(p['lieu'])], lambda p: f"{BASE}/{p['pk']}/#{p['id']}", DATA / 'carte' / 'fond.json')
     if _inc: print('carte : lieux sans coordonnées →', sorted(set(_inc)))
@@ -320,7 +323,10 @@ if V2:
     moments = (f'<section class="pj" id="projets"><div class="bar"><div class="flt">{flt}</div><div class="vws">{vws}</div></div>{intros}'
                f'<div class="v" data-v="img"><div class="flow">{"".join(seq)}</div></div>'
                f'<div class="v" data-v="list" hidden><div class="lst">{lst}</div></div>'
-               f'<div class="v" data-v="map" hidden>{CARTE}</div></section>\n')
+               f'<div class="v" data-v="map" hidden>{CARTE}</div></section>\n'
+               + ''.join(fiche(q) for q in tous) +
+               '<div class="modal" id="modal" aria-hidden="true"><div class="mbox" role="dialog" aria-modal="true"></div></div>'
+               '<div class="lb" id="lb" aria-hidden="true"><button type="button" class="lb-p" aria-label="Image précédente">‹</button><img src="" alt=""><button type="button" class="lb-n" aria-label="Image suivante">›</button><span class="lb-c"></span></div>\n')
     index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>

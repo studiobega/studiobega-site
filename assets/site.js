@@ -59,7 +59,7 @@
     var ty = 0;
     hero.addEventListener('touchstart', function (ev) { ty = ev.touches[0].clientY; }, { passive: true });
     hero.addEventListener('touchmove', function (ev) { if (ty - ev.touches[0].clientY > 24) up(); }, { passive: true });
-    return;
+    // (la suite — agrandissement, fiches — sert aussi à l'accueil quand il porte les projets)
   }
 
   /* ---- agrandissement : on fait défiler toutes les images du lieu ---- */
@@ -89,7 +89,7 @@
   }
 
   /* ---- fiches : une fenêtre qui vient se poser devant la page ---- */
-  var grid = document.querySelector('.grid'), modal = document.getElementById('modal');
+  var grid = document.querySelector('.grid') || document.getElementById('projets'), modal = document.getElementById('modal');
   if (!grid || !modal) return;
   var box = modal.querySelector('.mbox'), lastFocus = null;
   function open(id) {
@@ -114,7 +114,7 @@
     if (ev.target.closest('a')) return;
     close();   // la croix, à côté, ou sur la fiche : elle se ferme
   });
-  Array.prototype.forEach.call(grid.querySelectorAll('.card'), function (c) {
+  Array.prototype.forEach.call(grid.querySelectorAll('[data-open]'), function (c) {
     c.addEventListener('click', function (ev) { ev.preventDefault(); open(c.getAttribute('data-open')); });
   });
   document.addEventListener('keydown', function (ev) {
