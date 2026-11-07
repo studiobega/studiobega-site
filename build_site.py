@@ -284,17 +284,22 @@ write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue
 if V2:
     import sys; sys.path.insert(0, str(ROOT)); import carte
 
-    # Accueil : un projet par écran (image pleine largeur, nom et lieu dessous), puis les trois galeries en mots.
-    # Sélection : les trois premiers de chaque porte dans l'ordre de la vue Airtable « Site », alternés.
+    # Accueil (modèle OFFICE KGDVS / Carmody Groarke) : les trois galeries en mots en tête, puis tous les projets
+    # en un défilé rythmé (une image pleine largeur, puis deux, puis trois…), la clé en phrase sous chacun.
+    # Ordre : la vue Airtable « Site », une porte après l'autre à tour de rôle (variété des échelles).
     from itertools import zip_longest
     rows = [[q for q in bykey[k] if PICS.get(q['id'])] for k, _ in PORTES]
-    sel = [q for trio in zip_longest(*[r[:3] for r in rows]) for q in trio if q]
-    screens = ''.join(
-        f'<a class="sc" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{abs_(PICS[q["id"]][0][0])}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}"{" loading=\"lazy\"" if i else ""}></span>'
-        f'<span class="cp"><span class="nm">{e(ph(q["nom"]))}</span><span class="cm">{e(ph(q["lieu"]))}</span><span class="pt">{e(NAMES[q["pk"]])}</span></span></a>'
-        for i, q in enumerate(sel))
+    tous = [q for trio in zip_longest(*rows) for q in trio if q]
     tabs = ''.join(f'<a href="/{k}/">{e(n)}<sup>{len(r)}</sup></a>' for (k, n), r in zip(PORTES, rows))   # = ce que montre la galerie
-    moments = f'<div class="scs">{screens}</div><div class="ix"><div class="tabs">{tabs}</div></div>\n'
+    def tile(q, big):
+        cle = ph(q['cle'])
+        return (f'<a class="sq" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{abs_(PICS[q["id"]][0][0 if big else 2])}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
+                f'{f"<span class=\"ck\">{e(cle)}</span>" if cle else ""}<span class="cm">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a>')
+    seq, i, n = [], 0, 0
+    while i < len(tous):
+        size = (1, 2, 3)[n % 3]; grp = tous[i:i + size]; i += size; n += 1
+        seq.append(f'<div class="rw r{len(grp)}">' + ''.join(tile(q, len(grp) == 1) for q in grp) + '</div>')
+    moments = f'<div class="ix"><div class="tabs">{tabs}</div></div><div class="flow">{"".join(seq)}</div>\n'
     index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
