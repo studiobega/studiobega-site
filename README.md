@@ -12,7 +12,7 @@ Airtable (BEGA BASE › Projets, vue « Site », dans l'ordre de la vue)
 data/   projets.json · photos_manifest.json · photos/*.jpg · empreinte.txt
         │  build_site.py      génère le HTML, redimensionne les images
         ▼
-dist/   index.html (accueil) · territoires/ · activites/ · habitat/ · studio.html · contact.html · assets/ · img/ · .htaccess · build.json (l'empreinte publiée)
+dist/   index.html (rideau + Projets : filtres, vues Images · Liste · Carte) · studio/ · territoires/ · activites/ · habitat/ · assets/ · img/ · .htaccess · build.json (l'empreinte publiée)
         │  GitHub Action      dépose dist/ chez Infomaniak par SFTP
         ▼
 https://new.studiobega.be  (puis studiobega.be)
@@ -43,12 +43,16 @@ Variables optionnelles : `FTP_HOST` (défaut `kx5isg.ftp.infomaniak.com`), `SITE
 - *Site · Liens* : une ligne par lien, `Titre | https://…`.
 - Les noms de clients privés ne vont jamais dans *Site · Nom*.
 
+## Aperçu d'une refonte
+
+`V2=1` construit la version actuelle (en ligne depuis le 07/11/2026). Pour essayer une future version sans toucher au site : la construire avec `BASE=/apercu OUT=dist_apercu`, puis `python3 apercu.py` la range dans `dist/apercu/` (fermée aux moteurs).
+
 ## En local
 
 ```
 pip install requests pillow
 AIRTABLE_TOKEN=pat… python3 fetch_airtable.py   # optionnel : sinon data/ sert tel quel
-python3 build_site.py                           # → dist/
+V2=1 python3 build_site.py                      # → dist/
 ```
 
 `data/old_slugs.json` : anciennes adresses Adobe Portfolio → code projet, pour les redirections 301 du `.htaccess`.

@@ -126,7 +126,7 @@ def page(title, body, desc, img='/img/hero.jpg'):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#ffffff">{'<meta name="robots" content="noindex, nofollow">' if V2 else ''}
+<meta name="theme-color" content="#ffffff">{'<meta name="robots" content="noindex, nofollow">' if BASE else ''}
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://studiobega.be{img}"><meta property="og:type" content="website">
@@ -409,7 +409,10 @@ old = json.load(open(DATA / 'old_slugs.json')) if (DATA / 'old_slugs.json').exis
 bycode = {p['code']: f"/{p['pk']}/#{p['id']}" for p in P}
 for s_, code in old.items():
     if code in bycode: R(re.escape(s_.lstrip('/')), bycode[code])
-R(r'studio(\.html)?', '/#studio'); R('contact', '/contact.html'); R('accueil', '/')
+if V2:   # la refonte : /studio/ est une vraie page ; l'ancienne page Contact et l'aperçu y mènent
+    R(r'studio\.html', '/studio/'); R(r'contact(\.html)?', '/studio/#contact'); R('accueil', '/'); R('apercu(/.*)?', '/')
+else:
+    R(r'studio(\.html)?', '/#studio'); R('contact', '/contact.html'); R('accueil', '/')
 R('sites', '/territoires/'); R('maisons', '/habitat/')
 (DIST / '.htaccess').write_text('\n'.join(redir) + '\n')
 
