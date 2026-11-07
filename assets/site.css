@@ -187,7 +187,7 @@ html.lock{overflow:hidden}
 .carte{margin:48px 0 0}
 .carte svg{display:block;width:100%;height:auto;overflow:visible}
 .carte .wa{fill:#f2f1ec;stroke:#111;stroke-width:.8;stroke-linejoin:round}
-.carte .bx{fill:none;stroke:#b9b8b2;stroke-width:.6;stroke-dasharray:2 3}
+.carte .bx{fill:#f2f1ec;stroke:#111;stroke-width:.8;stroke-linejoin:round}
 .carte .rep circle{fill:#9a9993}
 .carte .rep text{font-size:12px;fill:#8a8984;letter-spacing:.02em}
 @media (max-width:640px){.carte .rep text{font-size:21px}.carte .rep circle{r:3}}
