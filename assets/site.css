@@ -182,3 +182,48 @@ html.lock{overflow:hidden}
  .addr{grid-template-columns:1fr;gap:20px}
  .foot{margin-top:80px}
 }
+
+/* carte des lieux (Studio) : la Wallonie, un point par localité ; un clic liste les lieux */
+.carte{margin:48px 0 0}
+.carte svg{display:block;width:100%;height:auto;overflow:visible}
+.carte .wa{fill:#f2f1ec;stroke:#111;stroke-width:.8;stroke-linejoin:round}
+.carte .bx{fill:none;stroke:#b9b8b2;stroke-width:.6;stroke-dasharray:2 3}
+.carte .rep circle{fill:#9a9993}
+.carte .rep text{font-size:12px;fill:#8a8984;letter-spacing:.02em}
+@media (max-width:640px){.carte .rep text{font-size:21px}.carte .rep circle{r:3}}
+.carte .st{fill:none;stroke:#111;stroke-width:1;pointer-events:none}
+.carte .leg{display:inline-block;width:11px;height:11px;border:1px solid #111;border-radius:50%;vertical-align:-1px;margin-right:6px}
+.carte .pt{cursor:pointer;outline:none}
+.carte .pt circle:first-child{fill:#111;transition:r .25s}
+.carte .pt .hit{fill:transparent}
+.carte .pt:hover circle:first-child,.carte .pt:focus-visible circle:first-child,.carte .pt.on circle:first-child{fill:#fff;stroke:#111;stroke-width:2.5}
+.carte figcaption{margin-top:22px}
+.carte .cl{min-height:1.6em;margin:0 0 6px;font-size:17px;line-height:1.6}
+.carte .cl b{font-weight:600;margin-right:8px}
+.carte .cl a{border-bottom:1px solid #c9c8c2;margin-right:14px}
+.carte .cl a:hover{border-color:#111}
+.carte .cn{font-size:13px;line-height:1.7;color:#6b6b66;margin:0}
+
+/* refonte : l'accueil en trois portes (un lieu par porte, sa clé, le nombre de lieux) */
+.mos{display:flex;flex-direction:column;gap:136px;padding:56px 0 40px}
+.mo-a{display:block}
+.mo .im{display:block;overflow:hidden;border-radius:6px;background:#e9e8e3}
+.mo .im img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.mo .mt{display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-top:26px}
+.mo .dn{font-size:38px;font-weight:700;line-height:1.1;letter-spacing:-.005em}
+.mo .nb{font-size:15px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.mo .ar{display:inline-block;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.mo .mk{margin:16px 0 0;font-size:22px;line-height:1.45;max-width:760px}
+.mo .mp{margin:10px 0 0;font-size:14px;color:#6b6b66}
+@media (hover:hover){.mo-a:hover .im img{transform:scale(1.03)}.mo-a:hover .ar{transform:translateX(6px)}}
+@media (max-width:640px){.mos{gap:88px;padding-top:24px}.mo .im img{aspect-ratio:4/3}.mo .dn{font-size:28px}.mo .nb{font-size:13px}.mo .mk{font-size:19px}}
+
+/* refonte : page Studio */
+.col header.sh{padding-top:72px}
+.col header.sh .h{margin-bottom:26px}
+.tps{display:grid;gap:28px}
+.tp h3{margin:0 0 6px;font-size:20px;font-weight:600}
+.tp p{margin:0}
+.col .map{margin-top:40px}
+.col .addr{margin-top:40px}
+.lieux{margin-top:128px}

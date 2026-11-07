@@ -69,6 +69,11 @@ jobs:
       - name: Construire le site
         run: python3 build_site.py
 
+      - name: Construire l'aperçu de la refonte (/apercu/, fermé aux moteurs)
+        run: |
+          V2=1 BASE=/apercu OUT=dist_apercu python3 build_site.py
+          python3 apercu.py
+
       - name: Déposer chez Infomaniak (SFTP)
         env:
           FTP_USER: ${{ secrets.FTP_USER }}

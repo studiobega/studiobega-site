@@ -17,7 +17,11 @@ import json, html, os, re, shutil, unicodedata, hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-DATA, DIST = ROOT / 'data', ROOT / 'dist'
+DATA = ROOT / 'data'
+DIST = Path(os.environ.get('OUT') or ROOT / 'dist')
+# V2=1 : la refonte (accueil en trois portes, page Studio avec la carte), construite à part pour l'aperçu /apercu/
+V2 = os.environ.get('V2') == '1'
+BASE = os.environ.get('BASE', '')
 IMG = DIST / 'img'
 e = lambda s: html.escape(s or '', quote=False)
 
@@ -97,17 +101,18 @@ FOOT = """    <footer class="foot">
       <div>© Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
     </footer>
 """
-MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/contact.html', 'Contact')]
+MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/studio/', 'Studio') if V2 else ('/contact.html', 'Contact')]
+CT = ('Contact', 'Studio')
 LOGO = '<a class="logo" href="/#accueil" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
 # téléphone : les trois petites barres ouvrent le menu plein écran, comme l'ancien site
 BURGER = '<button type="button" class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>'
 def mobile_menu():
-    items = ''.join(f'<a href="{h}"{" class=\"ct\"" if t == "Contact" else ""}>{t}</a>' for h, t in [('/#accueil', 'Accueil')] + MENU)
+    items = ''.join(f'<a href="{h}"{" class=\"ct\"" if t in CT else ""}>{t}</a>' for h, t in ([] if V2 else [('/#accueil', 'Accueil')]) + MENU)
     return f'<div class="mnav" id="mnav" aria-hidden="true"><button type="button" class="mnav-x" aria-label="Fermer le menu">×</button><nav>{items}</nav></div>'
 
 def nav(on):
-    links = ''.join(f'<a href="{h}" class="{"on " if t == on else ""}{"ct" if t == "Contact" else ""}">{t}</a>' for h, t in MENU)
+    links = ''.join(f'<a href="{h}" class="{"on " if t == on else ""}{"ct" if t in CT else ""}">{t}</a>' for h, t in MENU)
     return f'    <nav class="nav" aria-label="Navigation">\n      {LOGO}\n      <div class="links">{links}</div>\n      {BURGER}\n    </nav>\n'
 
 # version des feuilles : change dès que le CSS ou le JS change, les navigateurs reprennent alors la nouvelle version
@@ -115,12 +120,12 @@ VER = hashlib.sha1(b''.join((ROOT / 'assets' / x).read_bytes() for x in ('site.c
 
 def page(title, body, desc, img='/img/hero.jpg'):
     return f"""<!doctype html>
-<html lang="fr">
+<html lang="fr"{f' data-base="{BASE}"' if BASE else ''}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#ffffff">{'<meta name="robots" content="noindex, nofollow">' if V2 else ''}
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://studiobega.be{img}"><meta property="og:type" content="website">
@@ -272,6 +277,65 @@ contact = f"""<div class="page"><div class="wrap">
     </dl>
 {FOOT}</div></div>"""
 write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue Simon 43, 6990 Hotton. contact@studiobega.be · +32 474 63 43 09'))
+
+# ---------- V2 : la refonte (aperçu) ----------
+# Accueil : le rideau, puis une porte par type de projet (un lieu la représente, avec sa clé).
+# Studio : qui, la méthode, le duo, la carte des lieux, les coordonnées. Contact y est fondu.
+if V2:
+    import sys; sys.path.insert(0, str(ROOT)); import carte
+
+    def moment(k, n, code=None):
+        L = [q for q in bykey[k] if PICS.get(q['id']) and ph(q['cle'])]
+        if code: L = [q for q in L if q['code'] == code] or L
+        if not L: return ''
+        q = L[0]; nb = len(bykey[k])
+        return (f'    <section class="mo"><a class="mo-a" href="/{k}/">'
+                f'<span class="im"><img src="{abs_(PICS[q["id"]][0][0])}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
+                f'<span class="mt"><span class="dn">{e(n)}</span><span class="nb">{nb} lieux <span class="ar" aria-hidden="true">→</span></span></span></a>'
+                f'<p class="mk"><span class="key">{e(ph(q["cle"]))}</span></p>'
+                f'<p class="mp">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</p></section>\n')
+    moments = ''.join(moment(k, n, '23.14' if k == 'territoires' else None) for k, n in PORTES)
+    index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
+  <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
+  <div class="veil" aria-hidden="true"></div>
+  <button type="button" class="go" id="enter" aria-label="Entrer"></button>
+  <nav class="nav" aria-label="Studio BEGA">{LOGO}</nav>
+  <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
+</section>
+<div class="page site" id="site"><div class="wrap">
+{nav('')}  <div class="mos">
+{moments}  </div>
+{FOOT}</div></div>"""
+    write('index.html', page('Studio BEGA — Architecture & stratégie de lieu, Wallonie', index2,
+        "Studio BEGA lit les lieux, trouve leur clé et les réalise : territoires, lieux d'activité, habitat. Architecture, plans directeurs et intérieurs, partout en Wallonie."))
+
+    CARTE, _inc = carte.build([p for p in P if ph(p['nom']) and ph(p['lieu'])], lambda p: f"{BASE}/{p['pk']}/#{p['id']}", DATA / 'carte' / 'fond.json')
+    if _inc: print('carte : lieux sans coordonnées →', sorted(set(_inc)))
+    tps = [("Lire.", "Ce que le lieu permet. Ce qu'il impose. Ce qu'il peut devenir. Et ce que vous voulez en faire."),
+           ("Imaginer.", "La clé : ce qui rend le lieu singulier. Elle se trouve sur place, entre le lieu et votre projet."),
+           ("Réaliser.", "D'une vallée entière à une seule pièce. Dessiné à partir de la clé, construit jusqu'au dernier détail.")]
+    studio = f"""<div class="page"><div class="wrap">
+{nav('Studio')}    <div class="col">
+      <header class="sh"><h1 class="h">Tout part du lieu.</h1>{lines("Studio BEGA lit les lieux, trouve leur clé et les réalise. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs.", "Revaloriser ce qui existe. Construire quand le terrain le demande.")}</header>
+      <img class="wide" src="/img/lire-1.jpg" alt="Benjamin Gaspard sur place, face au paysage" loading="lazy">
+      <section><h2 class="h">Lire. Imaginer. Réaliser.</h2><div class="tps">{''.join(f'<div class="tp"><h3>{e(a)}</h3><p>{e(b)}</p></div>' for a, b in tps)}</div></section>
+      <img class="band" src="{IMG_BANDEAU}" alt="Lire le lieu, trouver la clé, faire le projet" loading="lazy">
+      <section><h2 class="h">Deux regards.</h2>{lines("Benjamin Gaspard, architecte, trouve la clé sur place.", "Héloïse Collin, architecte d'intérieur, la prolonge à l'intérieur.")}</section>
+      <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
+      {CARTE}
+      <section id="contact"><h2 class="h">Un lieu à imaginer.</h2>{lines("Le studio est à Hotton, au bord de l'Ourthe.")}</section>
+      <div class="map"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></div>
+      <dl class="addr">
+        <div><dt>Mail</dt><dd><a href="mailto:contact@studiobega.be">contact@studiobega.be</a></dd></div>
+        <div><dt>Téléphone</dt><dd><a href="tel:+32474634309">+32 474 63 43 09</a></dd></div>
+        <div><dt>Studio</dt><dd>Rue Simon 43<br>6990 Hotton, Belgique</dd></div>
+      </dl>
+    </div>
+{FOOT}</div></div>"""
+    write('studio/index.html', page('Studio — Studio BEGA', studio,
+        "Studio BEGA, Hotton : Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur. Lire, imaginer, réaliser. Rue Simon 43, 6990 Hotton · +32 474 63 43 09"))
+    # l'ancienne page Contact mène au bas de Studio
+    write('contact.html', f'<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url={BASE}/studio/#contact"><link rel="canonical" href="{BASE}/studio/#contact">')
 
 # ---------- assets, redirections, favicon ----------
 (DIST / 'assets').mkdir(exist_ok=True)

@@ -1,6 +1,7 @@
 /* studiobega.be — accueil, fiches dans la grille, agrandissement des photos. Aucune dépendance. */
 (function () {
   'use strict';
+  var B = document.documentElement.getAttribute('data-base') || '';   // aperçu : /apercu ; site : rien
 
   /* ---- menu téléphone : trois barres → menu plein écran ---- */
   var mnav = document.getElementById('mnav');
@@ -15,7 +16,7 @@
     Array.prototype.forEach.call(mnav.querySelectorAll('a'), function (a) { a.addEventListener('click', function () { setM(false); }); });
     var here = location.pathname;
     Array.prototype.forEach.call(mnav.querySelectorAll('a'), function (a) {
-      var h = a.getAttribute('href'); if (h === here || (h === '/#accueil' && here === '/')) a.classList.add('on');
+      var h = a.getAttribute('href'); if (h === here || (h === B + '/#accueil' && here === B + '/')) a.classList.add('on');
     });
   }
 
@@ -25,7 +26,7 @@
     var tint = function (c) { var m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', c); };   // barres Safari iOS : sombres sur le rideau, blanches sur la page
     var map = {}; try { map = JSON.parse(hero.getAttribute('data-map') || '{}'); } catch (e) {}
     var h0 = location.hash.slice(1);
-    if (h0 && map[h0]) { location.replace('/' + map[h0] + '/#' + h0); return; }   // anciens liens index.html#lieu
+    if (h0 && map[h0]) { location.replace(B + '/' + map[h0] + '/#' + h0); return; }   // anciens liens index.html#lieu
     // le rideau accueille chaque arrivée sur le site ; il reste levé quand on revient à l'accueil depuis une autre page
     var seen = !!document.referrer && document.referrer.indexOf(location.origin) === 0;
     var up = function (instant) {
@@ -38,12 +39,12 @@
         setTimeout(function () { window.scrollTo(0, 0); document.documentElement.classList.remove('lock'); }, 900);
       }
     };
-    if (h0 === 'accueil') { seen = false; history.replaceState(null, '', '/'); }   // le logo rappelle le rideau
+    if (h0 === 'accueil') { seen = false; history.replaceState(null, '', B + '/'); }   // le logo rappelle le rideau
     if (h0 === 'studio' || seen) up(true); else { site.classList.add('locked'); tint('#2a2a28'); }
     var upAt = 0;
     var down = function () {                                         // le rideau redescend
       if (!hero.classList.contains('up')) return;
-      history.replaceState(null, '', '/'); window.scrollTo(0, 0);
+      history.replaceState(null, '', B + '/'); window.scrollTo(0, 0);
       hero.classList.remove('now', 'up'); site.classList.add('locked'); tint('#2a2a28');
     };
     window.addEventListener('hashchange', function () { if (location.hash === '#accueil') down(); });
@@ -122,4 +123,23 @@
   });
   var h = location.hash.slice(1);
   if (h) open(h);
+})();
+
+// carte des lieux : un point → le nom de la localité et ses lieux, chacun mène à sa fiche
+(function () {
+  var c = document.getElementById('carte'); if (!c) return;
+  var out = c.querySelector('.cl'), cur = null;
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  function show(g) {
+    if (cur) cur.classList.remove('on'); cur = g; g.classList.add('on');
+    out.innerHTML = '<b>' + esc(g.getAttribute('data-n')) + '</b>' + g.getAttribute('data-l').split('|').map(function (x) {
+      var a = x.split('§'); return '<a href="' + esc(a[1]) + '">' + esc(a[0]) + '</a>';
+    }).join('');
+  }
+  Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) {
+    g.addEventListener('click', function () { show(g); });
+    g.addEventListener('mouseenter', function () { show(g); });
+    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); show(g); } });
+  });
+  var first = c.querySelector('.pt'); if (first) show(first);
 })();
