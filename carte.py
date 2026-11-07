@@ -42,8 +42,8 @@ LIEUX = {
     'aywaille': (50.474, 5.676, 'Aywaille'),
     'marche en famenne': (50.227, 5.344, 'Marche-en-Famenne'),
 }
-HORS = {'limoges': 'Limoges'}           # projets hors de la carte, cités sous la carte
-REPERES = [('Bruxelles', 50.847, 4.352), ('Namur', 50.467, 4.872), ('Charleroi', 50.411, 4.445),
+HORS = {'limoges': ('Limoges', 49.77, 4.72)}   # projets hors de la carte : un point posé en Ardenne française, une flèche vers le sud-ouest
+REPERES = [('Bruxelles', 50.847, 4.352), ('Liège', 50.633, 5.575), ('Namur', 50.467, 4.872), ('Charleroi', 50.411, 4.445),
            ('Mons', 50.454, 3.952), ('Arlon', 49.683, 5.817)]
 STUDIO = (50.268, 5.446)
 
@@ -76,7 +76,7 @@ def build(projets, href, fond_path):
             groups.setdefault(g[2], {'pts': [], 'items': []})
             groups[g[2]]['pts'].append(g[:2]); groups[g[2]]['items'].append(p)
             continue
-        hk = next((v for k, v in HORS.items() if k in _k(p['lieu'])), None)
+        hk = next((v[0] for k, v in HORS.items() if k in _k(p['lieu'])), None)
         if hk: hors.setdefault(hk, []).append(p)
         else: inconnus.append(p['lieu'])
 
@@ -88,18 +88,36 @@ def build(projets, href, fond_path):
         dots.append(f'<g class="pt" tabindex="0" role="button" aria-label="{e(name)} : {n} lieu{"x" if n > 1 else ""}" '
                     f'data-n="{e(name)}" data-l="{e(lst)}"><circle cx="{X(lon)}" cy="{Y(lat)}" r="{r}"/>'
                     f'<circle class="hit" cx="{X(lon)}" cy="{Y(lat)}" r="{max(r, 16)}"/></g>')
+    def smooth(pts):   # tracé lissé (Catmull-Rom → Bézier) pour des rivières souples
+        P = [(X(a), Y(b)) for a, b in pts]
+        if len(P) < 3: return 'M' + 'L'.join(f'{x},{y}' for x, y in P)
+        d = f'M{P[0][0]},{P[0][1]}'
+        for i in range(len(P) - 1):
+            p0, p1, p2 = P[max(i - 1, 0)], P[i], P[i + 1]; p3 = P[min(i + 2, len(P) - 1)]
+            c1 = (round(p1[0] + (p2[0] - p0[0]) / 6, 1), round(p1[1] + (p2[1] - p0[1]) / 6, 1))
+            c2 = (round(p2[0] - (p3[0] - p1[0]) / 6, 1), round(p2[1] - (p3[1] - p1[1]) / 6, 1))
+            d += f'C{c1[0]},{c1[1]} {c2[0]},{c2[1]} {p2[0]},{p2[1]}'
+        return d
+    riv = ''.join(f'<path class="rv" d="{smooth(r)}"/>' for r in fond.get('rivieres', []))
+    for name, items in hors.items():
+        la, lo = next((v[1], v[2]) for v in HORS.values() if v[0] == name)
+        x, y = X(lo), Y(la)
+        lst = '|'.join(f"{q['nom']}§{href(q)}" for q in items)
+        dots.append(f'<g class="pt far" tabindex="0" role="button" aria-label="{e(name)}, plus loin : {len(items)} lieu{"x" if len(items) > 1 else ""}" '
+                    f'data-n="{e(name)}" data-l="{e(lst)}"><line class="ar" x1="{x - 7}" y1="{y + 7}" x2="{x - 38}" y2="{y + 38}"/>'
+                    f'<path class="ah" d="M{x - 38},{y + 30} L{x - 38},{y + 38} L{x - 30},{y + 38}"/>'
+                    f'<text class="fl" x="{x - 44}" y="{y + 54}">{e(name)}</text><circle cx="{x}" cy="{y}" r="4.5"/><circle class="hit" cx="{x}" cy="{y}" r="16"/></g>')
     rep = ''.join(f'<g class="rep"><circle cx="{X(lo)}" cy="{Y(la)}" r="1.6"/><text x="{X(lo) + 6}" y="{Y(la) + 4}">{n}</text></g>'
                   for n, la, lo in REPERES)
     sx, sy = X(STUDIO[1]), Y(STUDIO[0])
     studio = f'<circle class="st" cx="{sx}" cy="{sy}" r="13"/>'
 
     svg = (f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Carte des lieux du studio en Wallonie">'
-           f'<path class="bx" d="{path(fond["bruxelles"])}"/><path class="wa" d="{path(fond["wallonie"])}"/>'
+           f'<path class="bx" d="{path(fond["bruxelles"])}"/><path class="wa" d="{path(fond["wallonie"])}"/><g class="rvs">{riv}</g>'
            f'{rep}{"".join(dots)}{studio}</svg>')
-    noms = sorted(groups, key=lambda s: _k(s)) + sorted(hors, key=_k)
     total = sum(len(g['items']) for g in groups.values()) + sum(len(v) for v in hors.values())
     html_ = (f'<section class="lieux"><h2 class="h">Les lieux.</h2></section>'
              f'<figure class="carte" id="carte">{svg}'
              f'<figcaption><p class="cl" aria-live="polite"></p>'
-             f'<p class="cn"><span class="leg" aria-hidden="true"></span>le studio · {total} lieux · {" · ".join(e(n) for n in noms)}</p></figcaption></figure>')
+             f'<p class="cn"><span class="leg" aria-hidden="true"></span>le studio · {total} lieux</p></figcaption></figure>')
     return html_, inconnus
