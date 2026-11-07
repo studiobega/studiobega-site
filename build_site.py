@@ -348,21 +348,34 @@ if V2:
         return f'<a class="it" href="{href}">{inner}</a>' if href else f'<div class="it">{inner}</div>'
     def row(lab, body):
         return f'<section class="srow"><h2 class="slab">{e(lab)}</h2><div class="sbody">{body}</div></section>'
+    nb_lieux = len(tous)
+    nb_comm = carte.communes([p for p in P if ph(p['nom']) and ph(p['lieu']) and PICS.get(p['id'])])
+    facts = (f'<div class="fx"><b>{nb_lieux}</b><span>lieux</span></div>'
+             f'<div class="fx"><b>{nb_comm}</b><span>communes</span></div>'
+             f'<div class="fx"><b>3</b><span>échelles : territoire, activité, habitat</span></div>'
+             f'<div class="fx"><b>1</b><span>clé par lieu</span></div>')
+    tps = [("01", "Lire", "Sur place : le relief, l'eau, les usages, ceux qui traversent le lieu. Puis le programme du maître d'ouvrage."),
+           ("02", "Imaginer", "<span class=\"key\">La clé</span> : l'idée qui rend le lieu singulier, trouvée entre ce que le lieu permet et ce que vous voulez en faire."),
+           ("03", "Réaliser", "Le projet se dessine à partir d'elle, du plan directeur au dernier détail de chantier.")]
+    tps_h = ''.join(f'<div class="tp"><span class="num">{a}</span><h3>{b}</h3><p>{c}</p></div>' for a, b, c in tps)
     studio_rows = (
-        row("Le studio", "<p>Studio d'architecture installé à Hotton. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et au-delà. De la première lecture du lieu jusqu'au chantier, pour des communes, des opérateurs, des promoteurs et des particuliers.</p>") +
-        row("La méthode", item("Lire", "le lieu sur place, puis le programme du maître d'ouvrage.") +
-                          '<div class="it"><span class="n">Imaginer</span><span class="g"><span class="key">la clé</span>, l\'idée qui rend le lieu singulier.</span></div>' +
-                          item("Réaliser", "le projet, de l'esquisse au dernier détail de chantier.")) +
+        row("Le studio", "<p class=\"lead\">Studio d'architecture installé à Hotton, au cœur de l'Ardenne. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et au-delà.</p>"
+                         "<p>De la première lecture du lieu jusqu'au chantier, pour des communes, des opérateurs, des promoteurs et des particuliers.</p>") +
+        row("La méthode", f'<div class="tps3">{tps_h}</div>') +
         row("Équipe", item("Benjamin Gaspard", "Architecte, fondateur") + item("Héloïse Collin", "Architecte d'intérieur")))
     studio = f"""<div class="page"><div class="wrap">
 {nav('Studio')}    <div class="st">
-      <header class="shd"><h1 class="sh1">Studio BEGA lit les lieux, trouve leur clé et les réalise.</h1>
-      <p class="sub">Revaloriser ce qui existe. Construire quand le terrain le demande.</p></header>
+      <header class="sx"><div class="topo" aria-hidden="true"></div>
+        <p class="kick">Hotton · Ardenne</p>
+        <h1 class="sh1">Studio BEGA lit les lieux, trouve leur clé et les réalise.</h1>
+        <p class="sub">Revaloriser ce qui existe. Construire quand le terrain le demande.</p>
+        <div class="fxs">{facts}</div>
+      </header>
       <img class="duo" src="/img/duo.jpg" alt="Héloïse Collin et Benjamin Gaspard" loading="lazy">
       {studio_rows}
       <section class="srow" id="contact"><h2 class="slab">Contact</h2><div class="sbody">
         <div class="map"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></div>
-        <p>Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
+        <p class="lead">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
         <a class="cta" href="tel:+32474634309">+32 474 63 43 09</a>
         <a class="cta" href="mailto:contact@studiobega.be">contact@studiobega.be</a>
         <p class="adr">Rue Simon 43, 6990 Hotton</p>
@@ -378,6 +391,7 @@ if V2:
 (DIST / 'assets').mkdir(exist_ok=True)
 shutil.copy(ROOT / 'assets' / 'site.css', DIST / 'assets' / 'site.css')
 shutil.copy(ROOT / 'assets' / 'site.js', DIST / 'assets' / 'site.js')
+shutil.copy(ROOT / 'assets' / 'topo.svg', DIST / 'assets' / 'topo.svg')
 emp = DATA / 'empreinte.txt'
 (DIST / 'build.json').write_text(json.dumps({'empreinte': emp.read_text().strip() if emp.exists() else ''}))
 # favicon : le gros rond jaune, seul, sans fond (PNG : Safari ignore les SVG)
