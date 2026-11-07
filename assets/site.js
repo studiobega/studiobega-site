@@ -40,7 +40,7 @@
       }
     };
     if (h0 === 'accueil') { seen = false; history.replaceState(null, '', B + '/'); }   // le logo rappelle le rideau
-    if (h0 === 'studio' || seen) up(true); else { site.classList.add('locked'); tint('#2a2a28'); }
+    if (h0 === 'studio' || h0 === 'projets' || seen) up(true); else { site.classList.add('locked'); tint('#2a2a28'); }
     var upAt = 0;
     var down = function () {                                         // le rideau redescend
       if (!hero.classList.contains('up')) return;
@@ -142,4 +142,30 @@
     g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); show(g); } });
   });
   var first = c.querySelector('.pt'); if (first) show(first);
+})();
+
+// projets (accueil) : filtres par porte et vues Images · Liste · Carte ; le défilé 1 · 2 · 3 se recompose à chaque filtre
+(function () {
+  var pj = document.getElementById('projets'); if (!pj) return;
+  var flow = pj.querySelector('.flow'), tiles = Array.prototype.slice.call(flow.querySelectorAll('.sq')), f = '', v = 'img';
+  function rows() {
+    var L = tiles.filter(function (t) { return !f || t.getAttribute('data-k') === f; }), i = 0, n = 0;
+    flow.innerHTML = '';
+    while (i < L.length) {
+      var size = [1, 2, 3][n % 3], g = L.slice(i, i + size), r = document.createElement('div');
+      r.className = 'rw r' + g.length;
+      g.forEach(function (t) { var im = t.querySelector('img'); im.src = im.getAttribute(g.length === 1 ? 'data-b' : 'data-m'); r.appendChild(t); });
+      flow.appendChild(r); i += size; n++;
+    }
+  }
+  function apply() {
+    Array.prototype.forEach.call(pj.querySelectorAll('.flt button'), function (b) { b.classList.toggle('on', b.getAttribute('data-f') === f); });
+    Array.prototype.forEach.call(pj.querySelectorAll('.vws button'), function (b) { b.classList.toggle('on', b.getAttribute('data-v') === v); });
+    Array.prototype.forEach.call(pj.querySelectorAll('.sec'), function (s) { s.hidden = s.getAttribute('data-for') !== f; });
+    Array.prototype.forEach.call(pj.querySelectorAll('.v'), function (x) { x.hidden = x.getAttribute('data-v') !== v; });
+    Array.prototype.forEach.call(pj.querySelectorAll('.li'), function (x) { x.hidden = !!f && x.getAttribute('data-k') !== f; });
+    rows();
+  }
+  pj.querySelector('.flt').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { f = b.getAttribute('data-f'); apply(); } });
+  pj.querySelector('.vws').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { v = b.getAttribute('data-v'); apply(); } });
 })();

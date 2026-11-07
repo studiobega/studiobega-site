@@ -101,7 +101,8 @@ FOOT = """    <footer class="foot">
       <div>© Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
     </footer>
 """
-MENU = [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/studio/', 'Studio') if V2 else ('/contact.html', 'Contact')]
+MENU = ([('/#projets', 'Projets'), ('/studio/', 'Studio')] if V2 else
+        [('/territoires/', 'Territoires'), ('/activites/', 'Activités'), ('/habitat/', 'Habitat'), ('/contact.html', 'Contact')])
 CT = ('Contact', 'Studio')
 LOGO = '<a class="logo" href="/#accueil" aria-label="Studio BEGA, accueil">BEGA<span class="dot" aria-hidden="true"></span></a>'
 
@@ -162,6 +163,15 @@ DOORS = {
     'habitat':     ("Habiter, c'est s'accorder à un lieu.",
                     "Une maison neuve, une ferme à rénover de fond en comble, des logements, un intérieur. Chaque projet part de ce qui est déjà là : le terrain, les murs, la vue, la lumière. La clé fait le lien entre ce qui existe et la façon dont on veut y vivre. Héloïse la prolonge à l'intérieur."),
 }
+if V2:   # textes de secteur resserrés : ils s'affichent sur l'accueil quand on filtre, et en tête de chaque galerie
+    DOORS = {
+        'territoires': ("Un territoire se lit avant de se dessiner.",
+                        "Une place, une rue, une rivière, un massif. Le relief, l'eau, les usages et ceux qui le traversent donnent au lieu sa logique. Du plan directeur à l'espace public, tout se dessine à partir de sa clé."),
+        'activites':   ("Un lieu d'activité vit de ce qu'il fait ressentir.",
+                        "Un hôtel, un café, un commerce, un cinéma, un bureau. La clé réconcilie ce que l'exploitant veut offrir avec ce que le lieu sait déjà faire."),
+        'habitat':     ("Habiter, c'est s'accorder à un lieu.",
+                        "Une maison neuve, une ferme à rénover, des logements, un intérieur. Tout part de ce qui est là : le terrain, les murs, la vue, la lumière. Héloïse prolonge la clé à l'intérieur."),
+    }
 NAMES = dict(PORTES)
 bykey = {k: sorted([p for p in P if p['pk'] == k and ph(p['nom'])], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 
@@ -284,22 +294,33 @@ write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue
 if V2:
     import sys; sys.path.insert(0, str(ROOT)); import carte
 
-    # Accueil (modèle OFFICE KGDVS / Carmody Groarke) : les trois galeries en mots en tête, puis tous les projets
-    # en un défilé rythmé (une image pleine largeur, puis deux, puis trois…), la clé en phrase sous chacun.
-    # Ordre : la vue Airtable « Site », une porte après l'autre à tour de rôle (variété des échelles).
+    # Accueil = Projets (modèle OFFICE KGDVS / Carmody Groarke) : filtres en mots (Tout · portes), vues Images · Liste · Carte.
+    # Images : défilé rythmé 1 · 2 · 3, la clé en phrase sous chaque projet. Le filtre affiche le texte du secteur.
+    # Ordre : la vue Airtable « Site », une porte après l'autre à tour de rôle. Un clic ouvre la fiche dans sa galerie.
     from itertools import zip_longest
     rows = [[q for q in bykey[k] if PICS.get(q['id'])] for k, _ in PORTES]
     tous = [q for trio in zip_longest(*rows) for q in trio if q]
-    tabs = ''.join(f'<a href="/{k}/">{e(n)}<sup>{len(r)}</sup></a>' for (k, n), r in zip(PORTES, rows))   # = ce que montre la galerie
     def tile(q, big):
-        cle = ph(q['cle'])
-        return (f'<a class="sq" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{abs_(PICS[q["id"]][0][0 if big else 2])}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
+        cle = ph(q['cle']); B, M = abs_(PICS[q['id']][0][0]), abs_(PICS[q['id']][0][2])
+        return (f'<a class="sq" data-k="{q["pk"]}" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{B if big else M}" data-b="{B}" data-m="{M}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
                 f'{f"<span class=\"ck\">{e(cle)}</span>" if cle else ""}<span class="cm">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a>')
     seq, i, n = [], 0, 0
     while i < len(tous):
         size = (1, 2, 3)[n % 3]; grp = tous[i:i + size]; i += size; n += 1
         seq.append(f'<div class="rw r{len(grp)}">' + ''.join(tile(q, len(grp) == 1) for q in grp) + '</div>')
-    moments = f'<div class="ix"><div class="tabs">{tabs}</div></div><div class="flow">{"".join(seq)}</div>\n'
+    flt = f'<button type="button" class="on" data-f="">Tout<sup>{len(tous)}</sup></button>' + ''.join(
+        f'<button type="button" data-f="{k}">{e(n)}<sup>{len(r)}</sup></button>' for (k, n), r in zip(PORTES, rows))
+    vws = '<button type="button" class="on" data-v="img">Images</button><button type="button" data-v="list">Liste</button><button type="button" data-v="map">Carte</button>'
+    intros = ''.join(f'<div class="sec" data-for="{k}" hidden><h2 class="h">{e(DOORS[k][0])}</h2><p>{e(DOORS[k][1])}</p></div>' for k, _ in PORTES)
+    lst = ''.join(f'<a class="li" data-k="{q["pk"]}" href="/{q["pk"]}/#{q["id"]}"><span class="ln">{e(ph(q["nom"]))}</span><span>{e(ph(q["lieu"]))}</span>'
+                  f'<span>{e(NAMES[q["pk"]])}</span><span>{e(ph(q["annee"]))}</span></a>' for q in tous)
+    CARTE, _inc = carte.build([p for p in P if ph(p['nom']) and ph(p['lieu'])], lambda p: f"{BASE}/{p['pk']}/#{p['id']}", DATA / 'carte' / 'fond.json')
+    if _inc: print('carte : lieux sans coordonnées →', sorted(set(_inc)))
+    CARTE = re.sub(r'<section class="lieux">.*?</section>', '', CARTE)
+    moments = (f'<section class="pj" id="projets"><div class="bar"><div class="flt">{flt}</div><div class="vws">{vws}</div></div>{intros}'
+               f'<div class="v" data-v="img"><div class="flow">{"".join(seq)}</div></div>'
+               f'<div class="v" data-v="list" hidden><div class="lst">{lst}</div></div>'
+               f'<div class="v" data-v="map" hidden>{CARTE}</div></section>\n')
     index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
   <div class="veil" aria-hidden="true"></div>
@@ -308,13 +329,11 @@ if V2:
   <div class="txt"><h1>Tout est déjà là.</h1><p>Lire un lieu. Imaginer sa clé. Le réaliser.</p></div>
 </section>
 <div class="page site" id="site"><div class="wrap">
-{nav('')}{moments}
+{nav('Projets')}{moments}
 {FOOT}</div></div>"""
     write('index.html', page('Studio BEGA — Architecture & stratégie de lieu, Wallonie', index2,
         "Studio BEGA lit les lieux, trouve leur clé et les réalise : territoires, lieux d'activité, habitat. Architecture, plans directeurs et intérieurs, partout en Wallonie."))
 
-    CARTE, _inc = carte.build([p for p in P if ph(p['nom']) and ph(p['lieu'])], lambda p: f"{BASE}/{p['pk']}/#{p['id']}", DATA / 'carte' / 'fond.json')
-    if _inc: print('carte : lieux sans coordonnées →', sorted(set(_inc)))
     # Studio : un seul texte, comme la page « Practice » des bureaux de référence ; puis le duo, la carte, les coordonnées
     txt = [
         "Studio BEGA est un studio d'architecture installé à Hotton, en Ardenne. Il conçoit des plans directeurs, des espaces publics, des lieux d'activité, des maisons et des intérieurs, partout en Wallonie et au-delà.",
@@ -332,8 +351,8 @@ if V2:
 {nav('Studio')}    <div class="col">
       <header class="sh"><h1 class="h">Architecture & stratégie de lieu.</h1><div class="prose">{body_txt}</div></header>
       <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
-      {CARTE}
-      <section id="contact"><h2 class="h">Un lieu à imaginer.</h2>{lines("Le studio est à Hotton, au bord de l'Ourthe.")}</section>
+      <section id="contact" class="hq"><div class="map"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></div>
+        <h2 class="h">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</h2></section>
       <dl class="addr">
         <div><dt>Mail</dt><dd><a href="mailto:contact@studiobega.be">contact@studiobega.be</a></dd></div>
         <div><dt>Téléphone</dt><dd><a href="tel:+32474634309">+32 474 63 43 09</a></dd></div>
