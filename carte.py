@@ -98,7 +98,7 @@ def build(projets, href, fond_path):
            f'{rep}{"".join(dots)}{studio}</svg>')
     noms = sorted(groups, key=lambda s: _k(s)) + sorted(hors, key=_k)
     total = sum(len(g['items']) for g in groups.values()) + sum(len(v) for v in hors.values())
-    html_ = (f'<section class="lieux"><h2 class="h">Les lieux.</h2><p>Le studio est à Hotton. Les lieux, eux, sont partout.</p></section>'
+    html_ = (f'<section class="lieux"><h2 class="h">Les lieux.</h2></section>'
              f'<figure class="carte" id="carte">{svg}'
              f'<figcaption><p class="cl" aria-live="polite"></p>'
              f'<p class="cn"><span class="leg" aria-hidden="true"></span>le studio · {total} lieux · {" · ".join(e(n) for n in noms)}</p></figcaption></figure>')

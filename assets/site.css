@@ -217,9 +217,7 @@ html.lock{overflow:hidden}
 /* refonte : page Studio */
 .col header.sh{padding-top:72px}
 .col header.sh .h{margin-bottom:26px}
-.tps{display:grid;gap:28px}
-.tp h3{margin:0 0 6px;font-size:20px;font-weight:600}
-.tp p{margin:0}
-.col .map{margin-top:40px}
+.col .prose p{margin:0 0 22px}
+.col header.sh+img.ill{margin-top:72px}
 .col .addr{margin-top:40px}
 .lieux{margin-top:128px}

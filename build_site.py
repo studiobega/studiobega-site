@@ -311,20 +311,25 @@ if V2:
 
     CARTE, _inc = carte.build([p for p in P if ph(p['nom']) and ph(p['lieu'])], lambda p: f"{BASE}/{p['pk']}/#{p['id']}", DATA / 'carte' / 'fond.json')
     if _inc: print('carte : lieux sans coordonnées →', sorted(set(_inc)))
-    tps = [("Lire.", "Ce que le lieu permet. Ce qu'il impose. Ce qu'il peut devenir. Et ce que vous voulez en faire."),
-           ("Imaginer.", "La clé : ce qui rend le lieu singulier. Elle se trouve sur place, entre le lieu et votre projet."),
-           ("Réaliser.", "D'une vallée entière à une seule pièce. Dessiné à partir de la clé, construit jusqu'au dernier détail.")]
+    # Studio : un seul texte, comme la page « Practice » des bureaux de référence ; puis le duo, la carte, les coordonnées
+    txt = [
+        "Studio BEGA est un studio d'architecture installé à Hotton, en Ardenne. Il conçoit des plans directeurs, des espaces publics, des lieux d'activité, des maisons et des intérieurs, partout en Wallonie et au-delà.",
+        '<CLE>',
+        "Le studio mène la mission entière : lecture et plan directeur, permis, dossiers d'exécution, marchés de travaux, suivi de chantier. Il travaille pour des communes et des institutions publiques, des opérateurs touristiques, des promoteurs et des particuliers.",
+        "Parmi ses références : l'esplanade du château de Bouillon, remportée en procédure ouverte ; le plan directeur du Bastogne War Museum ; l'architecture et la scénographie du centre d'interprétation du paysage de La Roche-en-Ardenne ; le cinéma Plaza et le centre culturel de Hotton.",
+        "Revaloriser ce qui existe. Construire quand le terrain le demande.",
+        "Benjamin Gaspard, architecte, fonde le studio et conduit chaque lecture. Héloïse Collin, architecte d'intérieur, prolonge la clé à l'intérieur : matières, lumière, usages.",
+    ]
+    cle_p = ("<p>Chaque projet commence sur place. Le studio lit le lieu, son relief, son eau, ses usages, ceux qui le traversent, "
+             "et le confronte au programme du maître d'ouvrage. De cette lecture sort <span class=\"key\">la clé : l'idée qui rend le lieu singulier</span>. "
+             "Tout le projet se dessine à partir d'elle, de l'esquisse au dernier détail de chantier.</p>")
+    body_txt = ''.join(cle_p if t == '<CLE>' else f'<p>{e(t)}</p>' for t in txt)
     studio = f"""<div class="page"><div class="wrap">
 {nav('Studio')}    <div class="col">
-      <header class="sh"><h1 class="h">Tout part du lieu.</h1>{lines("Studio BEGA lit les lieux, trouve leur clé et les réalise. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs.", "Revaloriser ce qui existe. Construire quand le terrain le demande.")}</header>
-      <img class="wide" src="/img/lire-1.jpg" alt="Benjamin Gaspard sur place, face au paysage" loading="lazy">
-      <section><h2 class="h">Lire. Imaginer. Réaliser.</h2><div class="tps">{''.join(f'<div class="tp"><h3>{e(a)}</h3><p>{e(b)}</p></div>' for a, b in tps)}</div></section>
-      <img class="band" src="{IMG_BANDEAU}" alt="Lire le lieu, trouver la clé, faire le projet" loading="lazy">
-      <section><h2 class="h">Deux regards.</h2>{lines("Benjamin Gaspard, architecte, trouve la clé sur place.", "Héloïse Collin, architecte d'intérieur, la prolonge à l'intérieur.")}</section>
+      <header class="sh"><h1 class="h">Architecture & stratégie de lieu.</h1><div class="prose">{body_txt}</div></header>
       <img class="ill" src="/img/duo.jpg" alt="Benjamin Gaspard et Héloïse Collin" loading="lazy">
       {CARTE}
       <section id="contact"><h2 class="h">Un lieu à imaginer.</h2>{lines("Le studio est à Hotton, au bord de l'Ourthe.")}</section>
-      <div class="map"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></div>
       <dl class="addr">
         <div><dt>Mail</dt><dd><a href="mailto:contact@studiobega.be">contact@studiobega.be</a></dd></div>
         <div><dt>Téléphone</dt><dd><a href="tel:+32474634309">+32 474 63 43 09</a></dd></div>
