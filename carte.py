@@ -85,7 +85,7 @@ def build(projets, href, fond_path):
         fid, _, k = (href(q).split('~') + ['', ''])[:3]
         lab = f"{q['nom']} · {place}"
         return (f'<g class="pt" tabindex="0" role="button" data-open="{e(fid)}" data-k="{e(k)}" data-lab="{e(lab)}" aria-label="{e(lab)}">'
-                f'<title>{e(lab)}</title><circle cx="{x}" cy="{y}" r="4.6"/><circle class="hit" cx="{x}" cy="{y}" r="11"/></g>')
+                f'<title>{e(lab)}</title><circle cx="{x}" cy="{y}" r="3.9"/><circle class="hit" cx="{x}" cy="{y}" r="10"/></g>')
     dots = []
     for name, g in groups.items():
         lat = sum(a for a, _ in g['pts']) / len(g['pts']); lon = sum(b for _, b in g['pts']) / len(g['pts'])
@@ -95,7 +95,7 @@ def build(projets, href, fond_path):
             else:
                 ring = 0 if i == 0 else (1 if i <= 6 else 2); j = 0 if ring == 0 else (i - 1 if ring == 1 else i - 7)
                 m = 1 if ring == 0 else (min(n - 1, 6) if ring == 1 else n - 7)
-                rad = (0, 10, 19)[ring]; ang = 2 * math.pi * j / max(m, 1) - math.pi / 2
+                rad = (0, 8.5, 16)[ring]; ang = 2 * math.pi * j / max(m, 1) - math.pi / 2
                 x, y = round(cx + rad * math.cos(ang), 1), round(cy + rad * math.sin(ang), 1)
             dots.append(dot(x, y, q, name))
     def smooth(pts):   # tracé lissé (Catmull-Rom → Bézier) pour des rivières souples
