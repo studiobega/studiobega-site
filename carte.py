@@ -118,7 +118,7 @@ def build(projets, href, fond_path):
     total = sum(len(g['items']) for g in groups.values()) + sum(len(v) for v in hors.values())
     html_ = (f'<section class="lieux"><h2 class="h">Les lieux.</h2></section>'
              f'<figure class="carte" id="carte">{svg}'
-             f'<figcaption><p class="cl" aria-live="polite"></p>'
+             f'<figcaption>'
              f'<p class="cn"><span class="leg" aria-hidden="true"></span>le studio · {total} lieux</p></figcaption></figure>')
     return html_, inconnus
 

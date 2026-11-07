@@ -114,8 +114,9 @@
     if (ev.target.closest('a')) return;
     close();   // la croix, à côté, ou sur la fiche : elle se ferme
   });
-  Array.prototype.forEach.call(grid.querySelectorAll('[data-open]'), function (c) {
-    c.addEventListener('click', function (ev) { ev.preventDefault(); open(c.getAttribute('data-open')); });
+  grid.addEventListener('click', function (ev) {   // vignettes, lignes de liste, cartes de visite de la carte
+    var c = ev.target.closest('[data-open]'); if (!c || !grid.contains(c)) return;
+    ev.preventDefault(); open(c.getAttribute('data-open'));
   });
   document.addEventListener('keydown', function (ev) {
     if (ev.key !== 'Escape') return;
@@ -125,23 +126,40 @@
   if (h) open(h);
 })();
 
-// carte des lieux : un point → le nom de la localité et ses lieux, chacun mène à sa fiche
+// carte des lieux : un point → une carte de visite posée sur la carte (vignette, nom) ; un clic ouvre la fiche sur place
 (function () {
   var c = document.getElementById('carte'); if (!c) return;
-  var out = c.querySelector('.cl'), cur = null;
+  var out = c.querySelector('.cl'), cur = null, pop = document.createElement('div');
+  pop.className = 'pop'; pop.hidden = true; c.appendChild(pop);
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-  function show(g) {
+  function items(g) { return g.getAttribute('data-l').split('|').map(function (x) { var a = x.split('§'), b = (a[1] || '').split('~'); return { n: a[0], id: b[0], t: b[1], k: b[2] }; }); }
+  function show(g, place) {
     if (cur) cur.classList.remove('on'); cur = g; g.classList.add('on');
-    out.innerHTML = '<b>' + esc(g.getAttribute('data-n')) + '</b>' + g.getAttribute('data-l').split('|').map(function (x) {
-      var a = x.split('§'); return '<a href="' + esc(a[1]) + '">' + esc(a[0]) + '</a>';
-    }).join('');
+    var f = c.getAttribute('data-f') || '', L = items(g).filter(function (i) { return !f || i.k === f; });
+    var h = '<div class="pop-h">' + esc(g.getAttribute('data-n')) + '<span>' + L.length + ' lieu' + (L.length > 1 ? 'x' : '') + '</span></div>' +
+      L.map(function (i) { return i.t ? '<a href="#' + esc(i.id) + '" data-open="' + esc(i.id) + '"><img src="' + esc(i.t) + '" alt="" loading="lazy"><span>' + esc(i.n) + '</span></a>' : '<div class="pop-i"><span>' + esc(i.n) + '</span></div>'; }).join('');
+    pop.innerHTML = h; pop.hidden = false;
+    if (out) out.textContent = '';
+    if (place) {
+      var r = g.querySelector('circle:not(.hit)').getBoundingClientRect(), R = c.getBoundingClientRect();
+      var x = r.left + r.width / 2 - R.left, y = r.top + r.height / 2 - R.top;
+      var w = pop.offsetWidth, left = Math.min(Math.max(x - w / 2, 0), R.width - w);
+      pop.style.left = left + 'px'; pop.style.top = (y + 16) + 'px';
+    }
   }
+  function hide() { pop.hidden = true; if (cur) cur.classList.remove('on'); cur = null; }
   Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) {
-    g.addEventListener('click', function () { show(g); });
-    g.addEventListener('mouseenter', function () { show(g); });
-    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); show(g); } });
+    g.addEventListener('click', function (ev) { ev.stopPropagation(); if (cur === g && !pop.hidden) hide(); else show(g, true); });
+    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); show(g, true); } });
   });
-  var first = c.querySelector('.pt'); if (first) show(first);
+  c.addEventListener('click', function (ev) { if (!ev.target.closest('.pop') && !ev.target.closest('.pt')) hide(); });
+  // filtre des portes (accueil) : on ne garde que les points qui ont au moins un lieu de la porte choisie
+  c.filtre = function (f) {
+    c.setAttribute('data-f', f || ''); hide();
+    Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) {
+      g.style.display = !f || items(g).some(function (i) { return i.k === f; }) ? '' : 'none';
+    });
+  };
 })();
 
 // projets (accueil) : filtres par porte et vues Images · Liste · Carte ; le défilé 1 · 2 · 3 se recompose à chaque filtre
@@ -165,6 +183,7 @@
     Array.prototype.forEach.call(pj.querySelectorAll('.v'), function (x) { x.hidden = x.getAttribute('data-v') !== v; });
     Array.prototype.forEach.call(pj.querySelectorAll('.li'), function (x) { x.hidden = !!f && x.getAttribute('data-k') !== f; });
     rows();
+    var ca = document.getElementById('carte'); if (ca && ca.filtre) ca.filtre(f);
   }
   pj.querySelector('.flt').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { f = b.getAttribute('data-f'); apply(); } });
   pj.querySelector('.vws').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { v = b.getAttribute('data-v'); apply(); } });

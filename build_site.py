@@ -317,7 +317,8 @@ if V2:
         f'<div class="sec" data-for="{k}" hidden><p class="sp">{e(DOORS[k][0])}</p><p>{e(DOORS[k][1])}</p></div>' for k, _ in PORTES)
     lst = ''.join(f'<a class="li" data-k="{q["pk"]}" data-open="{q["id"]}" href="/{q["pk"]}/#{q["id"]}"><span class="ln">{e(ph(q["nom"]))}</span><span>{e(ph(q["lieu"]))}</span>'
                   f'<span>{e(NAMES[q["pk"]])}</span><span>{e(ph(q["annee"]))}</span></a>' for q in tous)
-    CARTE, _inc = carte.build([p for p in P if ph(p['nom']) and ph(p['lieu'])], lambda p: f"{BASE}/{p['pk']}/#{p['id']}", DATA / 'carte' / 'fond.json')
+    # la carte : chaque lieu porte son identifiant, sa vignette et sa porte (le clic ouvre une carte de visite du lieu, puis sa fiche)
+    CARTE, _inc = carte.build([q for q in tous if ph(q['lieu'])], lambda q: f"{q['id']}~{abs_(PICS[q['id']][0][1])}~{q['pk']}", DATA / 'carte' / 'fond.json')
     if _inc: print('carte : lieux sans coordonnées →', sorted(set(_inc)))
     CARTE = re.sub(r'<section class="lieux">.*?</section>', '', CARTE)
     moments = (f'<section class="pj" id="projets"><div class="bar"><div class="flt">{flt}</div><div class="vws">{vws}</div></div>{intros}'
