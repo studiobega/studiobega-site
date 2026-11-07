@@ -253,3 +253,4 @@ html.lock{overflow:hidden}
 @media (max-width:900px){.rw.r3{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.pj{padding-top:16px}.bar{flex-direction:column;gap:16px;margin-bottom:36px}.flt{font-size:21px;gap:14px;flex-wrap:nowrap}.flt sup{font-size:11px;vertical-align:10px;margin-left:2px}.vws{font-size:12px;gap:16px}.sec{margin:-8px 0 48px}.sec .h{font-size:22px}.sec p{font-size:16px}.flow{gap:56px}.rw.r2,.rw.r3{grid-template-columns:1fr;gap:56px}.r1 .im img,.r2 .im img,.r3 .im img{aspect-ratio:4/3}.sq .ck,.r1 .ck{font-size:18px}.li{grid-template-columns:1fr auto;gap:2px 12px}.li span:nth-child(3),.li span:nth-child(4){display:none}.hq .h{font-size:22px}}
 .page.site{overflow-x:clip}
+.pj [hidden]{display:none!important}
