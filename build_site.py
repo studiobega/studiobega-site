@@ -198,7 +198,7 @@ def fiche(p):
     if dem:   dl += f'<div><dt class="lab">Demandé</dt><dd class="v">{e(dem)}</dd></div>'
     if sorti: dl += f'<div><dt class="lab">{"Pistes" if multi else "Sorti"}</dt><dd class="v">{sorti_h}</dd></div>'
     liens = [l.split('|', 1) for l in (p['liens'] or '').split('\n') if '|' in l]
-    lk = ''.join(f'<a href="{u.strip()}">{e(t.strip())}</a>' for t, u in liens if u.strip() and u.strip() != '#')
+    lk = ''.join(f'<a href="{u.strip()}" target="_blank" rel="noopener">{e(t.strip())}</a>' for t, u in liens if u.strip() and u.strip() != '#')
     n = len(pics)
     wide = lambda j: j == 0 or (j == n - 1 and (n - 1) % 2 == 1)  # 1re pleine largeur, puis par deux, dernière impaire pleine largeur
     imgs = ''.join(f'<img src="{abs_(b)}" alt="{e(nom)}" loading="lazy" data-zoom="{abs_(b)}">' for j, (b, t, m) in enumerate(pics))
@@ -395,6 +395,11 @@ if V2:
         <a href="https://maps.google.com/?q=Rue+Simon+43,+6990+Hotton" target="_blank" rel="noopener"><span class="k">Studio</span><span class="v">Rue Simon 43, 6990 Hotton</span><span class="ar" aria-hidden="true">↗</span></a>
       </div>
       </div>
+      <section class="sf-refs" aria-label="Références">
+        <div><h2>Commanditaires</h2><ul><li>Ville de Bouillon</li><li>Ville de La Roche-en-Ardenne</li><li>Commune de Hotton</li><li>Commune de Martelange</li><li>Commune de Léglise</li><li>Commune de Vaux-sur-Sûre</li><li>Ville de Beauraing et Province de Namur</li><li>Bastogne War Museum</li><li>Centre culturel de Stavelot et Trois-Ponts</li></ul></div>
+        <div><h2>Concours</h2><ul><li>Centre d'interprétation, La Roche-en-Ardenne — lauréat, 96/100</li><li>Site du football de Sibret, Vaux-sur-Sûre — lauréat</li><li>Esplanade du château, Bouillon — marché remporté, avec UMAN</li></ul></div>
+        <div><h2>Presse</h2><ul><li><a href="https://www.lavenir.net/regions/luxembourg/hotton/2026/11/04/le-nouveau-visage-du-plaza-a-ete-devoile-mardi-soir-au-conseil-communal-de-hotton-le-projet-a-ete-revise-de-fond-en-comble-YGWM3J4EW5H2FLFUOPZEE7HFGA/" target="_blank" rel="noopener">L'Avenir — Le nouveau visage du Plaza, 2026</a></li><li><a href="https://www.tvlux.be/actu/info/patrimoine/hotton-le-plaza-vivra-mais-combien-va-t-il-couter_53001" target="_blank" rel="noopener">TV Lux — Le Plaza vivra, 2026</a></li><li><a href="https://www.lavenir.net/regions/luxembourg/2026/08/26/incendie-dans-les-hautes-fagnes-tour-a-tour-un-programme-pour-sauver-les-forets-ardennaises-K55KOIORIZHSRJXYFSKTNH6SDE/" target="_blank" rel="noopener">L'Avenir — Tour à Tour, un programme pour les forêts ardennaises, 2026</a></li><li><a href="https://www.sudinfo.be/id1154354/article/2026-05-26/le-centre-de-la-roche-en-ardenne-se-cherche-un-nouveau-souffle-cest-un-projet" target="_blank" rel="noopener">Sudinfo — Le centre de La Roche se cherche un nouveau souffle, 2026</a></li></ul></div>
+      </section>
     </article>
 {FOOT}</div></div>"""
     write('studio/index.html', page('Studio — Studio BEGA, architectes à Hotton', studio,

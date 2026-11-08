@@ -1,3 +1,18 @@
+// essai typographique : ?typo=a (Newsreader), ?typo=b (Schibsted Grotesk), ?typo=off pour sortir — mémorisé le temps de la visite
+(function () {
+  var q = (location.search.match(/typo=(a|b|off)/) || [])[1];
+  try { if (q === 'off') sessionStorage.removeItem('typo'); else if (q) sessionStorage.setItem('typo', q); q = sessionStorage.getItem('typo'); } catch (e) {}
+  if (q !== 'a' && q !== 'b') return;
+  document.documentElement.classList.add('typo-' + q);
+  var l = document.createElement('link'); l.rel = 'stylesheet';
+  l.href = q === 'a' ? 'https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap'
+                     : 'https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap';
+  document.head.appendChild(l);
+  var b = document.createElement('div'); b.className = 'typo-badge';
+  b.innerHTML = 'Essai typo ' + q.toUpperCase() + ' <a href="?typo=' + (q === 'a' ? 'b' : 'a') + '">voir ' + (q === 'a' ? 'B' : 'A') + '</a><a href="?typo=off">quitter</a>';
+  document.addEventListener('DOMContentLoaded', function () { document.body.appendChild(b); });
+  if (document.readyState !== 'loading') document.body.appendChild(b);
+})();
 /* studiobega.be — accueil, fiches dans la grille, agrandissement des photos. Aucune dépendance. */
 (function () {
   'use strict';

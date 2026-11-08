@@ -230,7 +230,7 @@ html.lock{overflow:hidden}
 .sq{display:flex;flex-direction:column}
 .sq .im{display:block;overflow:hidden;border-radius:6px;background:#e9e8e3;margin-bottom:16px}
 .sq .im img{display:block;width:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
-.r1 .im img{aspect-ratio:16/8}
+.r1 .im img{aspect-ratio:auto;height:auto;max-height:86vh}
 .r2 .im img{aspect-ratio:4/3}
 .r3 .im img{aspect-ratio:4/5}
 .sq .ck{font-size:19px;line-height:1.4;max-width:720px}
@@ -418,3 +418,22 @@ html.lock{overflow:hidden}
 }
 /* Carte : réservée à l'ordinateur ; sur téléphone, la vue Carte et son bouton disparaissent */
 @media (max-width:760px){.vws [data-v="map"],.v[data-v="map"]{display:none !important}}
+
+/* Studio : les références — trois colonnes de noms, sous le manifeste et la photo */
+.sf-refs{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px clamp(32px,5vw,80px);margin-top:72px;padding-top:28px;border-top:1px solid #e3e2dc}
+.sf-refs h2{margin:0 0 12px;font-size:13px;font-weight:500;color:#6b6b66;letter-spacing:0}
+.sf-refs ul{list-style:none;margin:0;padding:0}
+.sf-refs li{font-size:15px;line-height:1.55;color:#111;margin:0 0 6px}
+.sf-refs a{border-bottom:1px solid #d9d8d2}
+.sf-refs a:hover{border-color:#111}
+@media (max-width:760px){.sf-refs{grid-template-columns:1fr;margin-top:48px;gap:28px}.sf-refs li{font-size:14px}}
+
+/* Essai typographique (?typo=a ou ?typo=b, ?typo=off pour sortir) — invisible sans le paramètre */
+.typo-a .hero h1,.typo-a .sec .sp,.typo-a .sf .sf-h,.typo-a .fh .nm,.typo-a .flt,.typo-a .sq .ck,.typo-a .fcle{font-family:'Newsreader',Georgia,serif;font-weight:400;letter-spacing:-.01em}
+.typo-a .flt button.on{font-weight:500}
+.typo-b .hero h1,.typo-b .sec .sp,.typo-b .sf .sf-h,.typo-b .fh .nm,.typo-b .flt,.typo-b .sq .ck,.typo-b .fcle{font-family:'Schibsted Grotesk',Helvetica,sans-serif;letter-spacing:-.02em}
+.typo-b .sec .sp,.typo-b .sf .sf-h,.typo-b .sq .ck{font-weight:500}
+.typo-a .sec p,.typo-a .sf .sf-t p,.typo-a .mbox dd,.typo-a .mbox .para,.typo-a .sq .cm,.typo-a .sf .sf-duo figcaption,
+.typo-b .sec p,.typo-b .sf .sf-t p,.typo-b .mbox dd,.typo-b .mbox .para,.typo-b .sq .cm,.typo-b .sf .sf-duo figcaption{color:#111}
+.typo-badge{position:fixed;left:12px;bottom:12px;z-index:60;background:#111;color:#fff;font-size:12px;padding:8px 12px;border-radius:6px;display:flex;gap:10px}
+.typo-badge a{color:#FFD400}
