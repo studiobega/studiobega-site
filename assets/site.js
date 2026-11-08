@@ -84,10 +84,43 @@
 
   /* ---- projets : une vraie page par projet. Vignettes, lignes et points de carte y mènent ;
      une ancienne adresse avec #projet (partagée avant) est redirigée vers sa page ---- */
+  // en ouvrant un projet, on retient d'où l'on vient : la catégorie, la vue, l'ordre affiché et la position dans la page.
+  // La page projet s'en sert pour « Précédent / Suivant » et pour le retour ; l'accueil, pour se remettre exactement comme on l'a quitté.
+  function nomDe(x) { var n = x.querySelector('.ln, .nm'); return (n ? n.textContent : (x.querySelector('.cm') || x).textContent.split(' · ')[0]).trim(); }
   document.addEventListener('click', function (ev) {
     var c = ev.target.closest('[data-open]'); if (!c || ev.defaultPrevented || ev.metaKey || ev.ctrlKey) return;
-    ev.preventDefault(); location.href = '/projets/' + c.getAttribute('data-open') + '/';
+    ev.preventDefault();
+    try {
+      var on = document.querySelector('.flt button.on'), vw = document.querySelector('.vws button.on'), sel;
+      var v0 = vw ? vw.getAttribute('data-v') : '';
+      if (document.getElementById('projets')) sel = v0 === 'list' ? '.lst .li:not([hidden])' : '.flow .sq';
+      else sel = '.grid .card';
+      var L = Array.prototype.slice.call(document.querySelectorAll(sel)), ids = [], noms = {};
+      L.forEach(function (x) { var id = x.getAttribute('data-open'); ids.push(id); noms[id] = nomDe(x); });
+      var lab = on ? on.childNodes[0].textContent.trim() : (document.title.split(' — ')[0] || 'Projets');
+      if (lab === 'Tous') lab = 'Tous les projets';
+      sessionStorage.setItem('bega-ctx', JSON.stringify({ ids: ids, noms: noms, lab: lab, back: location.pathname, f: on ? on.getAttribute('data-f') : '', v: v0, y: window.pageYOffset }));
+    } catch (e) {}
+    location.href = '/projets/' + c.getAttribute('data-open') + '/';
   });
+  // page projet : le retour et « Précédent / Suivant » suivent la liste d'où l'on vient (une catégorie, la liste triée, ou tous les projets)
+  (function () {
+    var nav = document.querySelector('.pp-nav'), bk = document.querySelector('.pp-back'); if (!nav || !bk) return;
+    var ctx; try { ctx = JSON.parse(sessionStorage.getItem('bega-ctx') || 'null'); } catch (e) {}
+    var id = location.pathname.split('/')[2];
+    if (!ctx || ctx.ids.indexOf(id) < 0) return;
+    var i = ctx.ids.indexOf(id), n = ctx.ids.length, p = ctx.ids[(i - 1 + n) % n], s = ctx.ids[(i + 1) % n];
+    bk.textContent = '← ' + ctx.lab;
+    bk.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      var r = document.referrer && document.referrer.indexOf(location.origin) === 0 ? new URL(document.referrer).pathname : '';
+      if (r === ctx.back) history.back(); else location.href = ctx.back + (ctx.back === '/' ? '#projets' : '');
+    });
+    var a = nav.querySelectorAll('a');
+    if (n < 2) { nav.hidden = true; return; }
+    a[0].href = '/projets/' + p + '/'; a[0].lastChild.textContent = ctx.noms[p] || '';
+    a[1].href = '/projets/' + s + '/'; a[1].lastChild.textContent = ctx.noms[s] || '';
+  })();
   var hh = location.hash.slice(1);
   if (hh && document.querySelector('[data-open="' + hh.replace(/"/g, '') + '"]')) { location.replace('/projets/' + hh + '/'); return; }
   /* ---- (ancienne fenêtre de fiche, sans objet si la page n'a pas de #modal) ---- */
@@ -292,6 +325,12 @@
     var y = pj.getBoundingClientRect().top + window.pageYOffset - stick();
     if (window.pageYOffset > y + 2) window.scrollTo({ top: y, behavior: 'smooth' });
   }
+  (function () {
+    var ctx; try { ctx = JSON.parse(sessionStorage.getItem('bega-ctx') || 'null'); } catch (e) {}
+    if (!ctx || ctx.back !== '/' || document.referrer.indexOf('/projets/') < 0) return;
+    f = ctx.f || ''; v = ctx.v === 'map' && window.matchMedia('(max-width:760px)').matches ? 'img' : (ctx.v || 'img'); apply();
+    var go = function () { window.scrollTo(0, ctx.y || 0); }; go(); setTimeout(go, 60); setTimeout(go, 400);
+  })();
   pj.querySelector('.flt').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { f = b.getAttribute('data-f'); apply(); haut(); } });
   // liste : tri par colonne (alphabétique par nom par défaut) ; recliquer la même colonne inverse l'ordre
   var lst = pj.querySelector('.lst'), lh = lst && lst.querySelector('.lh');
