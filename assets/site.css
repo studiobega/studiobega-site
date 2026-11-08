@@ -186,8 +186,8 @@ html.lock{overflow:hidden}
 /* carte des lieux (Studio) : la Wallonie, un point par localité ; un clic liste les lieux */
 .carte{margin:48px 0 0}
 .carte svg{display:block;width:100%;height:auto;overflow:visible}
-.carte .wa{fill:#f2f1ec;stroke:#111;stroke-width:.8;stroke-linejoin:round}
-.carte .bx{fill:#f2f1ec;stroke:#111;stroke-width:.8;stroke-linejoin:round}
+.carte .wa{fill:none;stroke:#111;stroke-width:.8;stroke-linejoin:round}
+.carte .bx{fill:none;stroke:#111;stroke-width:.8;stroke-linejoin:round}
 .carte .leg{display:inline-block;width:11px;height:11px;border:1px solid #111;border-radius:50%;vertical-align:-1px;margin-right:6px}
 .carte .pt{cursor:pointer;outline:none}
 .carte .pt circle:not(.hit){fill:#111;transition:r .25s}
@@ -270,7 +270,7 @@ html.lock{overflow:hidden}
 .carte .pt.st circle:not(.hit){fill:#FFD400}
 .carte .pt:hover circle:not(.hit),.carte .pt.on circle:not(.hit),.carte .pt:focus-visible circle:not(.hit){fill:#6b6b66}
 .carte .pt.st:hover circle:not(.hit),.carte .pt.st.on circle:not(.hit){fill:#e6bf00}
-.carte .nm{font-size:12px;fill:#6b6b66;stroke:#f2f1ec;stroke-width:4px;stroke-linejoin:round;paint-order:stroke;pointer-events:none}
+.carte .nm{font-size:12px;fill:#6b6b66;stroke:#fff;stroke-width:4px;stroke-linejoin:round;paint-order:stroke;pointer-events:none}
 .carte .nm.out{stroke:#fff}
 .carte .stl{font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:14px;fill:#111}
 .carte .stk{stroke:#111;stroke-width:.6}
