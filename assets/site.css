@@ -370,3 +370,12 @@ html.lock{overflow:hidden}
  .sf-duo{margin-bottom:28px}.sf-duo img{aspect-ratio:4/3;border-radius:0}
 }
 @media (max-width:760px){.sf-duo{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}}
+
+/* page d'un projet (référencement) : la fiche en pleine page */
+.pp{padding:40px 0 24px}
+.pp-back{display:inline-block;font-size:14px;color:#6b6b66;margin-bottom:28px}
+.pp-back:hover{color:#111}
+.mbox.pp-box{position:static;cursor:auto;width:auto;max-height:none;overflow:visible;border:0;box-shadow:none;border-radius:0;padding:0;transform:none;background:none}
+.pp-box h1.nm{font-size:28px;line-height:1.2;font-weight:700;margin:0 0 8px}
+@media (max-width:760px){.pp-box h1.nm{font-size:22px}}
+@media (max-width:760px){.pp{padding-top:16px}}

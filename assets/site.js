@@ -33,7 +33,7 @@
       if (hero.classList.contains('up')) return;
       if (instant) hero.classList.add('now');
       window.scrollTo(0, 0);
-      hero.classList.add('up'); site.classList.remove('locked'); upAt = Date.now(); tint('#ffffff');
+      hero.classList.add('up'); site.classList.remove('locked'); tint('#ffffff');
       if (!instant) {   // pendant que le rideau monte, la page reste calée en haut : on ne saute aucun texte
         document.documentElement.classList.add('lock');
         setTimeout(function () { window.scrollTo(0, 0); document.documentElement.classList.remove('lock'); }, 900);
@@ -41,19 +41,13 @@
     };
     if (h0 === 'accueil') { seen = false; history.replaceState(null, '', B + '/'); }   // le logo rappelle le rideau
     if (h0 === 'studio' || h0 === 'projets' || seen) up(true); else { site.classList.add('locked'); tint('#2a2a28'); }
-    var upAt = 0;
     var down = function () {                                         // le rideau redescend
       if (!hero.classList.contains('up')) return;
       history.replaceState(null, '', B + '/'); window.scrollTo(0, 0);
       hero.classList.remove('now', 'up'); site.classList.add('locked'); tint('#2a2a28');
     };
     window.addEventListener('hashchange', function () { if (location.hash === '#accueil') down(); });
-    // on remonte tout en haut de l'accueil et on continue de remonter : le rideau revient
-    var calmNow = function () { return Date.now() - upAt > 1000 && window.scrollY <= 0 && !document.documentElement.classList.contains('lock'); };
-    window.addEventListener('wheel', function (ev) { if (ev.deltaY < -8 && hero.classList.contains('up') && calmNow()) down(); }, { passive: true });
-    var sy = null;
-    window.addEventListener('touchstart', function (ev) { sy = hero.classList.contains('up') && window.scrollY <= 0 ? ev.touches[0].clientY : null; }, { passive: true });
-    window.addEventListener('touchmove', function (ev) { if (sy !== null && ev.touches[0].clientY - sy > 70 && calmNow()) { sy = null; down(); } }, { passive: true });
+    // le rideau ne revient jamais en remontant la page : seulement à l'arrivée sur le site, ou par le logo (#accueil)
     document.getElementById('enter').addEventListener('click', function () { up(); });
     hero.addEventListener('wheel', function (ev) { if (ev.deltaY > 8) up(); }, { passive: true });
     var ty = 0;
@@ -89,29 +83,60 @@
   }
 
   /* ---- fiches : une fenêtre qui vient se poser devant la page ---- */
+  // page d'un projet (référencement) : les photos s'agrandissent aussi
+  var pp = document.querySelector('.pp-box');
+  if (pp) pp.addEventListener('click', function (ev) {
+    var z = ev.target.closest('[data-zoom]'); if (!z) return;
+    zoom(z.getAttribute('data-zoom'), Array.prototype.map.call(pp.querySelectorAll('[data-zoom]'), function (x) { return x.getAttribute('data-zoom'); }));
+  });
   var grid = document.querySelector('.grid') || document.getElementById('projets'), modal = document.getElementById('modal');
   if (!grid || !modal) return;
-  var box = modal.querySelector('.mbox'), lastFocus = null;
+  var box = modal.querySelector('.mbox'), lastFocus = null, pushed = false, fromLoad = false;
   function open(id) {
     var t = document.getElementById('f-' + id); if (!t) return;
     box.innerHTML = ''; box.appendChild(t.content.cloneNode(true)); box.scrollTop = 0;
     lastFocus = document.activeElement;
     modal.classList.add('on'); modal.setAttribute('aria-hidden', 'false');
     document.documentElement.classList.add('lock');
-    history.replaceState(null, '', '#' + id);
+    box.style.transform = ''; box.style.opacity = '';
+    if (fromLoad) history.replaceState(null, '', '#' + id); else { history.pushState({ fiche: id }, '', '#' + id); pushed = true; }
     var x = box.querySelector('.fx-x'); if (x) x.focus({ preventScroll: true });
   }
-  function close() {
+  function shut() {
     if (!modal.classList.contains('on')) return;
     modal.classList.remove('on'); modal.setAttribute('aria-hidden', 'true');
     document.documentElement.classList.remove('lock');
-    history.replaceState(null, '', location.pathname);
     if (lastFocus) lastFocus.focus({ preventScroll: true });
   }
+  function close() {   // la fiche s'est ouverte en avançant d'un pas dans l'historique : on recule d'un pas
+    if (!modal.classList.contains('on')) return;
+    if (pushed) { pushed = false; history.back(); } else { history.replaceState(null, '', location.pathname + location.search); shut(); }
+  }
+  window.addEventListener('popstate', function () { pushed = false; shut(); });   // geste ou bouton « retour »
+  // téléphone : on glisse la fiche de côté pour la retirer, comme une carte
+  var sx = null, sy0 = 0, dx = 0, swiping = false, swiped = false;
+  modal.addEventListener('touchstart', function (ev) { if (ev.touches.length !== 1) return; sx = ev.touches[0].clientX; sy0 = ev.touches[0].clientY; dx = 0; swiping = false; }, { passive: true });
+  modal.addEventListener('touchmove', function (ev) {
+    if (sx === null) return;
+    var x = ev.touches[0].clientX - sx, y = ev.touches[0].clientY - sy0;
+    if (!swiping) { if (Math.abs(x) > 12 && Math.abs(x) > Math.abs(y) * 1.4) { swiping = true; box.style.transition = 'none'; } else if (Math.abs(y) > 12) { sx = null; return; } else return; }
+    dx = x; box.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx / 40) + 'deg)'; box.style.opacity = String(1 - Math.min(Math.abs(dx) / 500, .5));
+  }, { passive: true });
+  modal.addEventListener('touchend', function () {
+    if (sx === null) return; sx = null;
+    if (!swiping) return;
+    box.style.transition = '';
+    if (Math.abs(dx) > 90) {
+      swiped = true; setTimeout(function () { swiped = false; }, 400);
+      box.style.transform = 'translateX(' + (dx > 0 ? 120 : -120) + 'vw) rotate(' + (dx > 0 ? 6 : -6) + 'deg)'; box.style.opacity = '0';
+      setTimeout(close, 220);
+    } else { box.style.transform = ''; box.style.opacity = ''; }
+    swiping = false;
+  });
   modal.addEventListener('click', function (ev) {
     var z = ev.target.closest('[data-zoom]');
     if (z) { zoom(z.getAttribute('data-zoom'), Array.prototype.map.call(box.querySelectorAll('[data-zoom]'), function (x) { return x.getAttribute('data-zoom'); })); return; }
-    if (ev.target.closest('a')) return;
+    if (ev.target.closest('a') || swiped) return;
     close();   // la croix, à côté, ou sur la fiche : elle se ferme
   });
   grid.addEventListener('click', function (ev) {   // vignettes, lignes de liste, cartes de visite de la carte
@@ -123,7 +148,7 @@
     if (lb && lb.classList.contains('on')) unzoom(); else close();
   });
   var h = location.hash.slice(1);
-  if (h) open(h);
+  if (h) { fromLoad = true; open(h); fromLoad = false; }
 })();
 
 // carte des lieux : un point par lieu ; au survol, son nom ; au clic, sa fiche (ouverte par la délégation des fiches)

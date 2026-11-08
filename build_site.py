@@ -119,7 +119,7 @@ def nav(on):
 # version des feuilles : change dès que le CSS ou le JS change, les navigateurs reprennent alors la nouvelle version
 VER = hashlib.sha1(b''.join((ROOT / 'assets' / x).read_bytes() for x in ('site.css', 'site.js'))).hexdigest()[:8]
 
-def page(title, body, desc, img='/img/hero.jpg'):
+def page(title, body, desc, img='/img/hero.jpg', canon=None):
     return f"""<!doctype html>
 <html lang="fr"{f' data-base="{BASE}"' if BASE else ''}>
 <head>
@@ -129,7 +129,7 @@ def page(title, body, desc, img='/img/hero.jpg'):
 <meta name="theme-color" content="#ffffff">{'<meta name="robots" content="noindex, nofollow">' if BASE else ''}
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
-<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://studiobega.be{img}"><meta property="og:type" content="website">
+<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://studiobega.be{img.split('?')[0]}"><meta property="og:type" content="website">{f'<link rel="canonical" href="https://studiobega.be{canon}">' if canon and not BASE else ''}
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {FONTS}
 <link rel="stylesheet" href="/assets/site.css?v={VER}">
@@ -195,8 +195,8 @@ def fiche(p):
     multi = '\n' in sorti
     sorti_h = ''.join(f'<span class="ln">{e(x.strip())}</span>' for x in sorti.split('\n') if x.strip()) if multi else e(sorti)
     dl = ''
-    if dem:   dl += f'<div><dt class="lab">Demandé</span><span class="v">{e(dem)}</span></div>'
-    if sorti: dl += f'<div><dt class="lab">{"Pistes" if multi else "Sorti"}</span><span class="v">{sorti_h}</span></div>'
+    if dem:   dl += f'<div><dt class="lab">Demandé</dt><dd class="v">{e(dem)}</dd></div>'
+    if sorti: dl += f'<div><dt class="lab">{"Pistes" if multi else "Sorti"}</dt><dd class="v">{sorti_h}</dd></div>'
     liens = [l.split('|', 1) for l in (p['liens'] or '').split('\n') if '|' in l]
     lk = ''.join(f'<a href="{u.strip()}">{e(t.strip())}</a>' for t, u in liens if u.strip() and u.strip() != '#')
     n = len(pics)
@@ -221,7 +221,7 @@ for k, n in PORTES:
 {fiches}{FOOT}</div></div>
 <div class="modal" id="modal" aria-hidden="true"><div class="mbox" role="dialog" aria-modal="true"></div></div>
 <div class="lb" id="lb" aria-hidden="true"><button type="button" class="lb-p" aria-label="Image précédente">‹</button><img src="" alt=""><button type="button" class="lb-n" aria-label="Image suivante">›</button><span class="lb-c"></span></div>"""
-    write(f'{k}/index.html', page(f'{n} — Studio BEGA', body, intro))
+    write(f'{k}/index.html', page(f'{n} — Studio BEGA', body, intro, canon=f'/{k}/'))
 
 # ---------- images fixes ----------
 for src, dst in [('7d27646bb9e84d280aaa51552a3d6afb', 'hero'), ('ec894847fb1cdd2dc482462924bcd351', 'duo'), ('18732aa0aa56be5aeb1bb35760702fa6', 'contact')]:
@@ -339,7 +339,7 @@ if V2:
 {nav('Projets')}{moments}
 {FOOT}</div></div>"""
     write('index.html', page('Studio BEGA — Architecture & stratégie de lieu, Wallonie', index2,
-        "Studio BEGA lit les lieux, trouve leur clé et les réalise : territoires, lieux d'activité, habitat. Architecture, plans directeurs et intérieurs, partout en Wallonie."))
+        "Studio BEGA lit les lieux, trouve leur clé et les réalise : territoires, lieux d'activité, habitat. Architecture, plans directeurs et intérieurs, partout en Wallonie.", canon='/'))
 
     # Studio, sur le modèle des pages « Office » des bureaux d'auteur : une phrase forte, la photo du duo en grand,
     # puis une grille éditoriale — rubrique à gauche, contenu à droite, filets fins — alignée sur le logo.
@@ -347,13 +347,12 @@ if V2:
     # Studio : un seul fil, aéré, sans grille ni filets — la phrase, le duo, qui on est, comment on travaille, où l'on est, comment appeler.
     studio = f"""<div class="page"><div class="wrap">
 {nav('Studio')}    <article class="sf">
-      <h1 class="sf-h">Studio BEGA lit les lieux, trouve leur clé et les réalise.</h1>
+      <h1 class="sf-h">Le studio est à Hotton. Les lieux, eux, sont partout.</h1>
       <figure class="sf-duo"><img src="/img/duo.jpg" alt="Héloïse Collin et Benjamin Gaspard" loading="lazy">
-        <figcaption>Héloïse Collin, architecte d'intérieur · Benjamin Gaspard, architecte, fondateur</figcaption></figure>
-      <div class="sf-t">
-        <p>Studio d'architecture à Hotton, en Ardenne. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et au-delà.</p>
-        <p>Chaque projet commence sur place. De la lecture du lieu sort <span class="key">la clé</span> : l'idée qui le rend singulier. Tout se dessine à partir d'elle, jusqu'au chantier.</p>
-        <p id="contact">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
+        <figcaption>Héloïse Collin, architecte d'intérieur — Benjamin Gaspard, architecte</figcaption></figure>
+      <div class="sf-t" id="contact">
+        <p>Un lieu se lit avant de se dessiner. Le relief, l'eau, les usages, ceux qui le traversent, et ce que vous voulez en faire : de cette lecture sort <span class="key">la clé</span>, l'idée qui rend le lieu singulier.</p>
+        <p>Puis le projet entier, de la clé au chantier. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie, à Bruxelles et au-delà.</p>
       </div>
       <div class="sf-dl">
         <a href="tel:+32474634309"><span class="k">Téléphone</span><span class="v">+32 474 63 43 09</span><span class="ar" aria-hidden="true">→</span></a>
@@ -363,7 +362,24 @@ if V2:
     </article>
 {FOOT}</div></div>"""
     write('studio/index.html', page('Studio — Studio BEGA', studio,
-        "Studio BEGA, Hotton : Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur. Lire, imaginer, réaliser. Rue Simon 43, 6990 Hotton · +32 474 63 43 09"))
+        "Studio BEGA, Hotton : Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur. Plans directeurs, espaces publics, lieux d'activité, maisons. Rue Simon 43, 6990 Hotton · +32 474 63 43 09", canon='/studio/'))
+    # une page par projet, pour Google : /projets/<id>/ — la fiche en pleine page, titre et description propres ; le site, lui, ouvre les fiches sur place
+    for q in tous:
+        inner = re.search(r'<template id="f-[^"]+">(.*)</template>', fiche(q), re.S).group(1)
+        inner = re.sub(r'<button type="button" class="fx-x"[^>]*>×</button>', '', inner).replace('<h2 class="nm">', '<h1 class="nm">').replace('</h2>', '</h1>', 1)
+        nom, lieu, cle = ph(q['nom']), ph(q['lieu']), ph(q['cle'])
+        desc = ' '.join(x for x in (cle, ph(q['dem']), f"{NAMES[q['pk']]} · {lieu} · Studio BEGA, architecture et plans directeurs en Wallonie.") if x)
+        body_p = f"""<div class="page"><div class="wrap">
+{nav('Projets')}    <article class="pp"><a class="pp-back" href="/#projets">← Tous les projets</a>
+      <div class="mbox pp-box">{inner}</div></article>
+{FOOT}</div></div>
+<div class="lb" id="lb" aria-hidden="true"><button type="button" class="lb-p" aria-label="Image précédente">‹</button><img src="" alt=""><button type="button" class="lb-n" aria-label="Image suivante">›</button><span class="lb-c"></span></div>"""
+        write(f'projets/{q["id"]}/index.html', page(f'{nom} — {lieu} · Studio BEGA', body_p, desc[:300], abs_(PICS[q['id']][0][0]), f'/projets/{q["id"]}/'))
+    # plan du site pour Google
+    urls = ['/', '/studio/', '/territoires/', '/activites/', '/habitat/'] + [f'/projets/{q["id"]}/' for q in tous]
+    (DIST / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + ''.join(f'  <url><loc>https://studiobega.be{u}</loc></url>\n' for u in urls) + '</urlset>\n')
+    (DIST / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://studiobega.be/sitemap.xml\n')
     # l'ancienne page Contact mène au bas de Studio
     write('contact.html', f'<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url={BASE}/studio/#contact"><link rel="canonical" href="{BASE}/studio/#contact">')
 
@@ -385,7 +401,8 @@ redir = ['RewriteEngine On', 'RewriteCond %{HTTPS} off', 'RewriteRule ^ https://
          '<FilesMatch "\\.(css|js)$">', 'Header set Cache-Control "public, max-age=31536000"', '</FilesMatch>', '</IfModule>']
 R = lambda src, dst: redir.append(f'RewriteRule ^{src}/?$ {dst} [R=301,L,NE]')
 old = json.load(open(DATA / 'old_slugs.json')) if (DATA / 'old_slugs.json').exists() else {}
-bycode = {p['code']: f"/{p['pk']}/#{p['id']}" for p in P}
+# anciennes adresses Adobe → la page du projet (Google y transfère son référencement), sinon la fiche dans sa galerie
+bycode = {p['code']: (f"/projets/{p['id']}/" if V2 and PICS.get(p['id']) else f"/{p['pk']}/#{p['id']}") for p in P}
 for s_, code in old.items():
     if code in bycode: R(re.escape(s_.lstrip('/')), bycode[code])
 if V2:   # la refonte : /studio/ est une vraie page ; l'ancienne page Contact et l'aperçu y mènent
