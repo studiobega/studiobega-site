@@ -191,7 +191,6 @@ html.lock{overflow:hidden}
 .carte .rep circle{fill:#9a9993}
 .carte .rep text{font-size:12px;fill:#8a8984;letter-spacing:.02em}
 @media (max-width:640px){.carte .rep text{font-size:21px}.carte .rep circle{r:3}}
-.carte .st{fill:none;stroke:#111;stroke-width:1;pointer-events:none}
 .carte .leg{display:inline-block;width:11px;height:11px;border:1px solid #111;border-radius:50%;vertical-align:-1px;margin-right:6px}
 .carte .pt{cursor:pointer;outline:none}
 .carte .pt circle:not(.hit){fill:#111;transition:r .25s}
