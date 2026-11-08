@@ -172,6 +172,15 @@
     rows();
     var ca = document.getElementById('carte'); if (ca && ca.filtre) ca.filtre(f);
   }
-  pj.querySelector('.flt').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { f = b.getAttribute('data-f'); apply(); } });
-  pj.querySelector('.vws').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { v = b.getAttribute('data-v'); apply(); } });
+  // la barre des filtres se colle exactement sous le bandeau du haut (sa hauteur varie selon l'écran)
+  var nav = document.querySelector('.site .nav'), bar = pj.querySelector('.bar');
+  function stick() { var h = nav ? nav.getBoundingClientRect().height : 0; bar.style.top = Math.floor(h) + 'px'; return h; }
+  stick(); window.addEventListener('resize', stick);
+  // changer de filtre ou de vue ramène au début de la liste, juste sous les barres
+  function haut() {
+    var y = pj.getBoundingClientRect().top + window.pageYOffset - stick();
+    if (window.pageYOffset > y + 2) window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+  pj.querySelector('.flt').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { f = b.getAttribute('data-f'); apply(); haut(); } });
+  pj.querySelector('.vws').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { v = b.getAttribute('data-v'); apply(); haut(); } });
 })();
