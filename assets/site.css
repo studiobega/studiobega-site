@@ -347,3 +347,13 @@ html.lock{overflow:hidden}
 /* Studio : titre en gras, tout le reste en texte normal ; une seule photo */
 .sf .sf-h{font-weight:700;letter-spacing:-.01em;line-height:1.25}
 .sf-t{margin-bottom:8px}
+
+/* Studio = même typographie que le texte des filtres de l'accueil : titre comme la phrase (26 / 18 sur téléphone, graisse moyenne, noir),
+   texte comme le paragraphe (16 / 14, gris) */
+.sf .sf-h{font-size:26px;font-weight:500;line-height:1.25;letter-spacing:-.005em;color:#111}
+.sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k{font-size:16px;line-height:1.6;color:#6b6b66;font-weight:400}
+.sf .sf-dl .v,.sf .sf-dl .ar{font-size:16px;line-height:1.6;color:#111;font-weight:400}
+@media (max-width:760px){
+ .sf .sf-h{font-size:18px}
+ .sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k,.sf .sf-dl .v,.sf .sf-dl .ar{font-size:14px;line-height:1.55}
+}
