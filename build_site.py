@@ -166,11 +166,11 @@ DOORS = {
 if V2:   # textes de secteur resserrés : ils s'affichent sur l'accueil quand on filtre, et en tête de chaque galerie
     DOORS = {
         'territoires': ("Un territoire se lit avant de se dessiner.",
-                        "Une place, une rue, une rivière, un massif. Le relief, l'eau, les usages et ceux qui le traversent donnent au lieu sa logique. Du plan directeur à l'espace public, tout se dessine à partir de sa clé."),
+                        "Une vallée, un massif, une rivière, une rue, une place. À cette échelle, la clé guide les grandes décisions : où intervenir, quoi garder, comment relier. Plan directeur ou espace public, elle tient le cap pendant des années."),
         'activites':   ("Un lieu d'activité vit de ce qu'il fait ressentir.",
                         "Un hôtel, un café, un commerce, un cinéma, un bureau. La clé réconcilie ce que l'exploitant veut offrir avec ce que le lieu sait déjà faire."),
         'habitat':     ("Habiter, c'est s'accorder à un lieu.",
-                        "Une maison neuve, une ferme à rénover, des logements, un intérieur. Tout part de ce qui est là : le terrain, les murs, la vue, la lumière. Héloïse prolonge la clé à l'intérieur."),
+                        "Une maison neuve, une ferme à rénover, des logements, un intérieur. Le terrain, les murs, la vue et la lumière donnent la clé, et l'architecture d'intérieur la prolonge jusqu'au moindre détail."),
     }
 NAMES = dict(PORTES)
 bykey = {k: sorted([p for p in P if p['pk'] == k and ph(p['nom'])], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
@@ -315,7 +315,7 @@ if V2:
         f'<button type="button" data-f="{k}">{e(n)}<sup>{len(r)}</sup></button>' for (k, n), r in zip(PORTES, rows))
     vws = '<button type="button" class="on" data-v="img">Images</button><button type="button" data-v="list">Liste</button><button type="button" data-v="map">Carte</button>'
     TOUT = ("Des lieux singuliers, à toutes les échelles.",
-            "Une vallée, une place, un musée, un café, une maison, une pièce. Chaque projet part de ce qui est déjà là et se dessine à partir de sa clé.")
+            "Une vallée, une place, un musée, un café, une maison, une pièce. Chacun cache une clé, l'idée qui réunit ce que le lieu offre et ce que le projet demande. Chaque projet en porte la signature.")
     intros = f'<div class="sec" data-for=""><p class="sp">{e(TOUT[0])}</p><p>{e(TOUT[1])}</p></div>' + ''.join(
         f'<div class="sec" data-for="{k}" hidden><p class="sp">{e(DOORS[k][0])}</p><p>{e(DOORS[k][1])}</p></div>' for k, _ in PORTES)
     # Liste : en-têtes cliquables (petite flèche à droite de chaque colonne), tri alphabétique par nom par défaut
