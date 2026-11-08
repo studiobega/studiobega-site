@@ -391,3 +391,13 @@ html.lock{overflow:hidden}
  .sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k,.sf .sf-dl .v,.sf .sf-dl .ar{font-size:14px;line-height:1.55}
  .sf-dl a{grid-template-columns:96px 1fr auto;gap:12px;padding:15px 0}
 }
+
+/* Studio sur ordinateur : deux colonnes — le manifeste à gauche (aligné sur le logo), la photo du duo et les coordonnées à droite ;
+   sur téléphone, l'ordre de lecture : manifeste, photo, coordonnées */
+@media (min-width:961px){
+ .sf{display:grid;grid-template-columns:minmax(0,640px) minmax(0,1fr);gap:0 clamp(48px,7vw,120px);align-items:start}
+ .sf-r{padding-top:8px}
+ .sf-r .sf-duo{max-width:none}
+ .sf-r .sf-dl{max-width:none}
+}
+@media (max-width:960px){.sf-r{margin-top:32px}}
