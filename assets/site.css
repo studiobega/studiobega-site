@@ -194,9 +194,8 @@ html.lock{overflow:hidden}
 .carte .st{fill:none;stroke:#111;stroke-width:1;pointer-events:none}
 .carte .leg{display:inline-block;width:11px;height:11px;border:1px solid #111;border-radius:50%;vertical-align:-1px;margin-right:6px}
 .carte .pt{cursor:pointer;outline:none}
-.carte .pt circle:first-child{fill:#111;transition:r .25s}
+.carte .pt circle:not(.hit){fill:#111;transition:r .25s}
 .carte .pt .hit{fill:transparent}
-.carte .pt:hover circle:first-child,.carte .pt:focus-visible circle:first-child,.carte .pt.on circle:first-child{fill:#fff;stroke:#111;stroke-width:2.5}
 .carte figcaption{margin-top:22px}
 .carte .cl{min-height:1.6em;margin:0 0 6px;font-size:17px;line-height:1.6}
 .carte .cl b{font-weight:600;margin-right:8px}
@@ -261,13 +260,13 @@ html.lock{overflow:hidden}
 
 /* carte : un point par commune ; Hotton (le studio) en anneau ; communes hors filtre en gris ; courte liste minimaliste */
 .carte{position:relative}
-.carte .pt circle:first-child{fill:#111;transition:fill .2s}
-.carte .pt:hover circle:first-child,.carte .pt.on circle:first-child{stroke:#111;stroke-width:5}
-.carte .pt.st circle:first-child{fill:#fff;stroke:#111;stroke-width:2.4}
-.carte .pt.st:hover circle:first-child,.carte .pt.st.on circle:first-child{fill:#111;stroke-width:2.4}
+.carte .pt circle:not(.hit){fill:#111;transition:fill .2s}
+.carte .pt:hover circle:not(.hit),.carte .pt.on circle:not(.hit){stroke:#111;stroke-width:5}
+.carte .pt.st circle:not(.hit){fill:#fff;stroke:#111;stroke-width:2.4}
+.carte .pt.st:hover circle:not(.hit),.carte .pt.st.on circle:not(.hit){fill:#111;stroke-width:2.4}
 .carte .pt.off{pointer-events:none}
-.carte .pt.off circle:first-child{fill:#cfcec8;stroke:none}
-.carte .pt.st.off circle:first-child{fill:#fff;stroke:#cfcec8}
+.carte .pt.off circle:not(.hit){fill:#cfcec8;stroke:none}
+.carte .pt.st.off circle:not(.hit){fill:#fff;stroke:#cfcec8}
 .carte .stl{font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:13px;fill:#111;pointer-events:none}
 .carte .pop{position:absolute;z-index:3;min-width:180px;max-width:260px;background:#fff;border:1px solid #111;padding:10px 14px 8px}
 .carte .pop-h{font-size:12px;color:#6b6b66;margin-bottom:4px}
