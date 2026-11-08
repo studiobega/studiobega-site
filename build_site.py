@@ -344,44 +344,25 @@ if V2:
     # Studio, sur le modèle des pages « Office » des bureaux d'auteur : une phrase forte, la photo du duo en grand,
     # puis une grille éditoriale — rubrique à gauche, contenu à droite, filets fins — alignée sur le logo.
     # Une seule taille de texte pour tout le corps de page, deux couleurs (noir, gris) : net sur ordinateur comme sur téléphone.
-    def item(n, rest, href=None):
-        inner = f'<span class="n">{e(n)}</span><span class="g">{e(rest)}</span>'
-        return f'<a class="it" href="{href}">{inner}</a>' if href else f'<div class="it">{inner}</div>'
-    def row(lab, body):
-        return f'<section class="srow"><h2 class="slab">{e(lab)}</h2><div class="sbody">{body}</div></section>'
-    nb_lieux = len(tous)
-    nb_comm = carte.communes([p for p in P if ph(p['nom']) and ph(p['lieu']) and PICS.get(p['id'])])
-    facts = (f'<div class="fx"><b>{nb_lieux}</b><span>lieux</span></div>'
-             f'<div class="fx"><b>{nb_comm}</b><span>communes</span></div>'
-             f'<div class="fx"><b>3</b><span>échelles</span></div>'
-             f'<div class="fx"><b>1</b><span>clé par lieu</span></div>')
-    tps = [("01", "Lire", "Sur place : le relief, l'eau, les usages, ceux qui traversent le lieu. Puis le programme du maître d'ouvrage."),
-           ("02", "Imaginer", "<span class=\"key\">La clé</span> : l'idée qui rend le lieu singulier, trouvée entre ce que le lieu permet et ce que vous voulez en faire."),
-           ("03", "Réaliser", "Le projet se dessine à partir d'elle, du plan directeur au dernier détail de chantier.")]
-    tps_h = ''.join(f'<div class="tp"><span class="num">{a}</span><h3>{b}</h3><p>{c}</p></div>' for a, b, c in tps)
-    studio_rows = (
-        row("Le studio", "<p class=\"lead\">Studio d'architecture installé à Hotton, au cœur de l'Ardenne. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et au-delà.</p>"
-                         "<p>De la première lecture du lieu jusqu'au chantier, pour des communes, des opérateurs, des promoteurs et des particuliers.</p>") +
-        row("La méthode", f'<div class="tps3">{tps_h}</div>') +
-        row("Équipe", item("Benjamin Gaspard", "Architecte, fondateur") + item("Héloïse Collin", "Architecte d'intérieur")))
+    # Studio : un seul fil, aéré, sans grille ni filets — la phrase, le duo, qui on est, comment on travaille, où l'on est, comment appeler.
     studio = f"""<div class="page"><div class="wrap">
-{nav('Studio')}    <div class="st">
-      <header class="sx"><div class="topo" aria-hidden="true"></div>
-        <p class="kick">Hotton · Ardenne</p>
-        <h1 class="sh1">Studio BEGA lit les lieux, trouve leur clé et les réalise.</h1>
-        <p class="sub">Revaloriser ce qui existe. Construire quand le terrain le demande.</p>
-        <div class="fxs">{facts}</div>
-      </header>
-      <img class="duo" src="/img/duo.jpg" alt="Héloïse Collin et Benjamin Gaspard" loading="lazy">
-      {studio_rows}
-      <section class="srow" id="contact"><h2 class="slab">Contact</h2><div class="sbody">
-        <div class="map"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></div>
-        <p class="lead">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
+{nav('Studio')}    <article class="sf">
+      <h1 class="sf-h">Studio BEGA lit les lieux, trouve leur clé et les réalise.</h1>
+      <figure class="sf-duo"><img src="/img/duo.jpg" alt="Héloïse Collin et Benjamin Gaspard" loading="lazy">
+        <figcaption>Héloïse Collin, architecte d'intérieur · Benjamin Gaspard, architecte, fondateur</figcaption></figure>
+      <div class="sf-t">
+        <p class="sf-lead">Un studio d'architecture installé à Hotton, au cœur de l'Ardenne. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et au-delà.</p>
+        <p>Chaque projet commence sur place. Le relief, l'eau, les usages, ceux qui traversent le lieu, puis ce que vous voulez en faire. De cette lecture sort <span class="key">la clé</span> : l'idée qui rend le lieu singulier. Tout se dessine à partir d'elle, du plan directeur au dernier détail de chantier.</p>
+        <p>Revaloriser ce qui existe. Construire quand le terrain le demande.</p>
+      </div>
+      <figure class="sf-map map" id="contact"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></figure>
+      <div class="sf-t sf-c">
+        <p class="sf-lead">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
         <a class="cta" href="tel:+32474634309">+32 474 63 43 09</a>
         <a class="cta" href="mailto:contact@studiobega.be">contact@studiobega.be</a>
         <p class="adr">Rue Simon 43, 6990 Hotton</p>
-      </div></section>
-    </div>
+      </div>
+    </article>
 {FOOT}</div></div>"""
     write('studio/index.html', page('Studio — Studio BEGA', studio,
         "Studio BEGA, Hotton : Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur. Lire, imaginer, réaliser. Rue Simon 43, 6990 Hotton · +32 474 63 43 09"))
@@ -392,7 +373,6 @@ if V2:
 (DIST / 'assets').mkdir(exist_ok=True)
 shutil.copy(ROOT / 'assets' / 'site.css', DIST / 'assets' / 'site.css')
 shutil.copy(ROOT / 'assets' / 'site.js', DIST / 'assets' / 'site.js')
-shutil.copy(ROOT / 'assets' / 'topo.svg', DIST / 'assets' / 'topo.svg')
 emp = DATA / 'empreinte.txt'
 (DIST / 'build.json').write_text(json.dumps({'empreinte': emp.read_text().strip() if emp.exists() else ''}))
 # favicon : le gros rond jaune, seul, sans fond (PNG : Safari ignore les SVG)

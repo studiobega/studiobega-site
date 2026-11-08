@@ -129,12 +129,3 @@ def build(projets, href, fond_path):
              '</figure>')
     return html_, inconnus
 
-
-def communes(projets):
-    """Nombre de communes (et de lieux hors carte) où le studio a un projet."""
-    n = set()
-    for p in projets:
-        g = _find(p['lieu'])
-        if g: n.add(g[2])
-        elif any(k in _k(p['lieu']) for k in HORS): n.add(p['lieu'])
-    return len(n)
