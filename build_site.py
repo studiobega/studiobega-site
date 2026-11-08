@@ -379,6 +379,8 @@ if V2:
     urls = ['/', '/studio/', '/territoires/', '/activites/', '/habitat/'] + [f'/projets/{q["id"]}/' for q in tous]
     (DIST / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + ''.join(f'  <url><loc>https://studiobega.be{u}</loc></url>\n' for u in urls) + '</urlset>\n')
+    # Google Search Console : fichier de vérification du site (ne pas supprimer, sinon la propriété est perdue)
+    (DIST / 'googleabd13bafbcc1a0b9.html').write_text('google-site-verification: googleabd13bafbcc1a0b9.html')
     (DIST / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://studiobega.be/sitemap.xml\n')
     # l'ancienne page Contact mène au bas de Studio
     write('contact.html', f'<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url={BASE}/studio/#contact"><link rel="canonical" href="{BASE}/studio/#contact">')
