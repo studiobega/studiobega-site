@@ -90,7 +90,7 @@ def build(projets, href, fond_path):
     for name, items in hors.items():
         la, lo = next((v[1], v[2]) for v in HORS.values() if v[0] == name)
         pts.append([X(lo), Y(la), name, items])
-    for _ in range(200):
+    for _ in range(2000):
         moved = False
         for i in range(len(pts)):
             for j in range(i + 1, len(pts)):
@@ -99,8 +99,8 @@ def build(projets, href, fond_path):
                 if d < 2 * R_PT + GAP:                       # trop proches : on écarte les deux
                     k = (2 * R_PT + GAP - d) / 2 / d
                     a_[0] -= dx * k; a_[1] -= dy * k; b_[0] += dx * k; b_[1] += dy * k; moved = True
-                if abs(dx) < OFF: b_[0] += (OFF - abs(dx)) * (1 if dx >= 0 else -1); moved = True
-                if abs(dy) < OFF: b_[1] += (OFF - abs(dy)) * (1 if dy >= 0 else -1); moved = True
+                if abs(dx) < OFF: s = OFF + .3 - abs(dx); sg = 1 if dx >= 0 else -1; a_[0] -= sg * s / 2; b_[0] += sg * s / 2; moved = True
+                if abs(dy) < OFF: s = OFF + .3 - abs(dy); sg = 1 if dy >= 0 else -1; a_[1] -= sg * s / 2; b_[1] += sg * s / 2; moved = True
         if not moved: break
     def point(x, y, items, place):
         x, y = round(x, 1), round(y, 1)
