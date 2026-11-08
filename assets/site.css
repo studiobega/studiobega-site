@@ -307,23 +307,6 @@ html.lock{overflow:hidden}
  
 }
 
-/* Studio : un seul fil, aéré — quatre tailles seulement : titre, grand texte, texte, légende */
-.sf{--t1:44px;--t2:24px;--t3:17px;--t4:13px;max-width:900px;margin:0 auto;padding:96px 0 40px}
-.sf-h{margin:0 0 72px;font-size:var(--t1);line-height:1.12;font-weight:700;letter-spacing:-.015em}
-.sf-duo{margin:0 0 72px}
-.sf-duo img,.sf-map img{display:block;width:100%;border-radius:6px}
-.sf-duo img{aspect-ratio:3/2;object-fit:cover;object-position:50% 30%;transform:scaleX(-1)}
-.sf-duo figcaption{margin-top:12px;font-size:var(--t4);color:#6b6b66}
-.sf-t{max-width:680px}
-.sf-t p{margin:0 0 20px;font-size:var(--t3);line-height:1.65;color:#6b6b66}
-.sf-t .sf-lead{font-size:var(--t2);line-height:1.4;color:#111;margin-bottom:24px}
-.sf-map{margin:96px 0 32px}
-@media (max-width:760px){
- .sf{--t1:28px;--t2:19px;--t3:16px;--t4:13px;padding:36px 0 24px}
- .sf-h{margin-bottom:40px}
- .sf-duo{margin-bottom:48px}.sf-duo img{border-radius:0;aspect-ratio:4/3}
- .sf-map{margin:56px 0 24px}.sf-map img{border-radius:0}
-}
 
 /* accueil : le texte du filtre se détache des projets (filet fin et respiration avant la première image) */
 .sec{padding-bottom:40px;border-bottom:1px solid #d9d8d2;margin-bottom:56px !important}
@@ -335,60 +318,12 @@ html.lock{overflow:hidden}
 @media (max-width:760px){
  .bar{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-left:calc(50vw - 50%);padding-right:calc(50vw - 50%)}
  .sq .im{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
- .sf-duo,.sf-map{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
- .sf-duo figcaption{padding:0 20px}
- .sf-map{border-radius:0;overflow:hidden}
 }
 
 /* bandeau et barre des filtres : un seul bloc, même blanc plein, un seul filet en dessous */
 .page .nav:not(.hero .nav){background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none}
 @media (max-width:760px){.bar{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;margin-top:0}}
 
-/* Studio : coordonnées en liste, comme chez les bureaux de référence — libellé, valeur, flèche, filets fins */
-.sf-dl{max-width:680px;margin:8px 0 0;border-bottom:1px solid #e3e2dc}
-.sf-dl a{display:grid;grid-template-columns:120px 1fr auto;align-items:baseline;gap:16px;padding:16px 0;border-top:1px solid #e3e2dc;color:#111}
-.sf-dl .k{font-size:var(--t4);color:#6b6b66;margin:0}
-.sf-dl .v{margin:0;font-size:var(--t3);font-weight:500}
-.sf-dl .ar{color:#9a9993;transition:transform .3s}
-.sf-dl a:hover .ar{transform:translateX(4px);color:#111}
-@media (max-width:760px){.sf-dl a{grid-template-columns:88px 1fr auto;gap:12px;padding:15px 0}}
-
-/* Studio : un seul texte — même taille, même graisse, même couleur partout (titre, paragraphes, légende, coordonnées) */
-.sf{--u:21px}
-.sf,.sf-h,.sf-t p,.sf-t .sf-lead,.sf-duo figcaption,.sf-dl .k,.sf-dl .v{font-size:var(--u);font-weight:400;line-height:1.5;letter-spacing:0;color:#111}
-.sf-h{margin-bottom:56px}
-.sf-t p,.sf-t .sf-lead{margin:0 0 24px}
-.sf-duo figcaption{margin-top:14px}
-.sf-dl .ar{font-size:var(--u)}
-.sf-dl a{grid-template-columns:160px 1fr auto}
-@media (max-width:760px){.sf{--u:17px}.sf-h{margin-bottom:36px}.sf-duo figcaption{margin-top:10px}.sf-dl a{grid-template-columns:96px 1fr auto}}
-
-/* Studio : titre en gras, tout le reste en texte normal ; une seule photo */
-.sf .sf-h{font-weight:700;letter-spacing:-.01em;line-height:1.25}
-.sf-t{margin-bottom:8px}
-
-/* Studio = même typographie que le texte des filtres de l'accueil : titre comme la phrase (26 / 18 sur téléphone, graisse moyenne, noir),
-   texte comme le paragraphe (16 / 14, gris) */
-.sf .sf-h{font-size:26px;font-weight:500;line-height:1.25;letter-spacing:-.005em;color:#111}
-.sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k{font-size:16px;line-height:1.6;color:#6b6b66;font-weight:400}
-.sf .sf-dl .v,.sf .sf-dl .ar{font-size:16px;line-height:1.6;color:#111;font-weight:400}
-@media (max-width:760px){
- .sf .sf-h{font-size:18px}
- .sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k,.sf .sf-dl .v,.sf .sf-dl .ar{font-size:14px;line-height:1.55}
-}
-
-/* Studio aligné comme l'accueil : bord gauche du logo ; titre, photo du duo, texte et coordonnées dans une seule colonne de 640 px */
-.sf{max-width:none;margin:0;padding:48px 0 40px}
-.sf .sf-h{max-width:640px;margin:0 0 40px}
-.sf-duo{max-width:640px;margin:0 0 40px}
-.sf-duo img{aspect-ratio:3/2;border-radius:6px}
-.sf-t,.sf-dl{max-width:640px}
-@media (max-width:760px){
- .sf{padding:20px 0 24px}
- .sf .sf-h{margin-bottom:28px}
- .sf-duo{margin-bottom:28px}.sf-duo img{aspect-ratio:4/3;border-radius:0}
-}
-@media (max-width:760px){.sf-duo{max-width:none;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}}
 
 /* page d'un projet (référencement) : la fiche en pleine page */
 .pp{padding:40px 0 24px}
@@ -428,4 +363,31 @@ html.lock{overflow:hidden}
  .mbox .pics{gap:12px;margin-top:28px}
  .mbox .pics img{border-radius:0;margin:0 -20px;width:calc(100% + 40px)}
  .mbox.pp-box .fx-x{display:none}
+}
+
+/* Studio — une seule colonne de 640 px alignée sur le logo : la phrase, la photo du duo, le texte, les coordonnées.
+   Typographie de l'accueil : la phrase comme celle des filtres (26 / 18 sur téléphone), le reste en 16 / 14, gris ; valeurs en noir. */
+.sf{margin:0;padding:48px 0 40px;font-size:21px;font-weight:400;line-height:1.5;color:#111}
+.sf .sf-h{max-width:640px;margin:0 0 40px;font-size:26px;font-weight:500;line-height:1.25;letter-spacing:-.005em;color:#111}
+.sf-duo{max-width:640px;margin:0 0 40px}
+.sf-duo img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;object-position:50% 30%;transform:scaleX(-1);border-radius:6px}
+.sf-t,.sf-dl{max-width:640px}
+.sf-t{margin-bottom:8px}
+.sf .sf-t p{margin:0 0 24px}
+.sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k{font-size:16px;font-weight:400;line-height:1.6;letter-spacing:0;color:#6b6b66}
+.sf .sf-duo figcaption{margin-top:14px}
+.sf-dl{margin:8px 0 0;border-bottom:1px solid #e3e2dc}
+.sf-dl a{display:grid;grid-template-columns:160px 1fr auto;align-items:baseline;gap:16px;padding:16px 0;border-top:1px solid #e3e2dc;color:#111}
+.sf-dl .k,.sf-dl .v{margin:0}
+.sf .sf-dl .v,.sf .sf-dl .ar{font-size:16px;font-weight:400;line-height:1.6;letter-spacing:0;color:#111}
+.sf-dl .ar{transition:transform .3s}
+.sf-dl a:hover .ar{transform:translateX(4px)}
+@media (max-width:760px){
+ .sf{padding:20px 0 24px;font-size:17px}
+ .sf .sf-h{margin-bottom:28px;font-size:18px}
+ .sf-duo{max-width:none;width:100vw;margin:0 calc(50% - 50vw) 28px}
+ .sf-duo img{aspect-ratio:4/3;border-radius:0}
+ .sf .sf-duo figcaption{margin-top:10px;padding:0 20px}
+ .sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k,.sf .sf-dl .v,.sf .sf-dl .ar{font-size:14px;line-height:1.55}
+ .sf-dl a{grid-template-columns:96px 1fr auto;gap:12px;padding:15px 0}
 }
