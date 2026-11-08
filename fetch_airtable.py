@@ -13,7 +13,7 @@ import io, json, os, sys, time
 from pathlib import Path
 import requests
 from PIL import Image, ImageOps
-from empreinte import lignes, empreinte
+from empreinte import lignes, empreinte, TOUS
 
 TOKEN = os.environ.get('AIRTABLE_TOKEN')
 if not TOKEN:
@@ -28,9 +28,11 @@ F = {  # nom de champ Airtable → clé JSON
 }
 
 rows, manifest, fresh = [], [], 0
+RANG = {r['id']: i + 1 for i, r in enumerate(lignes(TOKEN, ['Code'], TOUS))}  # l'ordre de « Tous »
 for i, rec in enumerate(lignes(TOKEN, list(F) + ['Site · Photos'])):
     f = rec['fields']
     row = {k: f.get(a, '') for a, k in F.items()}
+    row['tous'] = RANG.get(rec['id'])
     row['ordre'] = i + 1  # l'ordre de la vue « Site » : glisser une ligne dans Airtable = déplacer le lieu sur le site
     rows.append(row)
     for k, a in enumerate(f.get('Site · Photos', [])):

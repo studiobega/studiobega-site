@@ -98,7 +98,7 @@ FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="p
 
 FOOT = """    <footer class="foot">
       <div class="grp"><a href="https://www.instagram.com/studio_bega_/">Instagram</a><a href="https://www.facebook.com/studiobenjamingaspard">Facebook</a><a href="https://be.linkedin.com/company/studiobega">LinkedIn</a></div>
-      <div>© Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
+      <div>Studio BEGA, architectes · Rue Simon 43, 6990 Hotton, Belgique · © Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
     </footer>
 """
 MENU = ([('/#projets', 'Projets'), ('/studio/', 'Studio')] if V2 else
@@ -129,7 +129,7 @@ def page(title, body, desc, img='/img/hero.jpg', canon=None, ld=''):
 <meta name="theme-color" content="#ffffff">{'<meta name="robots" content="noindex, nofollow">' if BASE else ''}
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
-<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://studiobega.be{img.split('?')[0]}"><meta property="og:type" content="website">{f'<link rel="canonical" href="https://studiobega.be{canon}">' if canon and not BASE else ''}
+<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="https://studiobega.be{img.split('?')[0]}"><meta property="og:type" content="website"><meta property="og:site_name" content="Studio BEGA"><meta property="og:locale" content="fr_BE">{f'<link rel="canonical" href="https://studiobega.be{canon}">' if canon and not BASE else ''}
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {FONTS}
 <link rel="stylesheet" href="/assets/site.css?v={VER}">{ld}
@@ -297,10 +297,12 @@ if V2:
 
     # Accueil = Projets (modèle OFFICE KGDVS / Carmody Groarke) : filtres en mots (Tout · portes), vues Images · Liste · Carte.
     # Images : défilé rythmé 1 · 2 · 3, la clé en phrase sous chaque projet. Le filtre affiche le texte du secteur.
-    # Ordre : la vue Airtable « Site », une porte après l'autre à tour de rôle. Un clic ouvre la fiche dans sa galerie.
+    # Ordre : la vue Airtable « Site · Tous » (glisser une ligne = la déplacer dans « Tous ») ; dans chaque porte, la vue « Site ». Un clic ouvre la fiche dans sa galerie.
     from itertools import zip_longest
     rows = [[q for q in bykey[k] if PICS.get(q['id'])] for k, _ in PORTES]
     tous = [q for trio in zip_longest(*rows) for q in trio if q]
+    # l'ordre de la vue Airtable « Site · Tous » quand il existe ; une ligne absente garde sa place à tour de rôle, en fin de liste
+    tous = sorted(tous, key=lambda q: q.get('tous') or 9999)
     def tile(q, big):
         cle = ph(q['cle']); B, M = abs_(PICS[q['id']][0][0]), abs_(PICS[q['id']][0][2])
         return (f'<a class="sq" data-k="{q["pk"]}" data-open="{q["id"]}" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{B if big else M}" data-b="{B}" data-m="{M}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
@@ -345,21 +347,25 @@ if V2:
 {nav('Projets')}{moments}
 {FOOT}</div></div>"""
     # fiche d'entreprise lue par Google (adresse, téléphone, zone) : sur l'accueil et sur Studio
-    LD = '<script type="application/ld+json">' + json.dumps({
+    LD = '<script type="application/ld+json">' + json.dumps([{
+        "@context": "https://schema.org", "@type": "WebSite", "@id": "https://studiobega.be/#site", "url": "https://studiobega.be/",
+        "name": "Studio BEGA", "alternateName": ["Studio Bega", "BEGA architectes", "Studio Benjamin Gaspard"], "inLanguage": "fr-BE",
+        "publisher": {"@id": "https://studiobega.be/#studio"}}, {
         "@context": "https://schema.org", "@type": "ProfessionalService", "@id": "https://studiobega.be/#studio",
-        "name": "Studio BEGA", "legalName": "Studio Benjamin Gaspard SRL", "url": "https://studiobega.be/",
-        "description": "Studio d'architecture à Hotton : plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie, à Bruxelles et au Luxembourg.",
+        "name": "Studio BEGA", "alternateName": ["Studio Bega", "BEGA architectes"], "legalName": "Studio Benjamin Gaspard SRL", "url": "https://studiobega.be/",
+        "description": "Studio d'architecture à Hotton, en Belgique : plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, partout en Belgique et au Luxembourg.",
         "image": "https://studiobega.be/img/hero.jpg", "logo": "https://studiobega.be/apple-touch-icon.png",
         "telephone": "+32474634309", "email": "contact@studiobega.be", "vatID": "BE0799818844",
         "address": {"@type": "PostalAddress", "streetAddress": "Rue Simon 43", "postalCode": "6990", "addressLocality": "Hotton", "addressRegion": "Luxembourg", "addressCountry": "BE"},
-        "areaServed": ["Wallonie", "Bruxelles", "Luxembourg"],
+        "areaServed": [{"@type": "Country", "name": "Belgique"}, {"@type": "Country", "name": "Luxembourg"}],
+        "geo": {"@type": "GeoCoordinates", "latitude": 50.2681, "longitude": 5.4466}, "hasMap": "https://maps.google.com/?q=Studio+BEGA,+Rue+Simon+43,+6990+Hotton",
         "founder": {"@type": "Person", "name": "Benjamin Gaspard", "jobTitle": "Architecte"},
         "employee": [{"@type": "Person", "name": "Héloïse Collin", "jobTitle": "Architecte d'intérieur"}],
         "knowsAbout": ["architecture", "plan directeur", "espace public", "rénovation", "architecture d'intérieur", "scénographie"],
         "sameAs": ["https://www.instagram.com/studio_bega_/", "https://www.facebook.com/studiobenjamingaspard", "https://be.linkedin.com/company/studiobega"]
-    }, ensure_ascii=False) + '</script>'
-    write('index.html', page('Studio BEGA — Architecte à Hotton, Ardenne · Wallonie', index2,
-        "Studio BEGA, architectes à Hotton : lire un lieu, imaginer sa clé, le réaliser. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et à Bruxelles.", canon='/', ld=LD))
+    }], ensure_ascii=False) + '</script>'
+    write('index.html', page('Studio BEGA — Architectes à Hotton, Belgique', index2,
+        "Studio BEGA, architectes à Hotton (Belgique) : lire un lieu, imaginer sa clé, le réaliser. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, partout en Belgique.", canon='/', ld=LD))
 
     # Studio, sur le modèle des pages « Office » des bureaux d'auteur : une phrase forte, la photo du duo en grand,
     # puis une grille éditoriale — rubrique à gauche, contenu à droite, filets fins — alignée sur le logo.

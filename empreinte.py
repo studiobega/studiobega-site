@@ -9,11 +9,12 @@ import hashlib, os, sys, time
 import requests
 
 BASE, TABLE, VIEW = 'app96I5oQRuFkzTbc', 'tbl8SvCW4xtd7LtuT', 'Site'
+TOUS = 'viwX0XYIX1xTmzT16'   # vue « Site · Tous » : l'ordre de « Tous » sur l'accueil, toutes catégories confondues
 MOD = 'Site · Modifié'
 
-def lignes(token, fields):
+def lignes(token, fields, view=VIEW):
     url = f'https://api.airtable.com/v0/{BASE}/{TABLE}'
-    params = {'view': VIEW, 'pageSize': 100, 'fields[]': fields}
+    params = {'view': view, 'pageSize': 100, 'fields[]': fields}
     out, off = [], None
     while True:
         if off: params['offset'] = off
@@ -25,6 +26,7 @@ def lignes(token, fields):
 def empreinte(token):
     recs = lignes(token, [MOD])
     txt = '\n'.join(f"{r['id']} {r['fields'].get(MOD, '')}" for r in recs)
+    txt += '\nTOUS ' + ' '.join(r['id'] for r in lignes(token, [MOD], TOUS))   # déplacer une ligne dans « Site · Tous » republie aussi
     return hashlib.sha256(txt.encode()).hexdigest()
 
 if __name__ == '__main__':
