@@ -351,13 +351,9 @@ if V2:
       <figure class="sf-duo"><img src="/img/duo.jpg" alt="Héloïse Collin et Benjamin Gaspard" loading="lazy">
         <figcaption>Héloïse Collin, architecte d'intérieur · Benjamin Gaspard, architecte, fondateur</figcaption></figure>
       <div class="sf-t">
-        <p class="sf-lead">Un studio d'architecture installé à Hotton, au cœur de l'Ardenne. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et au-delà.</p>
-        <p>Chaque projet commence sur place. Le relief, l'eau, les usages, ceux qui traversent le lieu, puis ce que vous voulez en faire. De cette lecture sort <span class="key">la clé</span> : l'idée qui rend le lieu singulier. Tout se dessine à partir d'elle, du plan directeur au dernier détail de chantier.</p>
-        <p>Revaloriser ce qui existe. Construire quand le terrain le demande.</p>
-      </div>
-      <figure class="sf-map map" id="contact"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></figure>
-      <div class="sf-t sf-c">
-        <p class="sf-lead">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
+        <p>Studio d'architecture à Hotton, en Ardenne. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie et au-delà.</p>
+        <p>Chaque projet commence sur place. De la lecture du lieu sort <span class="key">la clé</span> : l'idée qui le rend singulier. Tout se dessine à partir d'elle, jusqu'au chantier.</p>
+        <p id="contact">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
       </div>
       <div class="sf-dl">
         <a href="tel:+32474634309"><span class="k">Téléphone</span><span class="v">+32 474 63 43 09</span><span class="ar" aria-hidden="true">→</span></a>

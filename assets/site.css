@@ -343,3 +343,7 @@ html.lock{overflow:hidden}
 .sf-dl .ar{font-size:var(--u)}
 .sf-dl a{grid-template-columns:160px 1fr auto}
 @media (max-width:760px){.sf{--u:17px}.sf-h{margin-bottom:36px}.sf-duo figcaption{margin-top:10px}.sf-dl a{grid-template-columns:96px 1fr auto}}
+
+/* Studio : titre en gras, tout le reste en texte normal ; une seule photo */
+.sf .sf-h{font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.sf-t{margin-bottom:8px}
