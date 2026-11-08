@@ -358,7 +358,7 @@ if V2:
         "telephone": "+32474634309", "email": "contact@studiobega.be", "vatID": "BE0799818844",
         "address": {"@type": "PostalAddress", "streetAddress": "Rue Simon 43", "postalCode": "6990", "addressLocality": "Hotton", "addressRegion": "Luxembourg", "addressCountry": "BE"},
         "areaServed": [{"@type": "Country", "name": "Belgique"}, {"@type": "Country", "name": "Luxembourg"}],
-        "geo": {"@type": "GeoCoordinates", "latitude": 50.2681, "longitude": 5.4466}, "hasMap": "https://maps.google.com/?q=Studio+BEGA,+Rue+Simon+43,+6990+Hotton",
+        "geo": {"@type": "GeoCoordinates", "latitude": 50.2659145, "longitude": 5.4514688}, "hasMap": "https://maps.google.com/?cid=7789908407824293605",
         "founder": {"@type": "Person", "name": "Benjamin Gaspard", "jobTitle": "Architecte"},
         "employee": [{"@type": "Person", "name": "Héloïse Collin", "jobTitle": "Architecte d'intérieur"}],
         "knowsAbout": ["architecture", "plan directeur", "espace public", "rénovation", "architecture d'intérieur", "scénographie"],
