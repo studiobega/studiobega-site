@@ -183,7 +183,7 @@ def card(p):
     # dessous : deux mots, la fonction et le lieu ; la clé parle
     typ = (p['type'] or '').strip()
     sub = ' · '.join(x for x in ((typ[:1].upper() + typ[1:]) if typ else '', ph(p['lieu'])) if x)
-    return (f'      <a class="card" href="#{p["id"]}" data-open="{p["id"]}"><span class="im"><img src="{abs_(pics[0][2])}" alt="{e(nom)}" loading="lazy"></span>'
+    return (f'      <a class="card" href="/projets/{p["id"]}/" data-open="{p["id"]}"><span class="im"><img src="{abs_(pics[0][2])}" alt="{e(nom)}" loading="lazy"></span>'
             f'<span class="cap"><span class="nm">{e(nom)}</span><span class="cm">{e(sub)}</span></span></a>\n')
 
 def fiche(p):
@@ -214,13 +214,11 @@ def fiche(p):
 for k, n in PORTES:
     t, intro = DOORS[k]
     cards = ''.join(card(p) for p in bykey[k])
-    fiches = ''.join(fiche(p) for p in bykey[k] if PICS.get(p['id']))
     body = f"""<div class="page"><div class="wrap">
 {nav(n)}    <header class="col"><h1 class="h">{e(t)}</h1><p>{e(intro)}</p></header>
     <div class="grid">
 {cards}    </div>
-{fiches}{FOOT}</div></div>
-<div class="modal" id="modal" aria-hidden="true"><div class="mbox" role="dialog" aria-modal="true"></div></div>
+{FOOT}</div></div>
 <div class="lb" id="lb" aria-hidden="true"><button type="button" class="lb-p" aria-label="Image précédente">‹</button><img src="" alt=""><button type="button" class="lb-n" aria-label="Image suivante">›</button><span class="lb-c"></span></div>"""
     write(f'{k}/index.html', page(f'{n} — Studio BEGA', body, intro, canon=f'/{k}/'))
 
@@ -305,7 +303,7 @@ if V2:
     tous = sorted(tous, key=lambda q: q.get('tous') or 9999)
     def tile(q, big):
         cle = ph(q['cle']); B, M = abs_(PICS[q['id']][0][0]), abs_(PICS[q['id']][0][2])
-        return (f'<a class="sq" data-k="{q["pk"]}" data-open="{q["id"]}" href="/{q["pk"]}/#{q["id"]}"><span class="im"><img src="{B if big else M}" data-b="{B}" data-m="{M}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
+        return (f'<a class="sq" data-k="{q["pk"]}" data-open="{q["id"]}" href="/projets/{q["id"]}/"><span class="im"><img src="{B if big else M}" data-b="{B}" data-m="{M}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
                 f'{f"<span class=\"ck\">{e(cle)}</span>" if cle else ""}<span class="cm">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a>')
     seq, i, n = [], 0, 0
     while i < len(tous):
@@ -324,7 +322,7 @@ if V2:
     lhd = '<div class="lh"><span class="th" aria-hidden="true"></span>' + ''.join(f'<button type="button" data-c="{c}"{" class=\"on\"" if c == 0 else ""}>{t}<span class="ar" aria-hidden="true"></span></button>'
                                      for c, t in enumerate(('Projet', 'Lieu', 'Type', 'Année'))) + '</div>'
     # chaque ligne commence par une vignette : on reconnaît le projet avant de lire son nom
-    lst = lhd + ''.join(f'<a class="li" data-k="{q["pk"]}" data-open="{q["id"]}" href="/{q["pk"]}/#{q["id"]}"><span class="th"><img src="{abs_(PICS[q["id"]][0][1])}" alt="" loading="lazy"></span>'
+    lst = lhd + ''.join(f'<a class="li" data-k="{q["pk"]}" data-open="{q["id"]}" href="/projets/{q["id"]}/"><span class="th"><img src="{abs_(PICS[q["id"]][0][1])}" alt="" loading="lazy"></span>'
                   f'<span class="c ln">{e(ph(q["nom"]))}</span><span class="c">{e(ph(q["lieu"]))}</span>'
                   f'<span class="c">{e(NAMES[q["pk"]])}</span><span class="c">{e(ph(q["annee"]))}</span></a>' for q in sorted(tous, key=lambda q: _k(q['nom'])))
     # la carte : chaque lieu porte son identifiant, sa vignette et sa porte (le clic ouvre une carte de visite du lieu, puis sa fiche)
@@ -335,8 +333,7 @@ if V2:
                f'<div class="v" data-v="img"><div class="flow">{"".join(seq)}</div></div>'
                f'<div class="v" data-v="list" hidden><div class="lst">{lst}</div></div>'
                f'<div class="v" data-v="map" hidden>{CARTE}</div></section>\n'
-               + ''.join(fiche(q) for q in tous) +
-               '<div class="modal" id="modal" aria-hidden="true"><div class="mbox" role="dialog" aria-modal="true"></div></div>'
+               +
                '<div class="lb" id="lb" aria-hidden="true"><button type="button" class="lb-p" aria-label="Image précédente">‹</button><img src="" alt=""><button type="button" class="lb-n" aria-label="Image suivante">›</button><span class="lb-c"></span></div>\n')
     index2 = f"""<section class="hero" id="hero" data-map="{IDMAP}">
   <img class="bg" src="/img/hero.jpg" alt="Bouillon vu du ciel : l'esplanade, le château, la Semois">
@@ -397,22 +394,25 @@ if V2:
       </div>
       <section class="sf-refs" aria-label="Références">
         <div><h2>Commanditaires</h2><ul><li>Ville de Bouillon</li><li>Ville de La Roche-en-Ardenne</li><li>Commune de Hotton</li><li>Commune de Martelange</li><li>Commune de Léglise</li><li>Commune de Vaux-sur-Sûre</li><li>Ville de Beauraing et Province de Namur</li><li>Bastogne War Museum</li><li>Centre culturel de Stavelot et Trois-Ponts</li></ul></div>
-        <div><h2>Concours</h2><ul><li>Centre d'interprétation, La Roche-en-Ardenne — lauréat, 96/100</li><li>Site du football de Sibret, Vaux-sur-Sûre — lauréat</li><li>Esplanade du château, Bouillon — marché remporté, avec UMAN</li></ul></div>
+        <div><h2>Marchés publics remportés</h2><ul><li>Esplanade du château, Bouillon — sur la qualité, avec UMAN</li><li>Centre d'interprétation, La Roche-en-Ardenne — sur la qualité, 96/100</li><li>Cinéma Plaza, Hotton</li><li>Grand-Rue, Martelange</li><li>Site du football de Sibret, Vaux-sur-Sûre</li></ul></div>
         <div><h2>Presse</h2><ul><li><a href="https://www.lavenir.net/regions/luxembourg/hotton/2026/11/04/le-nouveau-visage-du-plaza-a-ete-devoile-mardi-soir-au-conseil-communal-de-hotton-le-projet-a-ete-revise-de-fond-en-comble-YGWM3J4EW5H2FLFUOPZEE7HFGA/" target="_blank" rel="noopener">L'Avenir — Le nouveau visage du Plaza, 2026</a></li><li><a href="https://www.tvlux.be/actu/info/patrimoine/hotton-le-plaza-vivra-mais-combien-va-t-il-couter_53001" target="_blank" rel="noopener">TV Lux — Le Plaza vivra, 2026</a></li><li><a href="https://www.lavenir.net/regions/luxembourg/2026/08/26/incendie-dans-les-hautes-fagnes-tour-a-tour-un-programme-pour-sauver-les-forets-ardennaises-K55KOIORIZHSRJXYFSKTNH6SDE/" target="_blank" rel="noopener">L'Avenir — Tour à Tour, un programme pour les forêts ardennaises, 2026</a></li><li><a href="https://www.sudinfo.be/id1154354/article/2026-05-26/le-centre-de-la-roche-en-ardenne-se-cherche-un-nouveau-souffle-cest-un-projet" target="_blank" rel="noopener">Sudinfo — Le centre de La Roche se cherche un nouveau souffle, 2026</a></li></ul></div>
       </section>
     </article>
 {FOOT}</div></div>"""
     write('studio/index.html', page('Studio — Studio BEGA, architectes à Hotton', studio,
         "Chaque lieu a sa clé. Studio BEGA la trouve par une lecture attentive du site et du programme, et signe des projets tenus du premier trait à la dernière pierre, calendrier et budget compris. Rue Simon 43, 6990 Hotton · +32 474 63 43 09", canon='/studio/', ld=LD))
-    # une page par projet, pour Google : /projets/<id>/ — la fiche en pleine page, titre et description propres ; le site, lui, ouvre les fiches sur place
-    for q in tous:
+    # une page par projet : /projets/<id>/ — chaque vignette, ligne ou point de carte y mène (comme chez les bureaux de référence) ; précédent / suivant suivent l'ordre de « Tous »
+    for n_, q in enumerate(tous):
+        prv, nxt = tous[n_ - 1], tous[(n_ + 1) % len(tous)]
+        pnav = (f'<nav class="pp-nav" aria-label="Projets"><a href="/projets/{prv["id"]}/"><span>Précédent</span>{e(ph(prv["nom"]))}</a>'
+                f'<a href="/projets/{nxt["id"]}/"><span>Suivant</span>{e(ph(nxt["nom"]))}</a></nav>')
         inner = re.search(r'<template id="f-[^"]+">(.*)</template>', fiche(q), re.S).group(1)
         inner = re.sub(r'<button type="button" class="fx-x"[^>]*>×</button>', '', inner).replace('<h2 class="nm">', '<h1 class="nm">').replace('</h2>', '</h1>', 1)
         nom, lieu, cle = ph(q['nom']), ph(q['lieu']), ph(q['cle'])
         desc = ' '.join(x for x in (cle, ph(q['dem']), f"{NAMES[q['pk']]} · {lieu} · Studio BEGA, architecture et plans directeurs en Wallonie.") if x)
         body_p = f"""<div class="page"><div class="wrap">
 {nav('Projets')}    <article class="pp"><a class="pp-back" href="/#projets">← Tous les projets</a>
-      <div class="mbox pp-box">{inner}</div></article>
+      <div class="mbox pp-box">{inner}</div>{pnav}</article>
 {FOOT}</div></div>
 <div class="lb" id="lb" aria-hidden="true"><button type="button" class="lb-p" aria-label="Image précédente">‹</button><img src="" alt=""><button type="button" class="lb-n" aria-label="Image suivante">›</button><span class="lb-c"></span></div>"""
         write(f'projets/{q["id"]}/index.html', page(f'{nom} — {lieu} · Studio BEGA', body_p, desc[:300], abs_(PICS[q['id']][0][0]), f'/projets/{q["id"]}/'))

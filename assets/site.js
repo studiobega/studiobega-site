@@ -97,7 +97,15 @@
     });
   }
 
-  /* ---- fiches : une fenêtre qui vient se poser devant la page ---- */
+  /* ---- projets : une vraie page par projet. Vignettes, lignes et points de carte y mènent ;
+     une ancienne adresse avec #projet (partagée avant) est redirigée vers sa page ---- */
+  document.addEventListener('click', function (ev) {
+    var c = ev.target.closest('[data-open]'); if (!c || ev.defaultPrevented || ev.metaKey || ev.ctrlKey) return;
+    ev.preventDefault(); location.href = '/projets/' + c.getAttribute('data-open') + '/';
+  });
+  var hh = location.hash.slice(1);
+  if (hh && document.querySelector('[data-open="' + hh.replace(/"/g, '') + '"]')) { location.replace('/projets/' + hh + '/'); return; }
+  /* ---- (ancienne fenêtre de fiche, sans objet si la page n'a pas de #modal) ---- */
   // page d'un projet (référencement) : les photos s'agrandissent aussi
   var pp = document.querySelector('.pp-box');
   if (pp) pp.addEventListener('click', function (ev) {
