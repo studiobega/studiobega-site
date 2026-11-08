@@ -333,3 +333,13 @@ html.lock{overflow:hidden}
 .sf-dl .ar{color:#9a9993;transition:transform .3s}
 .sf-dl a:hover .ar{transform:translateX(4px);color:#111}
 @media (max-width:760px){.sf-dl a{grid-template-columns:88px 1fr auto;gap:12px;padding:15px 0}}
+
+/* Studio : un seul texte — même taille, même graisse, même couleur partout (titre, paragraphes, légende, coordonnées) */
+.sf{--u:21px}
+.sf,.sf-h,.sf-t p,.sf-t .sf-lead,.sf-duo figcaption,.sf-dl .k,.sf-dl .v{font-size:var(--u);font-weight:400;line-height:1.5;letter-spacing:0;color:#111}
+.sf-h{margin-bottom:56px}
+.sf-t p,.sf-t .sf-lead{margin:0 0 24px}
+.sf-duo figcaption{margin-top:14px}
+.sf-dl .ar{font-size:var(--u)}
+.sf-dl a{grid-template-columns:160px 1fr auto}
+@media (max-width:760px){.sf{--u:17px}.sf-h{margin-bottom:36px}.sf-duo figcaption{margin-top:10px}.sf-dl a{grid-template-columns:96px 1fr auto}}
