@@ -157,44 +157,40 @@
 (function () {
   var c = document.getElementById('carte'); if (!c) return;
   var svg = c.querySelector('svg'), pop = document.createElement('div'); pop.className = 'pop'; pop.hidden = true; c.appendChild(pop);
-  var f = '', cur = null, drag = false, touch = false, tip;
+  var f = '', cur = null, drag = false, touch = false, tmr = null;
   function items(g) { return g.getAttribute('data-l').split('|').map(function (x) { var a = x.split('§'); return { n: a[0], id: a[1], k: a[2] }; }); }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-  function hide() { pop.hidden = true; tip.hidden = true; if (cur) cur.classList.remove('on'); cur = null; }
+  function hide() { clearTimeout(tmr); pop.hidden = true; if (cur) cur.classList.remove('on'); cur = null; }
+  function later() { clearTimeout(tmr); tmr = setTimeout(hide, 280); }   // le temps de glisser du point vers la liste
   function openId(id) { var a = document.createElement('a'); a.setAttribute('data-open', id); a.href = '#' + id; a.hidden = true; c.appendChild(a); a.click(); c.removeChild(a); }
-  function pick(g) {
-    var L = items(g).filter(function (i) { return !f || i.k === f; }); if (!L.length) return;
-    if (L.length === 1 && !touch) { hide(); openId(L[0].id); return; }   // souris : l'info est déjà lue au survol
-    tipOff();
+  function L_(g) { return items(g).filter(function (i) { return !f || i.k === f; }); }
+  // la commune et ses projets, en liens : au survol (souris) ou au premier appui (doigt)
+  function show(g) {
+    clearTimeout(tmr); var L = L_(g); if (!L.length) return;
+    if (cur === g && !pop.hidden) return;
     if (cur) cur.classList.remove('on'); cur = g; g.classList.add('on');
     pop.innerHTML = '<div class="pop-h">' + esc(g.getAttribute('data-n')) + '</div>' +
       L.map(function (i) { return '<a href="#' + esc(i.id) + '" data-open="' + esc(i.id) + '">' + esc(i.n) + '</a>'; }).join('');
     pop.hidden = false;
     var r = g.querySelector('circle').getBoundingClientRect(), R = c.getBoundingClientRect(), w = pop.offsetWidth;
     pop.style.left = Math.min(Math.max(r.left + r.width / 2 - R.left - w / 2, 0), R.width - w) + 'px';
-    var top = r.bottom - R.top + 10; if (top + pop.offsetHeight > R.height) top = r.top - R.top - pop.offsetHeight - 10;
+    var top = r.bottom - R.top + 6; if (top + pop.offsetHeight > R.height) top = r.top - R.top - pop.offsetHeight - 6;
     pop.style.top = Math.max(0, top) + 'px';
   }
   pop.addEventListener('click', function () { hide(); });
-  // survol (souris) : la commune et ses projets, avant de cliquer. Au doigt, le premier appui montre la même info.
-  tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; c.appendChild(tip);
-  function tipOff() { tip.hidden = true; }
-  function tipOn(g) {
-    if (cur) return;
-    var L = items(g).filter(function (i) { return !f || i.k === f; }); if (!L.length) return;
-    tip.innerHTML = '<b>' + esc(g.getAttribute('data-n')) + '</b>' + L.map(function (i) { return '<span>' + esc(i.n) + '</span>'; }).join('');
-    tip.hidden = false;
-    var r = g.querySelector('circle').getBoundingClientRect(), R = c.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
-    tip.style.left = Math.min(Math.max(r.left + r.width / 2 - R.left - w / 2, 0), R.width - w) + 'px';
-    var top = r.top - R.top - h - 10; if (top < 0) top = r.bottom - R.top + 10;
-    tip.style.top = top + 'px';
-  }
+  pop.addEventListener('pointerenter', function () { clearTimeout(tmr); });
+  pop.addEventListener('pointerleave', function (ev) { if (ev.pointerType === 'mouse') later(); });
   Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) {
-    g.addEventListener('pointerenter', function (ev) { if (ev.pointerType === 'mouse' && !p0) tipOn(g); });
-    g.addEventListener('pointerleave', function (ev) { if (ev.pointerType === 'mouse') tipOff(); });
+    g.addEventListener('pointerenter', function (ev) { if (ev.pointerType === 'mouse' && !p0) show(g); });
+    g.addEventListener('pointerleave', function (ev) { if (ev.pointerType === 'mouse') later(); });
     g.addEventListener('pointerdown', function (ev) { touch = ev.pointerType !== 'mouse'; });
-    g.addEventListener('click', function (ev) { ev.stopPropagation(); if (drag) return; if (cur === g) hide(); else pick(g); });
-    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(g); } });
+    g.addEventListener('click', function (ev) {
+      ev.stopPropagation(); if (drag) return; var L = L_(g);
+      if (!touch && L.length === 1) { hide(); openId(L[0].id); return; }   // souris, un seul projet : on l'ouvre
+      if (touch && cur === g && !pop.hidden) { hide(); return; }
+      show(g);
+    });
+    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); show(g); } });
   });
   document.addEventListener('click', function (ev) { if (!pop.hidden && !ev.target.closest('.pop') && !ev.target.closest('.pt')) hide(); });
   c.filtre = function (x) {
