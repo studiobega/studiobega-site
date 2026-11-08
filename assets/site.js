@@ -299,6 +299,7 @@
   var flow = pj.querySelector('.flow'), tiles = Array.prototype.slice.call(flow.querySelectorAll('.sq')), f = '', v = 'img';
   function rows() {
     var L = tiles.filter(function (t) { return !f || t.getAttribute('data-k') === f; }), i = 0, n = 0;
+    if (f) L.sort(function (a, b) { return a.getAttribute('data-o') - b.getAttribute('data-o'); });   // une catégorie suit son propre ordre (vue « Site »)
     flow.innerHTML = '';
     while (i < L.length) {
       var size = [1, 2, 3][n % 3], g = L.slice(i, i + size), r = document.createElement('div');

@@ -301,9 +301,11 @@ if V2:
     tous = [q for trio in zip_longest(*rows) for q in trio if q]
     # l'ordre de la vue Airtable « Site · Tous » quand il existe ; une ligne absente garde sa place à tour de rôle, en fin de liste
     tous = sorted(tous, key=lambda q: q.get('tous') or 9999)
+    # rang dans sa catégorie (vue Airtable « Site ») : un filtre affiche les projets dans cet ordre-là, pas dans celui de « Tous »
+    RANG_P = {q['id']: i for k, _ in PORTES for i, q in enumerate(bykey[k])}
     def tile(q, big):
         cle = ph(q['cle']); B, M = abs_(PICS[q['id']][0][0]), abs_(PICS[q['id']][0][2])
-        return (f'<a class="sq" data-k="{q["pk"]}" data-open="{q["id"]}" href="/projets/{q["id"]}/"><span class="im"><img src="{B if big else M}" data-b="{B}" data-m="{M}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
+        return (f'<a class="sq" data-k="{q["pk"]}" data-o="{RANG_P[q["id"]]}" data-open="{q["id"]}" href="/projets/{q["id"]}/"><span class="im"><img src="{B if big else M}" data-b="{B}" data-m="{M}" alt="{e(ph(q["nom"]))}, {e(ph(q["lieu"]))}" loading="lazy"></span>'
                 f'{f"<span class=\"ck\">{e(cle)}</span>" if cle else ""}<span class="cm">{e(ph(q["nom"]))} · {e(ph(q["lieu"]))}</span></a>')
     seq, i, n = [], 0, 0
     while i < len(tous):
