@@ -380,6 +380,7 @@ if V2:
         <p>Nous lisons le site longtemps, avec le programme de celui qui le porte, jusqu'à ce qu'une idée s'impose. Nous l'appelons <span class="key">la clé</span> : l'endroit exact où ce que le lieu sait rejoint ce que le maître d'ouvrage désire.</p>
         <p>Cette idée devient la signature du projet. Elle guide le volume, la matière et la lumière jusqu'au dernier détail, avec la constance d'un fil tendu. C'est elle qui donne au lieu son caractère, cette présence que l'on ressent avant de la comprendre.</p>
         <p>Une idée juste rassemble. Du premier trait à la dernière pierre, tous ceux qui font le projet avancent dans la même direction. Le projet garde sa ligne, et chacun y gagne du temps et de l'argent : le programme, la technique, le calendrier et le budget tiennent. Nous nous y engageons.</p>
+        <p>Certains lieux attendent encore qu'on les regarde. Ceux-là, nous les dessinons de notre propre initiative, pour montrer ce qu'ils peuvent devenir : une tour par massif ardennais, une île au cœur de Hotton, une seconde peau pour une tour de Liège.</p>
         <p>Demain, on construira moins et on transformera davantage. Une maison, un hôtel, une place ou un territoire : chaque fois, nous signons un lieu.</p>
       </div>
       </div>

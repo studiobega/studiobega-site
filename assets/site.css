@@ -401,3 +401,7 @@ html.lock{overflow:hidden}
  .sf-r .sf-dl{max-width:none}
 }
 @media (max-width:960px){.sf-r{margin-top:32px}}
+
+/* Studio : le titre du manifeste porte la page (plus grand que la phrase des filtres, même graisse, même police) */
+.sf .sf-h{font-size:34px;line-height:1.2;letter-spacing:-.01em}
+@media (max-width:760px){.sf .sf-h{font-size:24px}}
