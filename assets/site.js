@@ -294,10 +294,14 @@
       var c = +b.getAttribute('data-c'); dir = c === col ? -dir : 1; col = c;
       Array.prototype.forEach.call(lh.querySelectorAll('button'), function (x) { x.classList.toggle('on', x === b); x.classList.toggle('desc', x === b && dir < 0); });
       Array.prototype.slice.call(lst.querySelectorAll('.li')).sort(function (a, z) {
-        return dir * nrm(a.children[col].textContent).localeCompare(nrm(z.children[col].textContent), 'fr', { numeric: true }) ||
-               nrm(a.children[0].textContent).localeCompare(nrm(z.children[0].textContent), 'fr');
+        var ca = a.querySelectorAll('.c'), cz = z.querySelectorAll('.c');
+        return dir * nrm(ca[col].textContent).localeCompare(nrm(cz[col].textContent), 'fr', { numeric: true }) ||
+               nrm(ca[0].textContent).localeCompare(nrm(cz[0].textContent), 'fr');
       }).forEach(function (x) { lst.appendChild(x); });
     });
   }
+  var mq = window.matchMedia('(max-width:760px)');
+  function petit() { if (mq.matches && v === 'map') { v = 'img'; apply(); } }
+  if (mq.addEventListener) mq.addEventListener('change', petit); else if (mq.addListener) mq.addListener(petit);
   pj.querySelector('.vws').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { v = b.getAttribute('data-v'); apply(); haut(); } });
 })();

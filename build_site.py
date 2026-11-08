@@ -321,10 +321,12 @@ if V2:
     # Liste : en-têtes cliquables (petite flèche à droite de chaque colonne), tri alphabétique par nom par défaut
     import unicodedata
     _k = lambda t: unicodedata.normalize('NFD', ph(t)).encode('ascii', 'ignore').decode().lower()
-    lhd = '<div class="lh">' + ''.join(f'<button type="button" data-c="{c}"{" class=\"on\"" if c == 0 else ""}>{t}<span class="ar" aria-hidden="true"></span></button>'
+    lhd = '<div class="lh"><span class="th" aria-hidden="true"></span>' + ''.join(f'<button type="button" data-c="{c}"{" class=\"on\"" if c == 0 else ""}>{t}<span class="ar" aria-hidden="true"></span></button>'
                                      for c, t in enumerate(('Projet', 'Lieu', 'Type', 'Année'))) + '</div>'
-    lst = lhd + ''.join(f'<a class="li" data-k="{q["pk"]}" data-open="{q["id"]}" href="/{q["pk"]}/#{q["id"]}"><span class="ln">{e(ph(q["nom"]))}</span><span>{e(ph(q["lieu"]))}</span>'
-                  f'<span>{e(NAMES[q["pk"]])}</span><span>{e(ph(q["annee"]))}</span></a>' for q in sorted(tous, key=lambda q: _k(q['nom'])))
+    # chaque ligne commence par une vignette : on reconnaît le projet avant de lire son nom
+    lst = lhd + ''.join(f'<a class="li" data-k="{q["pk"]}" data-open="{q["id"]}" href="/{q["pk"]}/#{q["id"]}"><span class="th"><img src="{abs_(PICS[q["id"]][0][1])}" alt="" loading="lazy"></span>'
+                  f'<span class="c ln">{e(ph(q["nom"]))}</span><span class="c">{e(ph(q["lieu"]))}</span>'
+                  f'<span class="c">{e(NAMES[q["pk"]])}</span><span class="c">{e(ph(q["annee"]))}</span></a>' for q in sorted(tous, key=lambda q: _k(q['nom'])))
     # la carte : chaque lieu porte son identifiant, sa vignette et sa porte (le clic ouvre une carte de visite du lieu, puis sa fiche)
     CARTE, _inc = carte.build([q for q in tous if ph(q['lieu'])], lambda q: f"{q['id']}~{abs_(PICS[q['id']][0][1])}~{q['pk']}", DATA / 'carte' / 'fond.json')
     if _inc: print('carte : lieux sans coordonnées →', sorted(set(_inc)))
