@@ -398,3 +398,31 @@ html.lock{overflow:hidden}
 .pp-box h1.nm{font-size:28px;line-height:1.2;font-weight:700;margin:0 0 8px}
 @media (max-width:760px){.pp-box h1.nm{font-size:22px}}
 @media (max-width:760px){.pp{padding-top:16px}}
+
+/* fiche sur téléphone : l'image d'abord, puis le nom, une ligne d'infos, la clé, le détail ; plein écran, sans carte */
+.f1{display:none;margin:0}
+@media (max-width:760px){
+ .modal{padding:0;align-items:stretch}
+ .mbox,.modal.on .mbox{transform:none;transition:none;height:100%;max-height:none;border:0;border-radius:0;box-shadow:none;padding:0 20px 48px}
+ .f1{display:block;margin:0 -20px 22px}
+ .f1 img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;cursor:zoom-in}
+ .mbox .pics img:first-child{display:none}
+ .mbox .fx-x{position:fixed;top:12px;right:12px;z-index:3;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 1px 6px rgba(0,0,0,.12);opacity:1;font-size:24px}
+ .fh{display:block}
+ .fh .nm{font-size:22px;margin:0 0 4px}
+ .fh .meta{font-size:13px;letter-spacing:0;text-transform:none;color:#8a8a85}
+ .fcle{margin:22px 0 0;font-size:18px;line-height:1.45;font-weight:500}
+ .fcle .key{background:linear-gradient(transparent 86%,#FFD400 86%);padding:0}
+ .mbox .tx,.mbox .tx.two{margin-top:20px;display:block}
+ .mbox dl{display:block}
+ .mbox dl>div{display:block;margin:0 0 10px}
+ .mbox dt,.mbox .det .lab{display:inline;font-size:15px;letter-spacing:0;text-transform:none;color:#8a8a85;font-weight:400}
+ .mbox dt::after,.mbox .det .lab::after{content:' · '}
+ .mbox dd{display:inline;font-size:15px;line-height:1.55}
+ .mbox dd .ln{display:block}
+ .mbox .det{display:block;margin-top:14px}
+ .mbox .det .para,.mbox .para{display:inline;font-size:15px;line-height:1.55}
+ .mbox .pics{gap:12px;margin-top:28px}
+ .mbox .pics img{border-radius:0;margin:0 -20px;width:calc(100% + 40px)}
+ .mbox.pp-box .fx-x{display:none}
+}

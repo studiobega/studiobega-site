@@ -87,7 +87,7 @@
   var pp = document.querySelector('.pp-box');
   if (pp) pp.addEventListener('click', function (ev) {
     var z = ev.target.closest('[data-zoom]'); if (!z) return;
-    zoom(z.getAttribute('data-zoom'), Array.prototype.map.call(pp.querySelectorAll('[data-zoom]'), function (x) { return x.getAttribute('data-zoom'); }));
+    zoom(z.getAttribute('data-zoom'), Array.prototype.filter.call(pp.querySelectorAll('[data-zoom]'), function (x) { return x.offsetParent; }).map(function (x) { return x.getAttribute('data-zoom'); }));
   });
   var grid = document.querySelector('.grid') || document.getElementById('projets'), modal = document.getElementById('modal');
   if (!grid || !modal) return;
@@ -135,7 +135,7 @@
   });
   modal.addEventListener('click', function (ev) {
     var z = ev.target.closest('[data-zoom]');
-    if (z) { zoom(z.getAttribute('data-zoom'), Array.prototype.map.call(box.querySelectorAll('[data-zoom]'), function (x) { return x.getAttribute('data-zoom'); })); return; }
+    if (z) { zoom(z.getAttribute('data-zoom'), Array.prototype.filter.call(box.querySelectorAll('[data-zoom]'), function (x) { return x.offsetParent; }).map(function (x) { return x.getAttribute('data-zoom'); })); return; }
     if (ev.target.closest('a') || swiped) return;
     close();   // la croix, à côté, ou sur la fiche : elle se ferme
   });

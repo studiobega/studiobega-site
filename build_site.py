@@ -202,8 +202,9 @@ def fiche(p):
     n = len(pics)
     wide = lambda j: j == 0 or (j == n - 1 and (n - 1) % 2 == 1)  # 1re pleine largeur, puis par deux, dernière impaire pleine largeur
     imgs = ''.join(f'<img src="{abs_(b)}" alt="{e(nom)}" loading="lazy" data-zoom="{abs_(b)}">' for j, (b, t, m) in enumerate(pics))
+    f1 = f'<figure class="f1"><img src="{abs_(pics[0][0])}" alt="{e(nom)}" data-zoom="{abs_(pics[0][0])}"></figure>' if pics else ''
     return f"""    <template id="f-{p['id']}">
-      <div class="fh"><div><h2 class="nm">{e(nom)}</h2><div class="meta">{e(meta)}</div></div><button type="button" class="fx-x" aria-label="Fermer">×</button></div>
+      {f1}<div class="fh"><div><h2 class="nm">{e(nom)}</h2><div class="meta">{e(meta)}</div></div><button type="button" class="fx-x" aria-label="Fermer">×</button></div>
       {f'<p class="fcle"><span class="key">{e(cle)}</span></p>' if cle else ''}
       <div class="tx{' two' if para else ''}">{f'<dl>{dl}</dl>' if dl else ''}{f'<div class="det"><div class="lab">En détail</div><p class="para">{e(para)}</p>{f'<div class="links">{lk}</div>' if lk else ''}</div>' if para else (f'<div class="links">{lk}</div>' if lk else '')}</div>
       <div class="pics">{imgs}</div>
