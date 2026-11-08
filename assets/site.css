@@ -288,29 +288,38 @@ html.lock{overflow:hidden}
  .carte .stl{font-size:20px}
 }
 
-/* Studio : un seul fil, aéré */
-.sf{max-width:900px;margin:0 auto;padding:96px 0 40px}
-.sf-h{margin:0 0 72px;font-size:52px;line-height:1.1;font-weight:700;letter-spacing:-.015em}
+/* Studio : un seul fil, aéré — quatre tailles seulement : titre, grand texte, texte, légende */
+.sf{--t1:44px;--t2:24px;--t3:17px;--t4:13px;max-width:900px;margin:0 auto;padding:96px 0 40px}
+.sf-h{margin:0 0 72px;font-size:var(--t1);line-height:1.12;font-weight:700;letter-spacing:-.015em}
 .sf-duo{margin:0 0 72px}
 .sf-duo img,.sf-map img{display:block;width:100%;border-radius:6px}
 .sf-duo img{aspect-ratio:3/2;object-fit:cover;object-position:50% 30%;transform:scaleX(-1)}
-.sf-duo figcaption{margin-top:14px;font-size:14px;color:#6b6b66}
+.sf-duo figcaption{margin-top:12px;font-size:var(--t4);color:#6b6b66}
 .sf-t{max-width:680px}
-.sf-t p{margin:0 0 22px;font-size:18px;line-height:1.65;color:#3d3d3a}
-.sf-t .sf-lead{font-size:26px;line-height:1.4;color:#111;margin-bottom:28px}
-.sf-map{margin:96px 0 40px}
-.sf-c .cta{display:block;font-size:34px;font-weight:600;letter-spacing:-.01em;line-height:1.25;padding:4px 0}
-.sf-c .cta:hover{text-decoration:underline;text-underline-offset:6px}
-.sf-c .adr{margin-top:16px;font-size:15px;color:#6b6b66}
+.sf-t p{margin:0 0 20px;font-size:var(--t3);line-height:1.65;color:#6b6b66}
+.sf-t .sf-lead{font-size:var(--t2);line-height:1.4;color:#111;margin-bottom:24px}
+.sf-map{margin:96px 0 32px}
+.sf-c .cta{display:block;width:fit-content;font-size:var(--t2);font-weight:500;line-height:1.4;color:#111;border-bottom:1px solid #111;margin-bottom:10px}
+.sf-c .cta:hover{opacity:.6}
+.sf-c .adr{margin-top:20px;font-size:var(--t4)}
 @media (max-width:760px){
- .sf{padding:36px 0 24px}
- .sf-h{font-size:30px;margin-bottom:40px}
- .sf-duo{width:calc(100% + 40px);margin:0 -20px 48px}.sf-duo img{border-radius:0;aspect-ratio:4/3}.sf-duo figcaption{padding:0 20px;font-size:13px}
- .sf-t p{font-size:16px}.sf-t .sf-lead{font-size:20px;margin-bottom:20px}
- .sf-map{width:calc(100% + 40px);max-width:none;margin:56px -20px 28px}.sf-map img{border-radius:0}
- .sf-c .cta{font-size:24px}
+ .sf{--t1:28px;--t2:19px;--t3:16px;--t4:13px;padding:36px 0 24px}
+ .sf-h{margin-bottom:40px}
+ .sf-duo{margin-bottom:48px}.sf-duo img{border-radius:0;aspect-ratio:4/3}
+ .sf-map{margin:56px 0 24px}.sf-map img{border-radius:0}
 }
 
 /* accueil : le texte du filtre se détache des projets (filet fin et respiration avant la première image) */
 .sec{padding-bottom:40px;border-bottom:1px solid #d9d8d2;margin-bottom:56px !important}
 @media (max-width:760px){.sec{padding-bottom:28px;margin-bottom:40px !important}}
+
+/* la barre du haut couvre toute la largeur de l'écran (plus d'image qui dépasse sur les côtés), quelle que soit la marge de page */
+.page{overflow-x:clip}
+.page .nav:not(.hero .nav){margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-left:calc(50vw - 50%);padding-right:calc(50vw - 50%)}
+@media (max-width:760px){
+ .bar{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-left:calc(50vw - 50%);padding-right:calc(50vw - 50%)}
+ .sq .im{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+ .sf-duo,.sf-map{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+ .sf-duo figcaption{padding:0 20px}
+ .sf-map{border-radius:0;overflow:hidden}
+}
