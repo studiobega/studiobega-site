@@ -323,3 +323,7 @@ html.lock{overflow:hidden}
  .sf-duo figcaption{padding:0 20px}
  .sf-map{border-radius:0;overflow:hidden}
 }
+
+/* bandeau et barre des filtres : un seul bloc, même blanc plein, un seul filet en dessous */
+.page .nav:not(.hero .nav){background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none}
+@media (max-width:760px){.bar{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;margin-top:0}}
