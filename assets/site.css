@@ -237,15 +237,23 @@ html.lock{overflow:hidden}
 .r1 .ck{font-size:24px}
 .sq .cm{font-size:13px;color:#6b6b66;margin-top:8px}
 @media (hover:hover){.sq:hover .im img{transform:scale(1.03)}}
-.lst{border-top:1px solid #111;padding-bottom:40px}
+.lst{padding-bottom:40px}
+.lst .lh+.li{border-top:1px solid #111}
 .li{display:grid;grid-template-columns:2.2fr 1.4fr 1fr .8fr;gap:20px;padding:15px 0;border-bottom:1px solid #e3e2dc;font-size:16px}
 .li span:not(.ln){color:#6b6b66}
 .li .ln{font-weight:500}
 .li:hover{background:#f6f5f0}
+.lh{display:grid;grid-template-columns:2.2fr 1.4fr 1fr .8fr;gap:20px;padding:0 0 10px}
+.lh button{all:unset;cursor:pointer;font-size:13px;color:#6b6b66;display:inline-flex;align-items:center;gap:6px;justify-self:start}
+.lh button.on{color:#111}
+.lh .ar::after{content:'↓';font-size:11px;opacity:.35}
+.lh button.on .ar::after{opacity:1}
+.lh button.on.desc .ar::after{content:'↑'}
+.lh button:focus-visible{outline:1px solid #111;outline-offset:3px}
 .v[data-v="map"] .carte{margin-top:0;max-width:820px}
 .hq .h{font-size:30px;margin-top:28px}
 @media (max-width:900px){.rw.r3{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:640px){.pj{padding-top:16px}.bar{flex-direction:column;align-items:flex-end;gap:10px;margin-bottom:28px}.bar .flt{align-self:stretch}.flt{font-size:clamp(14px,4.5vw,21px);gap:clamp(8px,3vw,14px);flex-wrap:nowrap}.flt sup{font-size:10px;vertical-align:.7em;margin-left:1px}.vws{font-size:13px;gap:14px}.sec{margin:0 0 36px}.sec p{font-size:15px}.sec .sp{font-size:21px;margin-bottom:8px}.flow{gap:56px}.rw.r2,.rw.r3{grid-template-columns:1fr;gap:56px}.r1 .im img,.r2 .im img,.r3 .im img{aspect-ratio:4/3}.sq .ck,.r1 .ck{font-size:18px}.li{grid-template-columns:1fr auto;gap:2px 12px}.li span:nth-child(3),.li span:nth-child(4){display:none}.hq .h{font-size:22px}}
+@media (max-width:640px){.pj{padding-top:16px}.bar{flex-direction:column;align-items:flex-end;gap:10px;margin-bottom:28px}.bar .flt{align-self:stretch}.flt{font-size:clamp(14px,4.5vw,21px);gap:clamp(8px,3vw,14px);flex-wrap:nowrap}.flt sup{font-size:10px;vertical-align:.7em;margin-left:1px}.vws{font-size:13px;gap:14px}.sec{margin:0 0 36px}.sec p{font-size:15px}.sec .sp{font-size:21px;margin-bottom:8px}.flow{gap:56px}.rw.r2,.rw.r3{grid-template-columns:1fr;gap:56px}.r1 .im img,.r2 .im img,.r3 .im img{aspect-ratio:4/3}.sq .ck,.r1 .ck{font-size:18px}.li,.lh{grid-template-columns:1fr auto;gap:2px 12px}.li span:nth-child(3),.li span:nth-child(4),.lh button:nth-child(3),.lh button:nth-child(4){display:none}.hq .h{font-size:22px}}
 .page.site{overflow-x:clip}
 .pj [hidden]{display:none!important}
 .carte .rvs{pointer-events:none}
@@ -369,18 +377,18 @@ html.lock{overflow:hidden}
  .sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k,.sf .sf-dl .v,.sf .sf-dl .ar{font-size:14px;line-height:1.55}
 }
 
-/* Studio aligné comme l'accueil : bord gauche du logo, photo pleine largeur (format des grandes images), texte dans la colonne du texte des filtres */
+/* Studio aligné comme l'accueil : bord gauche du logo ; titre, photo du duo, texte et coordonnées dans une seule colonne de 640 px */
 .sf{max-width:none;margin:0;padding:48px 0 40px}
 .sf .sf-h{max-width:640px;margin:0 0 40px}
-.sf-duo{margin:0 0 40px}
-.sf-duo img{aspect-ratio:16/8;border-radius:6px}
+.sf-duo{max-width:640px;margin:0 0 40px}
+.sf-duo img{aspect-ratio:3/2;border-radius:6px}
 .sf-t,.sf-dl{max-width:640px}
 @media (max-width:760px){
  .sf{padding:20px 0 24px}
  .sf .sf-h{margin-bottom:28px}
  .sf-duo{margin-bottom:28px}.sf-duo img{aspect-ratio:4/3;border-radius:0}
 }
-@media (max-width:760px){.sf-duo{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}}
+@media (max-width:760px){.sf-duo{max-width:none;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}}
 
 /* page d'un projet (référencement) : la fiche en pleine page */
 .pp{padding:40px 0 24px}

@@ -285,5 +285,19 @@
     if (window.pageYOffset > y + 2) window.scrollTo({ top: y, behavior: 'smooth' });
   }
   pj.querySelector('.flt').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { f = b.getAttribute('data-f'); apply(); haut(); } });
+  // liste : tri par colonne (alphabétique par nom par défaut) ; recliquer la même colonne inverse l'ordre
+  var lst = pj.querySelector('.lst'), lh = lst && lst.querySelector('.lh');
+  if (lh) {
+    var col = 0, dir = 1, nrm = function (s) { return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim(); };
+    lh.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      var c = +b.getAttribute('data-c'); dir = c === col ? -dir : 1; col = c;
+      Array.prototype.forEach.call(lh.querySelectorAll('button'), function (x) { x.classList.toggle('on', x === b); x.classList.toggle('desc', x === b && dir < 0); });
+      Array.prototype.slice.call(lst.querySelectorAll('.li')).sort(function (a, z) {
+        return dir * nrm(a.children[col].textContent).localeCompare(nrm(z.children[col].textContent), 'fr', { numeric: true }) ||
+               nrm(a.children[0].textContent).localeCompare(nrm(z.children[0].textContent), 'fr');
+      }).forEach(function (x) { lst.appendChild(x); });
+    });
+  }
   pj.querySelector('.vws').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { v = b.getAttribute('data-v'); apply(); haut(); } });
 })();
