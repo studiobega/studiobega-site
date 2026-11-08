@@ -357,3 +357,16 @@ html.lock{overflow:hidden}
  .sf .sf-h{font-size:18px}
  .sf .sf-t p,.sf .sf-duo figcaption,.sf .sf-dl .k,.sf .sf-dl .v,.sf .sf-dl .ar{font-size:14px;line-height:1.55}
 }
+
+/* Studio aligné comme l'accueil : bord gauche du logo, photo pleine largeur (format des grandes images), texte dans la colonne du texte des filtres */
+.sf{max-width:none;margin:0;padding:48px 0 40px}
+.sf .sf-h{max-width:640px;margin:0 0 40px}
+.sf-duo{margin:0 0 40px}
+.sf-duo img{aspect-ratio:16/8;border-radius:6px}
+.sf-t,.sf-dl{max-width:640px}
+@media (max-width:760px){
+ .sf{padding:20px 0 24px}
+ .sf .sf-h{margin-bottom:28px}
+ .sf-duo{margin-bottom:28px}.sf-duo img{aspect-ratio:4/3;border-radius:0}
+}
+@media (max-width:760px){.sf-duo{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}}
