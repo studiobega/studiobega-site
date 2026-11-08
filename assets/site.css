@@ -428,13 +428,10 @@ html.lock{overflow:hidden}
 .sf-refs a:hover{border-color:#111}
 @media (max-width:760px){.sf-refs{grid-template-columns:1fr;margin-top:48px;gap:28px}.sf-refs li{font-size:14px}}
 
-/* Essai typographique (?typo=a ou ?typo=b, ?typo=off pour sortir) — invisible sans le paramètre */
-.typo-a .hero h1,.typo-a .sec .sp,.typo-a .sf .sf-h,.typo-a .fh .nm,.typo-a .flt,.typo-a .sq .ck,.typo-a .fcle{font-family:'Newsreader',Georgia,serif;font-weight:400;letter-spacing:-.01em}
-.typo-a .flt button.on{font-weight:500}
-.typo-b .hero h1,.typo-b .sec .sp,.typo-b .sf .sf-h,.typo-b .fh .nm,.typo-b .flt,.typo-b .sq .ck,.typo-b .fcle{font-family:'Schibsted Grotesk',Helvetica,sans-serif;letter-spacing:-.02em}
-.typo-b .sec .sp,.typo-b .sf .sf-h,.typo-b .sq .ck{font-weight:500}
-.typo-a .sec p,.typo-a .sf .sf-t p,.typo-a .mbox dd,.typo-a .mbox .para,.typo-a .sq .cm,.typo-a .sf .sf-duo figcaption,
-.typo-b .sec p,.typo-b .sf .sf-t p,.typo-b .mbox dd,.typo-b .mbox .para,.typo-b .sq .cm,.typo-b .sf .sf-duo figcaption{color:#111}
+/* Essai typographique (?typo=a…e, ?typo=off pour sortir) — invisible sans le paramètre. La police des titres vient de --tf, sa graisse de --tw */
+html.typo .hero h1,html.typo .sec .sp,html.typo .sf .sf-h,html.typo .fh .nm,html.typo .flt,html.typo .sq .ck,html.typo .fcle,html.typo .pp-nav a{font-family:var(--tf);font-weight:var(--tw);letter-spacing:-.01em}
+html.typo .flt button.on{font-weight:calc(var(--tw) + 100)}
+html.typo .sec p,html.typo .sf .sf-t p,html.typo .mbox dd,html.typo .mbox .para,html.typo .sq .cm,html.typo .sf .sf-duo figcaption{color:#111}
 .typo-badge{position:fixed;left:12px;bottom:12px;z-index:60;background:#111;color:#fff;font-size:12px;padding:8px 12px;border-radius:6px;display:flex;gap:10px}
 .typo-badge a{color:#FFD400}
 
