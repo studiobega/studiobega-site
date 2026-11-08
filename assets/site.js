@@ -1,23 +1,3 @@
-// essai typographique : ?typo=a…e (polices de titre à comparer), ?typo=off pour sortir — mémorisé le temps de la visite
-(function () {
-  var T = {
-    a: ['Newsreader', 'Newsreader:opsz,wght@6..72,400;6..72,500', 'Georgia,serif', 400],
-    b: ['Schibsted Grotesk', 'Schibsted+Grotesk:wght@400;500;600;700', 'Helvetica,sans-serif', 500],
-    c: ['EB Garamond', 'EB+Garamond:wght@400;500', 'Garamond,Georgia,serif', 400],
-    d: ['Inter Tight', 'Inter+Tight:wght@400;500;600;700', 'Helvetica,sans-serif', 500],
-    e: ['Familjen Grotesk', 'Familjen+Grotesk:wght@400;500;600;700', 'Helvetica,sans-serif', 500]
-  };
-  var q = (location.search.match(/typo=([a-e]|off)/) || [])[1];
-  try { if (q === 'off') sessionStorage.removeItem('typo'); else if (q) sessionStorage.setItem('typo', q); q = sessionStorage.getItem('typo'); } catch (e) {}
-  if (!T[q]) return;
-  var f = T[q], h = document.documentElement;
-  h.classList.add('typo'); h.style.setProperty('--tf', "'" + f[0] + "'," + f[2]); h.style.setProperty('--tw', f[3]);
-  var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=' + f[1] + '&display=swap'; document.head.appendChild(l);
-  var b = document.createElement('div'); b.className = 'typo-badge';
-  b.innerHTML = '<span>' + q.toUpperCase() + ' · ' + f[0] + '</span>' + 'abcde'.split('').filter(function (k) { return k !== q; }).map(function (k) { return '<a href="?typo=' + k + '">' + k.toUpperCase() + '</a>'; }).join('') + '<a href="?typo=off">actuelle</a>';
-  function put() { if (!b.parentNode) document.body.appendChild(b); }
-  if (document.readyState !== 'loading') put(); else document.addEventListener('DOMContentLoaded', put);
-})();
 /* studiobega.be — accueil, fiches dans la grille, agrandissement des photos. Aucune dépendance. */
 (function () {
   'use strict';
