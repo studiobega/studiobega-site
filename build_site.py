@@ -373,12 +373,14 @@ if V2:
     # Studio : un seul fil, aéré, sans grille ni filets — la phrase, le duo, qui on est, comment on travaille, où l'on est, comment appeler.
     studio = f"""<div class="page"><div class="wrap">
 {nav('Studio')}    <article class="sf">
-      <h1 class="sf-h">Le studio est à Hotton. Les lieux, eux, sont partout.</h1>
+      <h1 class="sf-h">Chaque lieu a sa clé.</h1>
       <figure class="sf-duo"><img src="/img/duo.jpg" alt="Héloïse Collin et Benjamin Gaspard" loading="lazy">
-        <figcaption>Héloïse Collin, architecte d'intérieur — Benjamin Gaspard, architecte</figcaption></figure>
+        <figcaption>Héloïse Collin, architecte d'intérieur — Benjamin Gaspard, architecte fondateur</figcaption></figure>
       <div class="sf-t" id="contact">
-        <p>Un lieu se lit avant de se dessiner. Le relief, l'eau, les usages, ceux qui le traversent, et ce que vous voulez en faire : de cette lecture sort <span class="key">la clé</span>, l'idée qui rend le lieu singulier.</p>
-        <p>Puis le projet entier, de la clé au chantier. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie, à Bruxelles et au-delà.</p>
+        <p>Studio BEGA la cherche dans une lecture attentive du site et du programme : le relief, la lumière, l'eau, les usages, et ce que le maître d'ouvrage veut y faire vivre.</p>
+        <p><span class="key">La clé</span> est l'idée qui réunit tout cela. Elle donne au projet sa signature, un fil qui le traverse de l'esquisse au dernier détail, comme la note d'un parfum. Chaque décision la prolonge, et le lieu gagne une identité qui lui appartient.</p>
+        <p>Cette cohérence rassemble dès le départ tous ceux qui feront le projet. Elle tient le programme, la technique, le calendrier et le budget, sur lesquels le studio s'engage.</p>
+        <p>Une maison, un lieu d'activité, un espace public, un territoire : la même exigence, à chaque échelle.</p>
       </div>
       <div class="sf-dl">
         <a href="tel:+32474634309"><span class="k">Téléphone</span><span class="v">+32 474 63 43 09</span><span class="ar" aria-hidden="true">→</span></a>
@@ -388,7 +390,7 @@ if V2:
     </article>
 {FOOT}</div></div>"""
     write('studio/index.html', page('Studio — Studio BEGA, architectes à Hotton', studio,
-        "Studio BEGA, Hotton : Benjamin Gaspard, architecte, et Héloïse Collin, architecte d'intérieur. Plans directeurs, espaces publics, lieux d'activité, maisons. Rue Simon 43, 6990 Hotton · +32 474 63 43 09", canon='/studio/', ld=LD))
+        "Chaque lieu a sa clé. Studio BEGA la trouve par une lecture attentive du site et du programme, et signe des projets tenus de l'esquisse au chantier, calendrier et budget compris. Rue Simon 43, 6990 Hotton · +32 474 63 43 09", canon='/studio/', ld=LD))
     # une page par projet, pour Google : /projets/<id>/ — la fiche en pleine page, titre et description propres ; le site, lui, ouvre les fiches sur place
     for q in tous:
         inner = re.search(r'<template id="f-[^"]+">(.*)</template>', fiche(q), re.S).group(1)
