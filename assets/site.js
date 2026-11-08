@@ -152,36 +152,108 @@
 })();
 
 // carte des lieux : un point par commune. Un lieu : sa fiche s'ouvre. Plusieurs : une courte liste, puis la fiche.
-// En fermant la fiche, on retrouve la carte (la liste s'est déjà refermée). Les communes hors du filtre restent en gris.
+// En fermant la fiche, on retrouve la carte. Le filtre ne garde que les communes concernées.
+// Zoom : molette ou boutons sur ordinateur, deux doigts sur téléphone ; on déplace la carte en la tirant. Points et noms gardent leur taille.
 (function () {
   var c = document.getElementById('carte'); if (!c) return;
-  var pop = document.createElement('div'); pop.className = 'pop'; pop.hidden = true; c.appendChild(pop);
-  var f = '', cur = null;
+  var svg = c.querySelector('svg'), pop = document.createElement('div'); pop.className = 'pop'; pop.hidden = true; c.appendChild(pop);
+  var f = '', cur = null, drag = false, touch = false, tip;
   function items(g) { return g.getAttribute('data-l').split('|').map(function (x) { var a = x.split('§'); return { n: a[0], id: a[1], k: a[2] }; }); }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-  function hide() { pop.hidden = true; if (cur) cur.classList.remove('on'); cur = null; }
+  function hide() { pop.hidden = true; tip.hidden = true; if (cur) cur.classList.remove('on'); cur = null; }
   function openId(id) { var a = document.createElement('a'); a.setAttribute('data-open', id); a.href = '#' + id; a.hidden = true; c.appendChild(a); a.click(); c.removeChild(a); }
   function pick(g) {
     var L = items(g).filter(function (i) { return !f || i.k === f; }); if (!L.length) return;
-    if (L.length === 1) { hide(); openId(L[0].id); return; }
+    if (L.length === 1 && !touch) { hide(); openId(L[0].id); return; }   // souris : l'info est déjà lue au survol
+    tipOff();
     if (cur) cur.classList.remove('on'); cur = g; g.classList.add('on');
     pop.innerHTML = '<div class="pop-h">' + esc(g.getAttribute('data-n')) + '</div>' +
       L.map(function (i) { return '<a href="#' + esc(i.id) + '" data-open="' + esc(i.id) + '">' + esc(i.n) + '</a>'; }).join('');
     pop.hidden = false;
     var r = g.querySelector('circle').getBoundingClientRect(), R = c.getBoundingClientRect(), w = pop.offsetWidth;
     pop.style.left = Math.min(Math.max(r.left + r.width / 2 - R.left - w / 2, 0), R.width - w) + 'px';
-    pop.style.top = (r.bottom - R.top + 8) + 'px';
+    var top = r.bottom - R.top + 10; if (top + pop.offsetHeight > R.height) top = r.top - R.top - pop.offsetHeight - 10;
+    pop.style.top = Math.max(0, top) + 'px';
   }
-  pop.addEventListener('click', function () { hide(); });   // le choix fait, la liste disparaît ; la fiche s'ouvre par-dessus la carte
+  pop.addEventListener('click', function () { hide(); });
+  // survol (souris) : la commune et ses projets, avant de cliquer. Au doigt, le premier appui montre la même info.
+  tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; c.appendChild(tip);
+  function tipOff() { tip.hidden = true; }
+  function tipOn(g) {
+    if (cur) return;
+    var L = items(g).filter(function (i) { return !f || i.k === f; }); if (!L.length) return;
+    tip.innerHTML = '<b>' + esc(g.getAttribute('data-n')) + '</b>' + L.map(function (i) { return '<span>' + esc(i.n) + '</span>'; }).join('');
+    tip.hidden = false;
+    var r = g.querySelector('circle').getBoundingClientRect(), R = c.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.min(Math.max(r.left + r.width / 2 - R.left - w / 2, 0), R.width - w) + 'px';
+    var top = r.top - R.top - h - 10; if (top < 0) top = r.bottom - R.top + 10;
+    tip.style.top = top + 'px';
+  }
   Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) {
-    g.addEventListener('click', function (ev) { ev.stopPropagation(); if (g.classList.contains('off')) return; if (cur === g) hide(); else pick(g); });
+    g.addEventListener('pointerenter', function (ev) { if (ev.pointerType === 'mouse' && !p0) tipOn(g); });
+    g.addEventListener('pointerleave', function (ev) { if (ev.pointerType === 'mouse') tipOff(); });
+    g.addEventListener('pointerdown', function (ev) { touch = ev.pointerType !== 'mouse'; });
+    g.addEventListener('click', function (ev) { ev.stopPropagation(); if (drag) return; if (cur === g) hide(); else pick(g); });
     g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(g); } });
   });
   document.addEventListener('click', function (ev) { if (!pop.hidden && !ev.target.closest('.pop') && !ev.target.closest('.pt')) hide(); });
-  c.filtre = function (x) {   // filtre des portes : les communes sans lieu de la porte choisie passent en gris
+  c.filtre = function (x) {
     f = x || ''; hide();
-    Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) { g.classList.toggle('off', !!f && !items(g).some(function (i) { return i.k === f; })); });
+    Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) { g.style.display = !f || items(g).some(function (i) { return i.k === f; }) ? '' : 'none'; });
   };
+
+  /* ---- zoom ---- */
+  var vb = svg.getAttribute('viewBox').split(' ').map(Number), W = vb[2], H = vb[3], v = { x: 0, y: 0, w: W, h: H };
+  var circles = svg.querySelectorAll('.pt circle'), texts = svg.querySelectorAll('text');
+  Array.prototype.forEach.call(circles, function (o) { o.setAttribute('data-r', o.getAttribute('r')); });
+  Array.prototype.forEach.call(texts, function (o) { o.setAttribute('data-fs', parseFloat(getComputedStyle(o).fontSize) || 12); });
+  function set() {
+    v.w = Math.min(W, Math.max(W / 8, v.w)); v.h = v.w * H / W;
+    v.x = Math.min(W - v.w, Math.max(0, v.x)); v.y = Math.min(H - v.h, Math.max(0, v.y));
+    svg.setAttribute('viewBox', v.x + ' ' + v.y + ' ' + v.w + ' ' + v.h);
+    var k = v.w / W;
+    var s0 = Math.min(1.5, Math.max(1, W / (svg.getBoundingClientRect().width || W) * .8));   // téléphone : points un peu plus lisibles
+    Array.prototype.forEach.call(circles, function (o) { o.setAttribute('r', o.getAttribute('data-r') * k * s0); });
+    Array.prototype.forEach.call(texts, function (o) { o.style.fontSize = (o.getAttribute('data-fs') * k) + 'px'; o.style.strokeWidth = (o.getAttribute('data-fs') / 3 * k) + 'px'; });
+    svg.querySelectorAll('.far .ar, .far .ah, .stk').forEach(function (o) { o.style.display = k < .99 && o.closest('.far') ? 'none' : ''; });
+    svg.style.touchAction = v.w < W - .5 ? 'none' : 'pan-y';
+    c.classList.toggle('zoomed', v.w < W - .5);
+    hide();
+  }
+  function zoomAt(px, py, s) {   // px, py : point de l'écran (en pixels dans la carte) qui reste fixe
+    var R = svg.getBoundingClientRect(), ux = v.x + px / R.width * v.w, uy = v.y + py / R.height * v.h;
+    v.w = v.w * s; v.h = v.w * H / W; v.w = Math.min(W, Math.max(W / 8, v.w)); v.h = v.w * H / W;
+    v.x = ux - px / R.width * v.w; v.y = uy - py / R.height * v.h; set();
+  }
+  svg.addEventListener('wheel', function (ev) {
+    if (!ev.ctrlKey && Math.abs(ev.deltaX) > Math.abs(ev.deltaY)) return;
+    ev.preventDefault(); var R = svg.getBoundingClientRect();
+    zoomAt(ev.clientX - R.left, ev.clientY - R.top, Math.exp(ev.deltaY * .0025));
+  }, { passive: false });
+  c.querySelector('.zi').addEventListener('click', function (ev) { ev.stopPropagation(); var R = svg.getBoundingClientRect(); zoomAt(R.width / 2, R.height / 2, .6); });
+  c.querySelector('.zo').addEventListener('click', function (ev) { ev.stopPropagation(); var R = svg.getBoundingClientRect(); zoomAt(R.width / 2, R.height / 2, 1 / .6); });
+  // tirer la carte (souris ou un doigt, une fois zoomée)
+  var p0 = null;
+  svg.addEventListener('pointerdown', function (ev) { if (v.w >= W - .5 || ev.pointerType === 'touch' && pinch) return; p0 = { x: ev.clientX, y: ev.clientY, vx: v.x, vy: v.y }; drag = false; });
+  window.addEventListener('pointermove', function (ev) {
+    if (!p0) return; var R = svg.getBoundingClientRect(), dx = ev.clientX - p0.x, dy = ev.clientY - p0.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) drag = true;
+    v.x = p0.vx - dx / R.width * v.w; v.y = p0.vy - dy / R.height * v.h; set();
+  });
+  window.addEventListener('pointerup', function () { p0 = null; setTimeout(function () { drag = false; }, 0); });
+  // deux doigts : pincer pour zoomer
+  var pinch = null;
+  function mid(ts) { var R = svg.getBoundingClientRect(); return { x: (ts[0].clientX + ts[1].clientX) / 2 - R.left, y: (ts[0].clientY + ts[1].clientY) / 2 - R.top, d: Math.hypot(ts[0].clientX - ts[1].clientX, ts[0].clientY - ts[1].clientY) }; }
+  svg.addEventListener('touchstart', function (ev) { if (ev.touches.length === 2) { pinch = mid(ev.touches); p0 = null; } }, { passive: true });
+  svg.addEventListener('touchmove', function (ev) {
+    if (!pinch || ev.touches.length !== 2) return; ev.preventDefault();
+    var m = mid(ev.touches), R = svg.getBoundingClientRect();
+    zoomAt(m.x, m.y, pinch.d / m.d);
+    v.x -= (m.x - pinch.x) / R.width * v.w; v.y -= (m.y - pinch.y) / R.height * v.h; set();
+    pinch = m; drag = true;
+  }, { passive: false });
+  svg.addEventListener('touchend', function (ev) { if (ev.touches.length < 2) { pinch = null; setTimeout(function () { drag = false; }, 0); } });
+  set(); window.addEventListener('resize', set);
 })();
 
 // projets (accueil) : filtres par porte et vues Images · Liste · Carte ; le défilé 1 · 2 · 3 se recompose à chaque filtre

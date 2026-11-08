@@ -80,18 +80,36 @@ def build(projets, href, fond_path):
         if hk: hors.setdefault(hk, []).append(p)
         else: inconnus.append(p['lieu'])
 
-    # un point par commune ; un clic : la fiche s'il n'y a qu'un lieu, sinon une courte liste des lieux de la commune
-    def point(x, y, items, place, extra=''):
-        lst = '|'.join('§'.join([q['nom']] + (href(q).split('~') + ['', ''])[0:3:2]) for q in items)   # nom§id§porte
-        n = len(items); r = round(4.6 + 1.4 * math.sqrt(n - 1), 1)
-        cls = 'pt st' if place == 'Hotton' else 'pt'
-        lab = f"{place} · {n} lieu{'x' if n > 1 else ''}"
-        return (f'<g class="{cls}" tabindex="0" role="button" data-n="{e(place)}" data-l="{e(lst)}" aria-label="{e(lab)}">{extra}'
-                f'<title>{e(lab)}</title><circle cx="{x}" cy="{y}" r="{r}"/><circle class="hit" cx="{x}" cy="{y}" r="{max(r, 12)}"/></g>')
-    dots = []
+    # un point par commune, tous de la même taille ; Hotton (le studio) en jaune.
+    # Aucun point ne touche un autre, et aucun n'est exactement à l'aplomb ou à l'horizontale d'un autre (léger décalage).
+    R_PT, GAP, OFF = 5, 6, 3
+    pts = []
     for name, g in groups.items():
         lat = sum(a for a, _ in g['pts']) / len(g['pts']); lon = sum(b for _, b in g['pts']) / len(g['pts'])
-        dots.append(point(X(lon), Y(lat), g['items'], name))
+        pts.append([X(lon), Y(lat), name, g['items']])
+    for name, items in hors.items():
+        la, lo = next((v[1], v[2]) for v in HORS.values() if v[0] == name)
+        pts.append([X(lo), Y(la), name, items])
+    for _ in range(200):
+        moved = False
+        for i in range(len(pts)):
+            for j in range(i + 1, len(pts)):
+                a_, b_ = pts[i], pts[j]
+                dx, dy = b_[0] - a_[0], b_[1] - a_[1]; d = math.hypot(dx, dy) or .01
+                if d < 2 * R_PT + GAP:                       # trop proches : on écarte les deux
+                    k = (2 * R_PT + GAP - d) / 2 / d
+                    a_[0] -= dx * k; a_[1] -= dy * k; b_[0] += dx * k; b_[1] += dy * k; moved = True
+                if abs(dx) < OFF: b_[0] += (OFF - abs(dx)) * (1 if dx >= 0 else -1); moved = True
+                if abs(dy) < OFF: b_[1] += (OFF - abs(dy)) * (1 if dy >= 0 else -1); moved = True
+        if not moved: break
+    def point(x, y, items, place):
+        x, y = round(x, 1), round(y, 1)
+        lst = '|'.join('§'.join([q['nom']] + (href(q).split('~') + ['', ''])[0:3:2]) for q in items)   # nom§id§porte
+        n = len(items); lab = f"{place} · {n} lieu{'x' if n > 1 else ''}"
+        return (f'<g class="{"pt st" if place == "Hotton" else "pt"}" tabindex="0" role="button" data-n="{e(place)}" data-l="{e(lst)}" aria-label="{e(lab)}">'
+                f'<circle cx="{x}" cy="{y}" r="{R_PT}"/><circle class="hit" cx="{x}" cy="{y}" r="12"/></g>')
+    dots = [point(x, y, items, name) for x, y, name, items in pts]
+    hx, hy = next((p[0], p[1]) for p in pts if p[2] == 'Hotton') if any(p[2] == 'Hotton' for p in pts) else (X(STUDIO[1]), Y(STUDIO[0]))
     def smooth(pts):   # tracé lissé (Catmull-Rom → Bézier) pour des rivières souples
         P = [(X(a), Y(b)) for a, b in pts]
         if len(P) < 3: return 'M' + 'L'.join(f'{x},{y}' for x, y in P)
@@ -103,23 +121,21 @@ def build(projets, href, fond_path):
             d += f'C{c1[0]},{c1[1]} {c2[0]},{c2[1]} {p2[0]},{p2[1]}'
         return d
     riv = ''.join(f'<path class="rv" d="{smooth(r)}"/>' for r in fond.get('rivieres', []))
-    for name, items in hors.items():   # hors carte : un point en Ardenne française, une flèche vers le lieu
-        la, lo = next((v[1], v[2]) for v in HORS.values() if v[0] == name)
-        x, y = X(lo), Y(la)
-        dots.append(f'<g class="far" aria-hidden="true"><line class="ar" x1="{x - 7}" y1="{y + 7}" x2="{x - 38}" y2="{y + 38}"/>'
-                    f'<path class="ah" d="M{x - 38},{y + 30} L{x - 38},{y + 38} L{x - 30},{y + 38}"/><text class="fl" x="{x - 44}" y="{y + 54}">{e(name)}</text></g>')
-        dots.append(point(x, y, items, name))
-    rep = ''.join(f'<g class="rep"><circle cx="{X(lo)}" cy="{Y(la)}" r="1.6"/><text x="{X(lo) + 6}" y="{Y(la) + 4}">{n}</text></g>'
+    for name, items in hors.items():   # hors carte : une flèche vers le lieu, son nom au bout
+        x, y = next((p[0], p[1]) for p in pts if p[2] == name)
+        dots.append(f'<g class="far" aria-hidden="true"><line class="ar" x1="{x - 8}" y1="{y + 8}" x2="{x - 36}" y2="{y + 36}"/>'
+                    f'<path class="ah" d="M{x - 36},{y + 28} L{x - 36},{y + 36} L{x - 28},{y + 36}"/><text class="nm" x="{x - 42}" y="{y + 52}" text-anchor="end">{e(name)}</text></g>')
+    LAB = {'Liège': (-12, -4, 'end'), 'Namur': (0, -10, 'middle'), 'Charleroi': (4, 26, 'start'), 'Mons': (0, -10, 'middle'),
+           'Bruxelles': (0, -12, 'middle'), 'Arlon': (-12, -8, 'end')}
+    rep = ''.join(f'<text class="nm{" out" if n == "Bruxelles" else ""}" x="{X(lo) + LAB.get(n, (8, 4, "start"))[0]}" y="{Y(la) + LAB.get(n, (8, 4, "start"))[1]}" text-anchor="{LAB.get(n, (8, 4, "start"))[2]}">{n}</text>'
                   for n, la, lo in REPERES)
-    sx, sy = X(STUDIO[1]), Y(STUDIO[0])
-    studio = f'<text class="stl" x="{sx + 14}" y="{sy - 10}">le studio</text>'
-
+    studio = f'<text class="nm stl" x="{hx - 40}" y="{hy - 26}" text-anchor="end">le studio</text><line class="stk" x1="{hx - 36}" y1="{hy - 30}" x2="{hx - 7}" y2="{hy - 4}"/>'
     svg = (f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Carte des lieux du studio en Wallonie">'
-           f'<path class="bx" d="{path(fond["bruxelles"])}"/><path class="wa" d="{path(fond["wallonie"])}"/><g class="rvs">{riv}</g>'
-           f'{rep}{"".join(dots)}{studio}</svg>')
+           f'<g class="zm"><path class="bx" d="{path(fond["bruxelles"])}"/><path class="wa" d="{path(fond["wallonie"])}"/><g class="rvs">{riv}</g>'
+           f'{"".join(dots)}<g class="lbs">{rep}{studio}</g></g></svg>')
     total = sum(len(g['items']) for g in groups.values()) + sum(len(v) for v in hors.values())
     html_ = (f'<section class="lieux"><h2 class="h">Les lieux.</h2></section>'
-             f'<figure class="carte" id="carte">{svg}'
+             f'<figure class="carte" id="carte">{svg}<div class="zb"><button type="button" class="zi" aria-label="Zoomer">+</button><button type="button" class="zo" aria-label="Dézoomer">−</button></div>'
              '</figure>')
     return html_, inconnus
 
