@@ -195,8 +195,8 @@ def fiche(p):
     multi = '\n' in sorti
     sorti_h = ''.join(f'<span class="ln">{e(x.strip())}</span>' for x in sorti.split('\n') if x.strip()) if multi else e(sorti)
     dl = ''
-    if dem:   dl += f'<div><dt class="lab">Demandé</dt><dd>{e(dem)}</dd></div>'
-    if sorti: dl += f'<div><dt class="lab">{"Pistes" if multi else "Sorti"}</dt><dd>{sorti_h}</dd></div>'
+    if dem:   dl += f'<div><dt class="lab">Demandé</span><span class="v">{e(dem)}</span></div>'
+    if sorti: dl += f'<div><dt class="lab">{"Pistes" if multi else "Sorti"}</span><span class="v">{sorti_h}</span></div>'
     liens = [l.split('|', 1) for l in (p['liens'] or '').split('\n') if '|' in l]
     lk = ''.join(f'<a href="{u.strip()}">{e(t.strip())}</a>' for t, u in liens if u.strip() and u.strip() != '#')
     n = len(pics)
@@ -281,9 +281,9 @@ contact = f"""<div class="page"><div class="wrap">
       <span class="pin" aria-hidden="true"></span>
     </div>
     <dl class="addr">
-      <div><dt>Mail</dt><dd><a href="mailto:contact@studiobega.be">contact@studiobega.be</a></dd></div>
-      <div><dt>Téléphone</dt><dd><a href="tel:+32474634309">+32 474 63 43 09</a></dd></div>
-      <div><dt>Studio</dt><dd>Rue Simon 43<br>6990 Hotton, Belgique</dd></div>
+      <div><span class="k">Mail</span><span class="v"><a href="mailto:contact@studiobega.be">contact@studiobega.be</a></span></div>
+      <div><span class="k">Téléphone</span><span class="v"><a href="tel:+32474634309">+32 474 63 43 09</a></span></div>
+      <div><span class="k">Studio</span><span class="v">Rue Simon 43<br>6990 Hotton, Belgique</span></div>
     </dl>
 {FOOT}</div></div>"""
 write('contact.html', page('Contact — Studio BEGA', contact, 'Studio BEGA, rue Simon 43, 6990 Hotton. contact@studiobega.be · +32 474 63 43 09'))
@@ -358,9 +358,11 @@ if V2:
       <figure class="sf-map map" id="contact"><img src="/img/contact.jpg" alt="Hotton vu du ciel : l'Ourthe, le pont, et le studio rue Simon" loading="lazy"><span class="pin" aria-hidden="true"></span></figure>
       <div class="sf-t sf-c">
         <p class="sf-lead">Le studio est à Hotton, au bord de l'Ourthe. Les lieux, eux, sont partout.</p>
-        <a class="cta" href="tel:+32474634309">+32 474 63 43 09</a>
-        <a class="cta" href="mailto:contact@studiobega.be">contact@studiobega.be</a>
-        <p class="adr">Rue Simon 43, 6990 Hotton</p>
+      </div>
+      <div class="sf-dl">
+        <a href="tel:+32474634309"><span class="k">Téléphone</span><span class="v">+32 474 63 43 09</span><span class="ar" aria-hidden="true">→</span></a>
+        <a href="mailto:contact@studiobega.be"><span class="k">E-mail</span><span class="v">contact@studiobega.be</span><span class="ar" aria-hidden="true">→</span></a>
+        <a href="https://maps.google.com/?q=Rue+Simon+43,+6990+Hotton" target="_blank" rel="noopener"><span class="k">Studio</span><span class="v">Rue Simon 43, 6990 Hotton</span><span class="ar" aria-hidden="true">↗</span></a>
       </div>
     </article>
 {FOOT}</div></div>"""
