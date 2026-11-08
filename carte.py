@@ -80,24 +80,18 @@ def build(projets, href, fond_path):
         if hk: hors.setdefault(hk, []).append(p)
         else: inconnus.append(p['lieu'])
 
-    # un point par lieu : les lieux d'une même commune se rangent en couronne autour d'elle ; un clic ouvre la fiche
-    def dot(x, y, q, place):
-        fid, _, k = (href(q).split('~') + ['', ''])[:3]
-        lab = f"{q['nom']} · {place}"
-        return (f'<g class="pt" tabindex="0" role="button" data-open="{e(fid)}" data-k="{e(k)}" data-lab="{e(lab)}" aria-label="{e(lab)}">'
-                f'<title>{e(lab)}</title><circle cx="{x}" cy="{y}" r="3.9"/><circle class="hit" cx="{x}" cy="{y}" r="10"/></g>')
+    # un point par commune ; un clic : la fiche s'il n'y a qu'un lieu, sinon une courte liste des lieux de la commune
+    def point(x, y, items, place, extra=''):
+        lst = '|'.join('§'.join([q['nom']] + (href(q).split('~') + ['', ''])[0:3:2]) for q in items)   # nom§id§porte
+        n = len(items); r = round(4.6 + 1.4 * math.sqrt(n - 1), 1)
+        cls = 'pt st' if place == 'Hotton' else 'pt'
+        lab = f"{place} · {n} lieu{'x' if n > 1 else ''}"
+        return (f'<g class="{cls}" tabindex="0" role="button" data-n="{e(place)}" data-l="{e(lst)}" aria-label="{e(lab)}">{extra}'
+                f'<title>{e(lab)}</title><circle cx="{x}" cy="{y}" r="{r}"/><circle class="hit" cx="{x}" cy="{y}" r="{max(r, 12)}"/></g>')
     dots = []
     for name, g in groups.items():
         lat = sum(a for a, _ in g['pts']) / len(g['pts']); lon = sum(b for _, b in g['pts']) / len(g['pts'])
-        cx, cy, n = X(lon), Y(lat), len(g['items'])
-        for i, q in enumerate(g['items']):
-            if n == 1: x, y = cx, cy
-            else:
-                ring = 0 if i == 0 else (1 if i <= 6 else 2); j = 0 if ring == 0 else (i - 1 if ring == 1 else i - 7)
-                m = 1 if ring == 0 else (min(n - 1, 6) if ring == 1 else n - 7)
-                rad = (0, 8.5, 16)[ring]; ang = 2 * math.pi * j / max(m, 1) - math.pi / 2
-                x, y = round(cx + rad * math.cos(ang), 1), round(cy + rad * math.sin(ang), 1)
-            dots.append(dot(x, y, q, name))
+        dots.append(point(X(lon), Y(lat), g['items'], name))
     def smooth(pts):   # tracé lissé (Catmull-Rom → Bézier) pour des rivières souples
         P = [(X(a), Y(b)) for a, b in pts]
         if len(P) < 3: return 'M' + 'L'.join(f'{x},{y}' for x, y in P)
@@ -114,11 +108,11 @@ def build(projets, href, fond_path):
         x, y = X(lo), Y(la)
         dots.append(f'<g class="far" aria-hidden="true"><line class="ar" x1="{x - 7}" y1="{y + 7}" x2="{x - 38}" y2="{y + 38}"/>'
                     f'<path class="ah" d="M{x - 38},{y + 30} L{x - 38},{y + 38} L{x - 30},{y + 38}"/><text class="fl" x="{x - 44}" y="{y + 54}">{e(name)}</text></g>')
-        for q in items: dots.append(dot(x, y, q, name))
+        dots.append(point(x, y, items, name))
     rep = ''.join(f'<g class="rep"><circle cx="{X(lo)}" cy="{Y(la)}" r="1.6"/><text x="{X(lo) + 6}" y="{Y(la) + 4}">{n}</text></g>'
                   for n, la, lo in REPERES)
     sx, sy = X(STUDIO[1]), Y(STUDIO[0])
-    studio = f'<circle class="st" cx="{sx}" cy="{sy}" r="24"/><text class="stl" x="{sx + 28}" y="{sy + 4}">le studio</text>'
+    studio = f'<text class="stl" x="{sx + 14}" y="{sy - 10}">le studio</text>'
 
     svg = (f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Carte des lieux du studio en Wallonie">'
            f'<path class="bx" d="{path(fond["bruxelles"])}"/><path class="wa" d="{path(fond["wallonie"])}"/><g class="rvs">{riv}</g>'

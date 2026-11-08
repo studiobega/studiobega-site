@@ -151,26 +151,36 @@
   if (h) { fromLoad = true; open(h); fromLoad = false; }
 })();
 
-// carte des lieux : un point par lieu ; au survol, son nom ; au clic, sa fiche (ouverte par la délégation des fiches)
+// carte des lieux : un point par commune. Un lieu : sa fiche s'ouvre. Plusieurs : une courte liste, puis la fiche.
+// En fermant la fiche, on retrouve la carte (la liste s'est déjà refermée). Les communes hors du filtre restent en gris.
 (function () {
   var c = document.getElementById('carte'); if (!c) return;
-  var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; c.appendChild(tip);
-  function show(g) {
-    var r = g.querySelector('circle').getBoundingClientRect(), R = c.getBoundingClientRect();
-    tip.textContent = g.getAttribute('data-lab'); tip.hidden = false;
-    var x = r.left + r.width / 2 - R.left, w = tip.offsetWidth;
-    tip.style.left = Math.min(Math.max(x - w / 2, 0), R.width - w) + 'px'; tip.style.top = (r.top - R.top - 34) + 'px';
+  var pop = document.createElement('div'); pop.className = 'pop'; pop.hidden = true; c.appendChild(pop);
+  var f = '', cur = null;
+  function items(g) { return g.getAttribute('data-l').split('|').map(function (x) { var a = x.split('§'); return { n: a[0], id: a[1], k: a[2] }; }); }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  function hide() { pop.hidden = true; if (cur) cur.classList.remove('on'); cur = null; }
+  function openId(id) { var a = document.createElement('a'); a.setAttribute('data-open', id); a.href = '#' + id; a.hidden = true; c.appendChild(a); a.click(); c.removeChild(a); }
+  function pick(g) {
+    var L = items(g).filter(function (i) { return !f || i.k === f; }); if (!L.length) return;
+    if (L.length === 1) { hide(); openId(L[0].id); return; }
+    if (cur) cur.classList.remove('on'); cur = g; g.classList.add('on');
+    pop.innerHTML = '<div class="pop-h">' + esc(g.getAttribute('data-n')) + '</div>' +
+      L.map(function (i) { return '<a href="#' + esc(i.id) + '" data-open="' + esc(i.id) + '">' + esc(i.n) + '</a>'; }).join('');
+    pop.hidden = false;
+    var r = g.querySelector('circle').getBoundingClientRect(), R = c.getBoundingClientRect(), w = pop.offsetWidth;
+    pop.style.left = Math.min(Math.max(r.left + r.width / 2 - R.left - w / 2, 0), R.width - w) + 'px';
+    pop.style.top = (r.bottom - R.top + 8) + 'px';
   }
+  pop.addEventListener('click', function () { hide(); });   // le choix fait, la liste disparaît ; la fiche s'ouvre par-dessus la carte
   Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) {
-    g.addEventListener('mouseenter', function () { show(g); });
-    g.addEventListener('mouseleave', function () { tip.hidden = true; });
-    g.addEventListener('focus', function () { show(g); });
-    g.addEventListener('blur', function () { tip.hidden = true; });
-    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
+    g.addEventListener('click', function (ev) { ev.stopPropagation(); if (g.classList.contains('off')) return; if (cur === g) hide(); else pick(g); });
+    g.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(g); } });
   });
-  c.filtre = function (f) {   // filtre des portes : on ne garde que les lieux de la porte choisie
-    tip.hidden = true;
-    Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) { g.style.display = !f || g.getAttribute('data-k') === f ? '' : 'none'; });
+  document.addEventListener('click', function (ev) { if (!pop.hidden && !ev.target.closest('.pop') && !ev.target.closest('.pt')) hide(); });
+  c.filtre = function (x) {   // filtre des portes : les communes sans lieu de la porte choisie passent en gris
+    f = x || ''; hide();
+    Array.prototype.forEach.call(c.querySelectorAll('.pt'), function (g) { g.classList.toggle('off', !!f && !items(g).some(function (i) { return i.k === f; })); });
   };
 })();
 

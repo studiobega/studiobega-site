@@ -259,13 +259,21 @@ html.lock{overflow:hidden}
 .carte .far .fl{font-size:12px;fill:#111;text-anchor:end}
 @media (max-width:640px){.carte .far .fl{font-size:20px}.carte .rv{stroke-width:2}}
 
-/* carte : un point par lieu, son nom au survol */
+/* carte : un point par commune ; Hotton (le studio) en anneau ; communes hors filtre en gris ; courte liste minimaliste */
 .carte{position:relative}
-.carte .pt circle:first-child{fill:#111}
-.carte .pt:hover circle:first-child,.carte .pt:focus-visible circle:first-child{fill:#FFD400;stroke:#111;stroke-width:1.2}
-.carte .st{fill:none;stroke:#111;stroke-width:.8;stroke-dasharray:2 2;pointer-events:none}
+.carte .pt circle:first-child{fill:#111;transition:fill .2s}
+.carte .pt:hover circle:first-child,.carte .pt.on circle:first-child{stroke:#111;stroke-width:5}
+.carte .pt.st circle:first-child{fill:#fff;stroke:#111;stroke-width:2.4}
+.carte .pt.st:hover circle:first-child,.carte .pt.st.on circle:first-child{fill:#111;stroke-width:2.4}
+.carte .pt.off{pointer-events:none}
+.carte .pt.off circle:first-child{fill:#cfcec8;stroke:none}
+.carte .pt.st.off circle:first-child{fill:#fff;stroke:#cfcec8}
 .carte .stl{font-family:'Newsreader',Georgia,serif;font-style:italic;font-size:13px;fill:#111;pointer-events:none}
-.carte .tip{position:absolute;z-index:3;background:#111;color:#fff;font-size:13px;line-height:1;padding:7px 10px;border-radius:4px;white-space:nowrap;pointer-events:none}
+.carte .pop{position:absolute;z-index:3;min-width:180px;max-width:260px;background:#fff;border:1px solid #111;padding:10px 14px 8px}
+.carte .pop-h{font-size:12px;color:#6b6b66;margin-bottom:4px}
+.carte .pop a{display:block;font-size:15px;line-height:1.35;padding:6px 0;border-top:1px solid #eeede8}
+.carte .pop a:first-of-type{border-top:0}
+.carte .pop a:hover{text-decoration:underline;text-underline-offset:3px}
 
 /* téléphone : rendu des sites d'auteur — barre de filtres collée en haut, images bord à bord, texte resserré */
 @media (max-width:760px){
