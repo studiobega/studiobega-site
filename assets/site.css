@@ -451,3 +451,6 @@ html.lock{overflow:hidden}
 .hero h1,.sec .sp,.sf .sf-h,.fh .nm,.flt,.sq .ck,.fcle,.pp-nav a{font-family:'Schibsted Grotesk','Jost',Helvetica,Arial,sans-serif;font-weight:500;letter-spacing:-.01em}
 .flt button.on{font-weight:600}
 .sec p,.sf .sf-t p,.mbox dd,.mbox .para,.sq .cm,.sf .sf-duo figcaption{color:#111}
+
+/* iPhone (9 nov. 2026) : les quatre filtres tiennent en entier sur une ligne — la taille suit la largeur d'écran */
+@media (max-width:760px){.flt{font-size:min(20px,4.6vw);gap:min(18px,3.2vw)}}
