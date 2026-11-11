@@ -7,6 +7,8 @@ on:
     - cron: '17 2 * * *'    # chaque nuit, 03:17 heure belge (hiver) : reconstruction complète, quoi qu'il arrive (filet de sécurité)
   push:
     branches: [main]        # toute modification du code republie
+  issues:
+    types: [edited]         # Airtable → Make modifie la fiche n°1 à chaque changement : publication immédiate
 
 concurrency:
   group: publish
@@ -16,6 +18,7 @@ jobs:
   # Airtable a-t-il changé depuis la dernière publication ? (empreinte de la vue « Site » vs build.json en ligne)
   # Push, bouton et reconstruction de nuit : on publie sans condition.
   veille:
+    if: github.event_name != 'issues' || github.event.issue.number == 1
     runs-on: ubuntu-latest
     outputs:
       go: ${{ steps.c.outputs.go }}
