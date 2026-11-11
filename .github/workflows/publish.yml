@@ -76,7 +76,9 @@ jobs:
           FTP_HOST: ${{ vars.FTP_HOST || 'kx5isg.ftp.infomaniak.com' }}
           SITE_DIR: ${{ vars.SITE_DIR || 'sites/new.studiobega.be' }}
         run: |
-          sudo apt-get install -y -qq lftp > /dev/null
+          # index apt rafraîchi + 3 essais : un miroir Ubuntu indisponible ne bloque plus la publication
+          for i in 1 2 3; do sudo apt-get update -qq > /dev/null 2>&1; sudo apt-get install -y -qq lftp > /dev/null && break; sleep 15; done
+          command -v lftp > /dev/null
           lftp -u "$FTP_USER","$FTP_PASSWORD" "sftp://$FTP_HOST" -e "
             set sftp:auto-confirm yes;
             set net:max-retries 3;
