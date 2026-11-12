@@ -1,0 +1,14 @@
+name: Photos presse
+on: workflow_dispatch
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install requests pillow
+      - run: python3 press_photos.py
+        env: {AIRTABLE_TOKEN: '${{ secrets.AIRTABLE_TOKEN }}'}
+      - uses: actions/upload-artifact@v4
+        with: {name: photos-presse, path: press/, retention-days: 3}
