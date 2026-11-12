@@ -1,5 +1,7 @@
 name: Photos presse
 on: workflow_dispatch
+permissions:
+  contents: write
 jobs:
   photos:
     runs-on: ubuntu-latest
@@ -10,5 +12,9 @@ jobs:
       - run: pip install requests pillow
       - run: python3 press_photos.py
         env: {AIRTABLE_TOKEN: '${{ secrets.AIRTABLE_TOKEN }}'}
-      - uses: actions/upload-artifact@v4
-        with: {name: photos-presse, path: press/, retention-days: 3}
+      - run: |
+          git config user.name "studiobega-bot"; git config user.email "bot@studiobega.be"
+          git checkout --orphan presse-photos
+          git rm -rq --cached . ; git add press/web press/hd
+          git commit -qm "Photos presse"
+          git push -f origin presse-photos
