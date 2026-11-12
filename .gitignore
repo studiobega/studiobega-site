@@ -3,3 +3,6 @@ data/photos/
 __pycache__/
 .DS_Store
 dist_apercu/
+press/build/
+press/dossier.html
+press/test.json

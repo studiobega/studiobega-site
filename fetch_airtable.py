@@ -51,4 +51,11 @@ json.dump(manifest, open(DATA / 'photos_manifest.json', 'w'), ensure_ascii=False
 keep = {m['id'] for m in manifest}
 for p in PH.glob('*.jpg'):
     if p.stem not in keep: p.unlink()
+# les textes publics (table « Textes », lignes « Où » = Site) : la même source que le dossier de presse
+TX = []
+r = requests.get('https://api.airtable.com/v0/app96I5oQRuFkzTbc/tblbzLNq3B2BUefMe', headers={'Authorization': f'Bearer {TOKEN}'},
+                 params={'filterByFormula': 'FIND("Site", ARRAYJOIN({Où}))', 'pageSize': 100}, timeout=60)
+if r.ok: TX = {x['fields'].get('Nom', ''): x['fields'].get('Texte', '') for x in r.json()['records']}
+else: print('textes : table « Textes » illisible', r.status_code)
+json.dump(TX or {}, open(DATA / 'textes.json', 'w'), ensure_ascii=False, indent=0)
 print(f'{len(rows)} lieux, {len(manifest)} photos ({fresh} nouvelles)')

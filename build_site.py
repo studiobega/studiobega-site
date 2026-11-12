@@ -372,18 +372,23 @@ if V2:
     # puis une grille éditoriale — rubrique à gauche, contenu à droite, filets fins — alignée sur le logo.
     # Une seule taille de texte pour tout le corps de page, deux couleurs (noir, gris) : net sur ordinateur comme sur téléphone.
     # Studio : un seul fil, aéré, sans grille ni filets — la phrase, le duo, qui on est, comment on travaille, où l'on est, comment appeler.
-    studio = f"""<div class="page"><div class="wrap">
-{nav('Studio')}    <article class="sf">
-      <div class="sf-l">
-      <h1 class="sf-h">Chaque lieu a sa clé.</h1>
-      <div class="sf-t">
-        <p>Nous croyons qu'un lieu en sait plus que nous. Son relief, son eau, sa lumière et ceux qui le traversent depuis des générations composent une sagesse que beaucoup de projets effacent. Notre travail commence par l'écouter.</p>
+    # le manifeste vient d'Airtable (table « Textes », ligne « Manifeste ») ; sans elle, le texte d'origine ci-dessous
+    _TX = json.load(open(DATA / 'textes.json')) if (DATA / 'textes.json').exists() else {}
+    _M0 = """        <p>Nous croyons qu'un lieu en sait plus que nous. Son relief, son eau, sa lumière et ceux qui le traversent depuis des générations composent une sagesse que beaucoup de projets effacent. Notre travail commence par l'écouter.</p>
         <p>Nous lisons le site longtemps, avec le programme de celui qui le porte, jusqu'à ce qu'une idée s'impose. Nous l'appelons <span class="key">la clé</span> : l'endroit exact où ce que le lieu sait rejoint ce que le maître d'ouvrage désire.</p>
         <p>Cette idée devient la signature du projet. Elle guide le volume, la matière et la lumière jusqu'au dernier détail, avec la constance d'un fil tendu. C'est elle qui donne au lieu son caractère, cette présence que l'on ressent avant de la comprendre.</p>
         <p>Une idée juste rassemble. Du premier trait à la dernière pierre, tous ceux qui font le projet avancent dans la même direction. Le projet garde sa ligne, et chacun y gagne du temps et de l'argent : le programme, la technique, le calendrier et le budget tiennent. Nous nous y engageons.</p>
         <p>Certains lieux attendent encore qu'on les regarde. Ceux-là, nous les dessinons de notre propre initiative, pour montrer ce qu'ils peuvent devenir : une tour par massif ardennais, une île au cœur de Hotton, une seconde peau pour une tour de Liège.</p>
         <p>Demain, on construira moins et on transformera davantage. Une maison, un hôtel, une place ou un territoire : chaque fois, nous signons un lieu.</p>
-      </div>
+"""
+    MANIF = (''.join(f'        <p>{e(b.strip())}</p>\n' for b in re.split(r'\n\s*\n', _TX['Manifeste']) if b.strip())
+             .replace("Nous l'appelons la clé", "Nous l'appelons <span class=\"key\">la clé</span>")) if _TX.get('Manifeste') else _M0
+    studio = f"""<div class="page"><div class="wrap">
+{nav('Studio')}    <article class="sf">
+      <div class="sf-l">
+      <h1 class="sf-h">Chaque lieu a sa clé.</h1>
+      <div class="sf-t">
+{MANIF}      </div>
       </div>
       <div class="sf-r">
       <figure class="sf-duo"><img src="/img/duo.jpg" alt="Héloïse Collin et Benjamin Gaspard" loading="lazy">
