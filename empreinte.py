@@ -27,6 +27,10 @@ def empreinte(token):
     recs = lignes(token, [MOD])
     txt = '\n'.join(f"{r['id']} {r['fields'].get(MOD, '')}" for r in recs)
     txt += '\nTOUS ' + ' '.join(r['id'] for r in lignes(token, [MOD], TOUS))   # déplacer une ligne dans « Site · Tous » republie aussi
+    # la table « Textes » (manifeste, dossier de presse) : un texte modifié republie aussi
+    r = requests.get(f'https://api.airtable.com/v0/{BASE}/tblbzLNq3B2BUefMe', headers={'Authorization': f'Bearer {token}'},
+                     params={'fields[]': ['Modifié'], 'pageSize': 100}, timeout=60)
+    if r.ok: txt += '\nTEXTES ' + ' '.join(sorted(f"{x['id']}:{x['fields'].get('Modifié', '')}" for x in r.json()['records']))
     return hashlib.sha256(txt.encode()).hexdigest()
 
 if __name__ == '__main__':
