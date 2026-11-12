@@ -72,7 +72,7 @@ jobs:
       - name: Construire le site (refonte en ligne depuis le 07/11/2026)
         run: V2=1 python3 build_site.py
 
-      - name: Dossier de presse (mêmes données : Projets cochés « Presse » + table « Textes »)
+      - name: "Dossier de presse — Projets cochés Presse + table Textes"
         env:
           AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
         run: python3 press.py || echo "::warning::Dossier de presse non construit (le site part quand même)"
