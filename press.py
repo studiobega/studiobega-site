@@ -110,7 +110,7 @@ page(f"""{hdr('Sujets pour la presse')}<p class="eyebrow">Sujets pour la presse<
 {next((f'<img class="strip" src="build/{p["photos"][0]}"><p class="credit">{e(p["nom"])}, {e(p["lieu"])} · Studio BEGA</p>' for p in PJ if p['code'] == '26.60' and p['photos']), '')}""")
 
 page(f"""{hdr('Le studio')}<p class="eyebrow">Le studio</p><h2>Chaque lieu a sa clé.</h2>
-<figure class="duo1"><img src="static/duo.jpg"><figcaption>Héloïse Collin, architecte d'intérieur — Benjamin Gaspard, architecte fondateur</figcaption></figure>
+<figure class="duo1"><img src="static/duo.jpg"><figcaption>Héloïse Collin et Benjamin Gaspard</figcaption></figure>
 <div class="cols2"><div><h3>Benjamin Gaspard · architecte, fondateur</h3><p>{e(T('Bio · Benjamin Gaspard'))}</p></div>
 <div><h3>Héloïse Collin · architecte d'intérieur</h3><p>{e(T('Bio · Héloïse Collin'))}</p><p>Studio BEGA travaille en Wallonie, à Bruxelles et au Luxembourg, de l'espace public à la maison.</p></div></div>""")
 
@@ -143,24 +143,27 @@ def smooth(pts):
         p0, p1, p2, p3 = Q[max(i - 1, 0)], Q[i], Q[i + 1], Q[min(i + 2, len(Q) - 1)]
         d += f'C{p1[0]+(p2[0]-p0[0])/6:.1f},{p1[1]+(p2[1]-p0[1])/6:.1f} {p2[0]-(p3[0]-p1[0])/6:.1f},{p2[1]-(p3[1]-p1[1])/6:.1f} {p2[0]},{p2[1]}'
     return d
-G = {'Hotton': [C.STUDIO[0], C.STUDIO[1], ['le studio']]}
-for p in PJ:
-    g = C._find(p['lieu'])
+# tous les lieux publiés sur le site (data/projets.json), un point noir chacun ; le studio en jaune
+try: TOUS = json.load(open(ROOT / 'data' / 'projets.json'))
+except Exception: TOUS = PJ
+pts, communes = [], {}
+for p in TOUS:
+    g = C._find(p.get('lieu') or '')
     if not g: continue
-    G.setdefault(g[2], [g[0], g[1], []])[2].append(re.sub(r'^(Cinéma|Esplanade|Centre)', lambda m: m.group(1).lower(), p['nom']))
+    pts.append((g[0], g[1])); communes.setdefault(g[2], (g[0], g[1]))
 HALO = 'stroke="#fff" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round"'
 svg = f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" font-family="Inter">'
 svg += f'<path d="{path(fond["bruxelles"])}" fill="none" stroke="#111" stroke-width=".8"/><path d="{path(fond["wallonie"])}" fill="none" stroke="#111" stroke-width=".8" stroke-linejoin="round"/>'
 svg += ''.join(f'<path d="{smooth(r)}" fill="none" stroke="#b9cdd9" stroke-width="1"/>' for r in fond.get('rivieres', []))
-svg += ''.join(f'<text x="{X(lo)}" y="{Y(la)}" font-size="10" fill="#9a9a95" text-anchor="middle" {HALO}>{n}</text>' for n, la, lo in C.REPERES)
-for n, (la, lo, what) in G.items():
-    x, y = X(lo), Y(la); st = n == 'Hotton'; left = st or x > W - 190
-    dx, a = (-12, 'end') if left else (12, 'start'); dy = -16 if st else 4
-    svg += f'<circle cx="{x}" cy="{y}" r="{6 if st else 5}" fill="{"#F2B705" if st else "#111"}"/>'
-    svg += f'<text x="{x+dx}" y="{y+dy}" text-anchor="{a}" font-size="12" font-weight="600" fill="#111" {HALO}>{e(n)}</text>'
-    svg += ''.join(f'<text x="{x+dx}" y="{y+dy+13+11*i}" text-anchor="{a}" font-size="9.5" fill="#6b6b66" {HALO}>{e(t)}</text>' for i, t in enumerate(what))
+seen = {}
+for la, lo in pts:   # points superposés dans une même commune : léger décalage pour les voir tous
+    k = (round(la, 3), round(lo, 3)); i = seen.get(k, 0); seen[k] = i + 1
+    ang = i * 2.4; r = 0 if i == 0 else 4 + 2 * (i // 6)
+    svg += f'<circle cx="{X(lo) + r * math.cos(ang):.1f}" cy="{Y(la) + r * math.sin(ang):.1f}" r="3.2" fill="#111"/>'
+svg += f'<circle cx="{X(C.STUDIO[1])}" cy="{Y(C.STUDIO[0])}" r="6" fill="#F2B705" stroke="#111" stroke-width="1"/>'
+svg += f'<text x="{X(C.STUDIO[1]) - 10}" y="{Y(C.STUDIO[0]) - 10}" text-anchor="end" font-size="12" font-weight="600" fill="#111" {HALO}>Hotton · le studio</text>'
 svg += '</svg>'
-page(f"""{hdr('Les lieux')}<p class="eyebrow">Les lieux</p><h2>Le studio est à Hotton, au bord de l'Ourthe.<br>Les lieux, eux, sont partout.</h2>
+page(f"""{hdr('Les lieux')}<p class="eyebrow">Les lieux</p><h2>Le studio est à Hotton, au bord de l'Ourthe.<br>Les lieux, eux, sont partout.</h2><p class="credit">Chaque point : un lieu publié sur studiobega.be.</p>
 <div class="map2">{svg}</div>
 <div class="cols3 refs"><div><p class="lab">Contact</p><p><b>Studio BEGA</b><br>Rue Simon 43, 6990 Hotton<br>+32 474 63 43 09<br>contact@studiobega.be<br>studiobega.be</p></div>
 <div><p class="lab">Sur demande</p><p>Photos haute définition, plans, entretien sur place.</p></div>
