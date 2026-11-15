@@ -97,8 +97,8 @@ def photos_for(p):
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Newsreader:ital,opsz,wght@1,6..72,400&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">'
 
 FOOT = """    <footer class="foot">
-      <div class="grp"><a href="https://www.instagram.com/studio_bega_/">Instagram</a><a href="https://www.facebook.com/studiobenjamingaspard">Facebook</a><a href="https://be.linkedin.com/company/studiobega">LinkedIn</a></div>
-      <div>Studio BEGA, architectes · Rue Simon 43, 6990 Hotton, Belgique · © Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
+      <div class="grp"><a href="https://www.instagram.com/studio_bega_/">Instagram</a><a href="https://www.facebook.com/studiobega.be">Facebook</a><a href="https://be.linkedin.com/company/studiobega">LinkedIn</a></div>
+      <div>Studio BEGA, architectes · Rue Simon 43, 6990 Hotton, Belgique · <a href="tel:+32474634309">+32 474 63 43 09</a> · <a href="mailto:contact@studiobega.be">contact@studiobega.be</a> · © Studio Benjamin Gaspard SRL · TVA BE 0799.818.844</div>
     </footer>
 """
 MENU = ([('/#projets', 'Projets'), ('/studio/', 'Studio')] if V2 else
@@ -363,7 +363,7 @@ if V2:
         "founder": {"@type": "Person", "name": "Benjamin Gaspard", "jobTitle": "Architecte"},
         "employee": [{"@type": "Person", "name": "Héloïse Collin", "jobTitle": "Architecte d'intérieur"}],
         "knowsAbout": ["architecture", "plan directeur", "espace public", "rénovation", "architecture d'intérieur", "scénographie"],
-        "sameAs": ["https://www.instagram.com/studio_bega_/", "https://www.facebook.com/studiobenjamingaspard", "https://be.linkedin.com/company/studiobega"]
+        "sameAs": ["https://www.instagram.com/studio_bega_/", "https://www.facebook.com/studiobega.be", "https://be.linkedin.com/company/studiobega"]
     }], ensure_ascii=False) + '</script>'
     write('index.html', page('Studio BEGA — Architectes à Hotton, Belgique', index2,
         "Studio BEGA, architectes à Hotton (Belgique) : lire un lieu, imaginer sa clé, le réaliser. Plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, partout en Belgique.", canon='/', ld=LD))
@@ -429,6 +429,17 @@ if V2:
         + ''.join(f'  <url><loc>https://studiobega.be{u}</loc></url>\n' for u in urls) + '</urlset>\n')
     # Google Search Console : fichier de vérification du site (ne pas supprimer, sinon la propriété est perdue)
     (DIST / 'googleabd13bafbcc1a0b9.html').write_text('google-site-verification: googleabd13bafbcc1a0b9.html')
+    # llms.txt : la carte d'identité du studio pour les assistants IA (ChatGPT, Perplexity, Claude…), régénérée à chaque publication
+    _lt = ['# Studio BEGA', '',
+           "> Studio d'architecture à Hotton (Belgique). Studio BEGA lit un lieu, trouve sa clé et la réalise : plans directeurs, espaces publics, lieux d'activité, maisons et intérieurs, en Wallonie, à Bruxelles et au Luxembourg.", '',
+           'Fondé par Benjamin Gaspard, architecte, avec Héloïse Collin, architecte d\'intérieur. Société : Studio Benjamin Gaspard SRL, TVA BE 0799.818.844.',
+           'Adresse : Rue Simon 43, 6990 Hotton, Belgique · Téléphone : +32 474 63 43 09 · E-mail : contact@studiobega.be', '',
+           '## Pages', '- [Projets](https://studiobega.be/#projets) : tous les lieux, triés en Territoires, Activités et Habitat',
+           '- [Studio](https://studiobega.be/studio/) : la démarche, l\'équipe, les commanditaires, la presse, le contact', '',
+           '## Projets']
+    _lt += [f"- [{ph(q['nom'])} — {ph(q['lieu'])}](https://studiobega.be/projets/{q['id']}/)" + (f" : {ph(q['cle'])}" if ph(q['cle']) else '') for q in tous]
+    _lt += ['', '## Ailleurs', '- [LinkedIn](https://be.linkedin.com/company/studiobega)', '- [Instagram](https://www.instagram.com/studio_bega_/)', '- [Facebook](https://www.facebook.com/studiobega.be)']
+    (DIST / 'llms.txt').write_text('\n'.join(_lt) + '\n')
     (DIST / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://studiobega.be/sitemap.xml\n')
     # l'ancienne page Contact mène au bas de Studio
     write('contact.html', f'<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url={BASE}/studio/#contact"><link rel="canonical" href="{BASE}/studio/#contact">')
@@ -460,6 +471,10 @@ if V2:   # la refonte : /studio/ est une vraie page ; l'ancienne page Contact et
 else:
     R(r'studio(\.html)?', '/#studio'); R('contact', '/contact.html'); R('accueil', '/')
 R('sites', '/territoires/'); R('maisons', '/habitat/')
+# anciennes adresses Adobe encore vues par Google en 404 (Search Console, nov. 2026)
+R('preuves', '/studio/'); R('projets', '/#projets'); R('test', '/')
+R('copie-de-renovation-dune-batisse-ardennaise', '/habitat/')
+if old.get('/copie-de-aguesses-1') in bycode: R('copie-de-aguesses', bycode[old['/copie-de-aguesses-1']])
 (DIST / '.htaccess').write_text('\n'.join(redir) + '\n')
 
 n_img = sum(1 for _ in IMG.rglob('*.jpg'))
