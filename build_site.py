@@ -173,6 +173,13 @@ if V2:   # textes de secteur resserrés : ils s'affichent sur l'accueil quand on
                         "Une maison neuve, une ferme à rénover, des logements, un intérieur. Le terrain, les murs, la vue et la lumière donnent la clé, et l'architecture d'intérieur la prolonge jusqu'au moindre détail."),
     }
 NAMES = dict(PORTES)
+# Les intros de galerie viennent d'Airtable (table « Textes », lignes « Galerie · Tous / Territoires / Activités / Habitat », Où = Site) :
+# première ligne = la phrase forte, puis une ligne vide, puis le paragraphe. Sans la ligne Airtable, le texte en dur ci-dessus reste.
+_TXT = json.load(open(DATA / 'textes.json')) if (DATA / 'textes.json').exists() else {}
+def galerie(nom, defaut):
+    blocs = [b.strip() for b in re.split(r'\n\s*\n', _TXT.get(f'Galerie · {nom}') or '') if b.strip()]
+    return (blocs[0], ' '.join(' '.join(blocs[1:]).split())) if len(blocs) >= 2 else defaut
+DOORS = {k: galerie(n, DOORS[k]) for k, n in PORTES}
 bykey = {k: sorted([p for p in P if p['pk'] == k and ph(p['nom'])], key=lambda p: (p['ordre'] or 999, p['nom'])) for k, _ in PORTES}
 
 def card(p):
@@ -316,6 +323,7 @@ if V2:
     vws = '<button type="button" class="on" data-v="img">Images</button><button type="button" data-v="list">Liste</button><button type="button" data-v="map">Carte</button>'
     TOUT = ("Des lieux singuliers, à toutes les échelles.",
             "Une vallée, une place, un musée, un café, une maison, une pièce. Chacun cache une clé, l'idée qui réunit ce que le lieu offre et ce que le projet demande. Chaque projet en porte la signature.")
+    TOUT = galerie('Tous', TOUT)
     intros = f'<div class="sec" data-for=""><p class="sp">{e(TOUT[0])}</p><p>{e(TOUT[1])}</p></div>' + ''.join(
         f'<div class="sec" data-for="{k}" hidden><p class="sp">{e(DOORS[k][0])}</p><p>{e(DOORS[k][1])}</p></div>' for k, _ in PORTES)
     # Liste : en-têtes cliquables (petite flèche à droite de chaque colonne), tri alphabétique par nom par défaut
@@ -381,7 +389,8 @@ if V2:
         <p>Certains lieux attendent encore qu'on les regarde. Ceux-là, nous les dessinons de notre propre initiative, pour montrer ce qu'ils peuvent devenir : une tour par massif ardennais, une île au cœur de Hotton, une seconde peau pour une tour de Liège.</p>
         <p>Demain, on construira moins et on transformera davantage. Une maison, un hôtel, une place ou un territoire : chaque fois, nous signons un lieu.</p>
 """
-    MANIF = (''.join(f'        <p>{e(b.strip())}</p>\n' for b in re.split(r'\n\s*\n', _TX['Manifeste']) if b.strip())
+    # *mots* = en jaune (convention de la table Textes, la même que dans le dossier de presse)
+    MANIF = (re.sub(r'\*(.+?)\*', r'<span class="key">\1</span>', ''.join(f'        <p>{e(b.strip())}</p>\n' for b in re.split(r'\n\s*\n', _TX['Manifeste']) if b.strip()))
              .replace("Nous l'appelons la clé", "Nous l'appelons <span class=\"key\">la clé</span>")) if _TX.get('Manifeste') else _M0
     studio = f"""<div class="page"><div class="wrap">
 {nav('Studio')}    <article class="sf">
