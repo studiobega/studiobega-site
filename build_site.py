@@ -416,7 +416,7 @@ if V2:
     </article>
 {FOOT}</div></div>"""
     write('studio/index.html', page('Studio — Studio BEGA, architectes à Hotton', studio,
-        "Chaque lieu a sa clé. Studio BEGA ne dessine rien avant d'avoir regardé longtemps : on cherche ce qui fait tenir ensemble le lieu et ce qu'on en attend, puis on tient le projet jusqu'à la dernière pierre, calendrier et budget compris. Rue Simon 43, 6990 Hotton · +32 474 63 43 09", canon='/studio/', ld=LD))
+        "Chaque lieu a sa clé. Studio BEGA réunit le lieu, le programme et l'envie de celui qui le porte pour en faire un lieu exceptionnel, à toutes les échelles, de l'implantation au détail intérieur. Rue Simon 43, 6990 Hotton · +32 474 63 43 09", canon='/studio/', ld=LD))
     # une page par projet : /projets/<id>/ — chaque vignette, ligne ou point de carte y mène (comme chez les bureaux de référence) ; précédent / suivant suivent l'ordre de « Tous »
     for n_, q in enumerate(tous):
         prv, nxt = tous[n_ - 1], tous[(n_ + 1) % len(tous)]
