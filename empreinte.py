@@ -2,8 +2,8 @@
 """Empreinte de la vue « Site » : identifiants des lignes dans l'ordre de la vue + date de dernière
 modification de leurs champs publiés. Change dès qu'une ligne est modifiée, ajoutée, retirée ou déplacée.
 
-Une seule vue Airtable, « Site » : son ordre est celui de « Tous » sur l'accueil ; l'ordre dans une
-catégorie (Territoires, Activités, Habitat) est le même, réduit aux lignes de la catégorie.
+Deux vues Airtable, deux ordres distincts : « Site » (l'ordre dans chaque catégorie) et « Site · Tous »
+(l'ordre de « Tous » sur l'accueil). Lues par leur identifiant : les renommer dans Airtable ne casse rien.
 
 Usage : AIRTABLE_TOKEN=pat… python3 empreinte.py   →  affiche l'empreinte (sha256)
 Importé par fetch_airtable.py pour l'écrire dans data/empreinte.txt.
@@ -12,7 +12,8 @@ import hashlib, os, sys, time
 import requests
 
 BASE, TABLE = 'app96I5oQRuFkzTbc', 'tbl8SvCW4xtd7LtuT'
-VIEW = TOUS = 'viwX0XYIX1xTmzT16'   # la vue « Site » (par son identifiant : la renommer dans Airtable ne casse rien)
+VIEW = 'viwsgVmDFTzHZL38Z'   # vue « Site » : l'ordre dans chaque catégorie (Territoires, Activités, Habitat)
+TOUS = 'viwX0XYIX1xTmzT16'   # vue « Site · Tous » : l'ordre de « Tous » sur l'accueil, toutes catégories confondues
 MOD = 'Site · Modifié'
 # Les faits du projet ne portent plus le préfixe « Site · » dans Airtable (22/11/2026) : nom actuel → ancien nom.
 # Tant qu'Airtable n'est pas renommé, on retombe sur l'ancien nom ; les deux marchent.
@@ -47,6 +48,7 @@ def lignes(token, fields, view=VIEW, extra=None):
 def empreinte(token):
     recs = lignes(token, [MOD])
     txt = '\n'.join(f"{r['id']} {r['fields'].get(MOD, '')}" for r in recs)
+    txt += '\nTOUS ' + ' '.join(r['id'] for r in lignes(token, [MOD], TOUS))   # déplacer une ligne dans « Site · Tous » republie aussi
     # la table « Textes » (manifeste, dossier de presse) : un texte modifié republie aussi
     r = requests.get(f'https://api.airtable.com/v0/{BASE}/tblbzLNq3B2BUefMe', headers={'Authorization': f'Bearer {token}'},
                      params={'fields[]': ['Modifié'], 'pageSize': 100}, timeout=60)

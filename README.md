@@ -21,7 +21,7 @@ https://new.studiobega.be  (puis studiobega.be)
 ## Publier
 
 1. Dans Airtable, coche **Site** sur le projet, choisis sa **Porte** (Territoires · Activités · Habitat : ce qu'est le lieu), remplis la ligne (la colonne *Site · À compléter* dit ce qui manque), glisse les photos dans l'ordre (la première = vignette).
-2. L'ordre sur le site = l'ordre des lignes dans la vue **Site**, la seule : glisse une ligne vers le haut ou le bas. C'est l'ordre de « Tous » ; chaque catégorie (Territoires, Activités, Habitat) suit le même ordre, réduit à ses lignes. Pour ne voir qu'une catégorie dans Airtable : *Grouper* ou *Filtrer* par **Site · Porte**.
+2. L'ordre sur le site = l'ordre des lignes dans Airtable, deux vues pour deux ordres : **Site** (l'ordre dans chaque catégorie : glisse une ligne dans sa porte) et **Site · Tous** (l'ordre de « Tous » sur l'accueil).
 3. C'est tout : le robot regarde Airtable toutes les 10 minutes et republie dès qu'il y a du neuf (ordre, texte, photo, ligne ajoutée ou retirée). Pressé ? GitHub → Actions → *Publier le site* → *Run workflow*. Et chaque nuit, reconstruction complète par sécurité.
 
 Pas de code à toucher pour un projet.
