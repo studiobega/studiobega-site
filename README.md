@@ -21,7 +21,7 @@ https://new.studiobega.be  (puis studiobega.be)
 ## Publier
 
 1. Dans Airtable, coche **Site** sur le projet, choisis sa **Porte** (Territoires · Activités · Habitat : ce qu'est le lieu), remplis la ligne (la colonne *Site · À compléter* dit ce qui manque), glisse les photos dans l'ordre (la première = vignette).
-2. L'ordre sur le site = l'ordre des lignes dans la vue **Site** : glisse une ligne vers le haut ou le bas, dans sa porte.
+2. L'ordre sur le site = l'ordre des lignes dans la vue **Site**, la seule : glisse une ligne vers le haut ou le bas. C'est l'ordre de « Tous » ; chaque catégorie (Territoires, Activités, Habitat) suit le même ordre, réduit à ses lignes. Pour ne voir qu'une catégorie dans Airtable : *Grouper* ou *Filtrer* par **Site · Porte**.
 3. C'est tout : le robot regarde Airtable toutes les 10 minutes et republie dès qu'il y a du neuf (ordre, texte, photo, ligne ajoutée ou retirée). Pressé ? GitHub → Actions → *Publier le site* → *Run workflow*. Et chaque nuit, reconstruction complète par sécurité.
 
 Pas de code à toucher pour un projet.
@@ -38,10 +38,11 @@ Variables optionnelles : `FTP_HOST` (défaut `kx5isg.ftp.infomaniak.com`), `SITE
 
 ## Règles de contenu (côté Airtable)
 
-- *Site · Année* vide = non affichée. Tout champ qui commence par `[` est un placeholder : ignoré à la publication.
-- *Site · Sorti / Pistes* : une ligne = « Sorti » ; plusieurs lignes = « Pistes ».
+- Les faits du projet n'ont plus de préfixe : **Nom**, **Lieu**, **Type**, **Année**, **État public**, **Demandé**, **La clé**, **Sorti / Pistes**, **Paragraphe** (ils servent aussi à la fiche projet et à la presse). Restent « Site · » les réglages : Porte, Photos, Liens.
+- *Année* vide = non affichée. Tout champ qui commence par `[` est un placeholder : ignoré à la publication.
+- *Sorti / Pistes* : une ligne = « Sorti » ; plusieurs lignes = « Pistes ».
 - *Site · Liens* : une ligne par lien, `Titre | https://…`.
-- Les noms de clients privés ne vont jamais dans *Site · Nom*.
+- Les noms de clients privés ne vont jamais dans *Nom* d'un projet coché Site.
 
 ## Aperçu d'une refonte
 
