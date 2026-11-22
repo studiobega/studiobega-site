@@ -2,7 +2,7 @@
 """Dossier de presse Studio BEGA, construit depuis Airtable — la même base que le site.
 
   Textes   (table « Textes ») : manifeste, communiqué, sujets, chiffres, bios, citations…  colonne « Où » contient Presse
-  Projets  (table « Projets », vue « Site ») : les lignes cochées « Presse » ; champs « Site · » + « Presse · Devenu »
+  Projets  (table « Projets », vue « Site ») : les lignes cochées « Presse » ; le récit du projet (Nom, Lieu, La clé…) + « Presse · Devenu »
 
 Rien n'est écrit ici en dur : changer un texte dans Airtable change le dossier à la publication suivante.
 Sortie : dist/presse/Studio-BEGA_Dossier-de-presse.pdf  (publié avec le site : studiobega.be/presse/…)
@@ -18,9 +18,9 @@ ROOT = Path(__file__).resolve().parent
 OUT = ROOT / 'dist' / 'presse'; OUT.mkdir(parents=True, exist_ok=True)
 WORK = ROOT / 'press' / 'build'; WORK.mkdir(parents=True, exist_ok=True)
 BASE, PROJETS, TEXTES = 'app96I5oQRuFkzTbc', 'tbl8SvCW4xtd7LtuT', 'tblbzLNq3B2BUefMe'
-F = {'Code': 'code', 'Site · Porte': 'porte', 'Site · Nom': 'nom', 'Site · Lieu': 'lieu', 'Site · Type': 'type',
-     'Site · Année': 'annee', 'Site · État': 'etat', 'Site · Demandé': 'dem', 'Site · La clé': 'cle',
-     'Site · Sorti / Pistes': 'sorti', 'Site · Paragraphe': 'para', 'Presse · Devenu': 'devenu'}
+F = {'Code': 'code', 'Site · Porte': 'porte', 'Nom': 'nom', 'Lieu': 'lieu', 'Type': 'type',
+     'Année': 'annee', 'État public': 'etat', 'Demandé': 'dem', 'La clé': 'cle',
+     'Sorti / Pistes': 'sorti', 'Paragraphe': 'para', 'Presse · Devenu': 'devenu'}
 DOORS = {'Territoires': "Un territoire se lit avant de se dessiner.", 'Activités': "Un lieu d'activité vit de ce qu'il fait ressentir.",
          'Habitat': "Habiter, c'est s'accorder à un lieu."}
 MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
@@ -41,7 +41,8 @@ def airtable():
             time.sleep(.25)
     tx = get(TEXTES, {'filterByFormula': 'FIND("Presse", ARRAYJOIN({Où}))', 'sort[0][field]': 'Ordre'})
     textes = {r['fields'].get('Nom', ''): r['fields'].get('Texte', '') for r in tx}
-    pj = get(PROJETS, {'view': 'Site', 'filterByFormula': '{Presse}', 'fields[]': list(F) + ['Site · Photos']})
+    from empreinte import lignes   # même lecture que le site : vue « Site », noms actuels ou anciens des colonnes
+    pj = lignes(tok, list(F) + ['Site · Photos'], extra={'filterByFormula': '{Presse}'})
     projets = []
     for r in pj:
         f = r['fields']; p = {k: f.get(a, '') for a, k in F.items()}

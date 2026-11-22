@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Lit Airtable (BEGA BASE › Projets, lignes cochées « Site ») et écrit data/.
 
-  data/projets.json          champs normalisés, dans l'ordre de la vue « Site » (= l'ordre du site)
+  data/projets.json          champs normalisés, dans l'ordre de la vue « Site » (= l'ordre du site, « Tous » et catégories)
   data/empreinte.txt         empreinte de la vue (voir empreinte.py), publiée dans dist/build.json
   data/photos_manifest.json  ordre des photos par projet
   data/photos/<attId>.jpg    photos, réduites à 1600 px (une seule fois : cache par id)
@@ -13,7 +13,7 @@ import io, json, os, sys, time
 from pathlib import Path
 import requests
 from PIL import Image, ImageOps
-from empreinte import lignes, empreinte, TOUS
+from empreinte import lignes, empreinte
 
 TOKEN = os.environ.get('AIRTABLE_TOKEN')
 if not TOKEN:
@@ -22,18 +22,17 @@ DATA = Path(__file__).resolve().parent / 'data'
 PH = DATA / 'photos'; PH.mkdir(parents=True, exist_ok=True)
 
 F = {  # nom de champ Airtable → clé JSON
-    'Code': 'code', 'Site · Porte': 'porte', 'Site · Nom': 'nom', 'Site · Lieu': 'lieu',
-    'Site · Type': 'type', 'Site · Année': 'annee', 'Site · État': 'etat', 'Site · Demandé': 'dem',
-    'Site · La clé': 'cle', 'Site · Sorti / Pistes': 'sorti', 'Site · Paragraphe': 'para', 'Site · Liens': 'liens',
+    'Code': 'code', 'Site · Porte': 'porte', 'Nom': 'nom', 'Lieu': 'lieu',
+    'Type': 'type', 'Année': 'annee', 'État public': 'etat', 'Demandé': 'dem',
+    'La clé': 'cle', 'Sorti / Pistes': 'sorti', 'Paragraphe': 'para', 'Site · Liens': 'liens',
 }
 
 rows, manifest, fresh = [], [], 0
-RANG = {r['id']: i + 1 for i, r in enumerate(lignes(TOKEN, ['Code'], TOUS))}  # l'ordre de « Tous »
 for i, rec in enumerate(lignes(TOKEN, list(F) + ['Site · Photos'])):
     f = rec['fields']
     row = {k: f.get(a, '') for a, k in F.items()}
-    row['tous'] = RANG.get(rec['id'])
-    row['ordre'] = i + 1  # l'ordre de la vue « Site » : glisser une ligne dans Airtable = déplacer le lieu sur le site
+    # une seule vue « Site » : son ordre est celui de « Tous », et celui de chaque catégorie (les mêmes lignes, filtrées)
+    row['tous'] = row['ordre'] = i + 1  # glisser une ligne dans Airtable = déplacer le lieu sur le site
     rows.append(row)
     for k, a in enumerate(f.get('Site · Photos', [])):
         manifest.append({'code': row['code'], 'k': k, 'id': a['id'], 'fn': a.get('filename')})
