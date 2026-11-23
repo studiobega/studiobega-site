@@ -457,6 +457,10 @@ if V2:
 (DIST / 'assets').mkdir(exist_ok=True)
 shutil.copy(ROOT / 'assets' / 'site.css', DIST / 'assets' / 'site.css')
 shutil.copy(ROOT / 'assets' / 'site.js', DIST / 'assets' / 'site.js')
+# formulaire client « votre dossier » (page autonome, noindex) : studiobega.be/dossier/?ref=26.74&nature=Particulier
+# → webhook Make → Airtable Contacts. Le fichier est dans assets/, copié tel quel.
+(DIST / 'dossier').mkdir(exist_ok=True)
+shutil.copy(ROOT / 'assets' / 'dossier.html', DIST / 'dossier' / 'index.html')
 emp = DATA / 'empreinte.txt'
 (DIST / 'build.json').write_text(json.dumps({'empreinte': emp.read_text().strip() if emp.exists() else ''}))
 # favicon : le gros rond jaune, seul, sans fond (PNG : Safari ignore les SVG)

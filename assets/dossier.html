@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Votre dossier · Studio BEGA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--noir:#1a1a1a;--corps:#333;--gris:#8a8a8a;--ligne:#e6e6e6;--jaune:#F5C800;--pale:#FFF8D6}
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--corps);font-family:Poppins,system-ui,sans-serif;font-weight:300;font-size:15px;line-height:1.55}
+  .wrap{max-width:640px;margin:0 auto;padding:40px 22px 80px}
+  .logo{font-family:"Schibsted Grotesk",sans-serif;font-weight:700;font-size:34px;letter-spacing:-.5px;color:var(--noir);display:inline-flex;align-items:baseline;gap:4px;text-decoration:none}
+  .logo i{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--jaune);transform:translateY(-1px)}
+  .base{font-size:12px;color:var(--gris);margin-top:2px}
+  h1{font-family:"Schibsted Grotesk",sans-serif;font-weight:500;font-size:30px;line-height:1.15;color:var(--noir);margin:42px 0 12px}
+  .intro{margin:0 0 6px}
+  .rgpd{font-size:12.5px;color:var(--gris);margin:10px 0 0}
+  .ref{display:inline-block;margin-top:22px;padding:6px 12px;border:1px solid var(--ligne);border-radius:999px;font-size:12.5px;color:var(--noir)}
+  .ref b{font-weight:500}
+  fieldset{border:0;padding:0;margin:38px 0 0}
+  legend{font-family:"Schibsted Grotesk",sans-serif;font-weight:500;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--noir);padding:0;margin:0 0 4px;width:100%}
+  legend::after{content:"";display:block;height:2px;background:var(--jaune);margin-top:8px}
+  .hint{font-size:13px;color:var(--gris);margin:10px 0 0}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  .row.one{grid-template-columns:1fr}
+  @media (max-width:480px){.row{grid-template-columns:1fr}}
+  label{display:block;font-size:12.5px;color:var(--noir);font-weight:400;margin-bottom:6px}
+  label small{color:var(--gris);font-weight:300}
+  input,select{width:100%;font:inherit;font-weight:300;color:var(--noir);padding:11px 12px;border:1px solid var(--ligne);border-radius:8px;background:#fff;outline:none;transition:border-color .15s}
+  input:focus,select:focus{border-color:var(--noir)}
+  input.err{border-color:#C8102E}
+  .seg{display:flex;gap:8px;margin-top:14px}
+  .seg button{flex:1;font:inherit;font-weight:400;padding:12px;border:1px solid var(--ligne);border-radius:8px;background:#fff;color:var(--noir);cursor:pointer}
+  .seg button.on{border-color:var(--noir);background:var(--noir);color:#fff}
+  .hidden{display:none}
+  .toggle{margin-top:16px;font-size:13.5px;color:var(--noir);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:inherit;font-weight:400}
+  .submit{margin-top:40px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .btn{font:inherit;font-weight:500;font-size:15px;padding:14px 22px;border:0;border-radius:999px;background:var(--noir);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:10px}
+  .btn i{width:9px;height:9px;border-radius:50%;background:var(--jaune);display:inline-block}
+  .btn[disabled]{opacity:.5;cursor:default}
+  .msg{font-size:13px;color:#C8102E}
+  .merci{display:none;margin-top:48px;padding:26px 24px;background:var(--pale);border-left:3px solid var(--jaune);border-radius:0 10px 10px 0}
+  .merci h2{font-family:"Schibsted Grotesk",sans-serif;font-weight:500;font-size:22px;margin:0 0 8px;color:var(--noir)}
+  .merci p{margin:0}
+  footer{margin-top:70px;padding-top:18px;border-top:1px solid var(--ligne);font-size:12px;color:var(--gris)}
+  footer a{color:var(--noir);text-decoration:none;font-weight:400}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="logo" href="https://studiobega.be">BEGA<i></i></a>
+  <div class="base">Stratégie &amp; architecture des lieux</div>
+
+  <h1>Votre dossier</h1>
+  <p class="intro">Pour l'ouvrir — offre, permis, facturation — il nous faut quelques informations que vous seuls pouvez nous donner. Deux minutes, et on s'occupe du reste.</p>
+  <p class="rgpd">Ces données servent uniquement à votre dossier chez Studio BEGA. Elles ne sont ni partagées ni utilisées à d'autres fins, et vous pouvez en demander la rectification ou la suppression à tout moment (contact@studiobega.be).</p>
+  <div class="ref" id="refBox">Dossier <b id="refTxt">—</b></div>
+
+  <form id="f" novalidate>
+    <fieldset>
+      <legend>Vous êtes</legend>
+      <div class="seg">
+        <button type="button" data-n="Particulier">Une personne privée</button>
+        <button type="button" data-n="Entreprise">Une société</button>
+      </div>
+      <p class="hint" id="hintNature">Le dossier est au nom d'une personne privée (ou de deux).</p>
+    </fieldset>
+
+    <fieldset id="fsEnt" class="hidden">
+      <legend>Votre entreprise</legend>
+      <div class="row">
+        <div><label>Dénomination</label><input name="orga"></div>
+        <div><label>Forme juridique <small>SRL, SA, ASBL…</small></label><input name="forme"></div>
+      </div>
+      <div class="row">
+        <div><label>Numéro d'entreprise / TVA <small>BE 0xxx.xxx.xxx</small></label><input name="tva"></div>
+        <div><label>Votre fonction <small>gérant, administrateur…</small></label><input name="fonction"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend id="legVous">Vous</legend>
+      <p class="hint hidden" id="hintRep">La personne qui représente la société et signe.</p>
+      <div class="row">
+        <div><label>Prénom</label><input name="prenom" required></div>
+        <div><label>Nom</label><input name="nom" required></div>
+      </div>
+      <div class="row">
+        <div><label>Téléphone</label><input name="tel" type="tel" required></div>
+        <div><label>Adresse e-mail</label><input name="email" type="email" required></div>
+      </div>
+      <div class="row one">
+        <div><label>Numéro de registre national <small>au dos de la carte d'identité, 00.00.00-000.00 — exigé sur les formulaires de permis</small></label><input name="rn" inputmode="numeric"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Adresse</legend>
+      <p class="hint" id="hintAdr">Votre domicile.</p>
+      <div class="row one"><div><label>Rue et numéro</label><input name="rue" required></div></div>
+      <div class="row">
+        <div><label>Code postal</label><input name="cp" required inputmode="numeric"></div>
+        <div><label>Localité</label><input name="localite" required></div>
+      </div>
+    </fieldset>
+
+    <fieldset id="fs2">
+      <legend>Second demandeur</legend>
+      <p class="hint">Uniquement si le dossier est introduit à deux noms (conjoint, copropriétaire).</p>
+      <button type="button" class="toggle" id="t2">Ajouter un second demandeur</button>
+      <div id="blk2" class="hidden">
+        <div class="row">
+          <div><label>Prénom</label><input name="prenom2"></div>
+          <div><label>Nom</label><input name="nom2"></div>
+        </div>
+        <div class="row">
+          <div><label>Téléphone</label><input name="tel2" type="tel"></div>
+          <div><label>Adresse e-mail</label><input name="email2" type="email"></div>
+        </div>
+        <div class="row one"><div><label>Numéro de registre national <small>00.00.00-000.00</small></label><input name="rn2" inputmode="numeric"></div></div>
+      </div>
+    </fieldset>
+
+    <div class="submit">
+      <button class="btn" type="submit" id="go">Envoyer <i></i></button>
+      <span class="msg" id="msg"></span>
+    </div>
+  </form>
+
+  <div class="merci" id="merci">
+    <h2>Merci, c'est tout ce qu'il nous faut.</h2>
+    <p>On s'occupe du reste. À très vite sur le terrain.</p>
+  </div>
+
+  <footer>Studio BEGA · 43, rue Simon · 6990 Hotton · 0474 63 43 09 · <a href="https://studiobega.be">studiobega.be</a></footer>
+</div>
+
+<script>
+(function(){
+  var HOOK = "https://hook.eu1.make.com/euaswjr7nlhz8cw55udl6vnitzngrzwc";
+  var q = new URLSearchParams(location.search);
+  var ref = (q.get("ref") || "").trim();
+  var nature = q.get("nature") === "Entreprise" ? "Entreprise" : "Particulier";
+  document.getElementById("refTxt").textContent = ref || "à préciser";
+  if (!ref) document.getElementById("refBox").style.display = "none";
+
+  var f = document.getElementById("f"), msg = document.getElementById("msg"), go = document.getElementById("go");
+  var segs = document.querySelectorAll(".seg button");
+  function setNature(n){
+    nature = n;
+    segs.forEach(function(b){ b.classList.toggle("on", b.dataset.n === n); });
+    var ent = n === "Entreprise";
+    document.getElementById("fsEnt").classList.toggle("hidden", !ent);
+    document.getElementById("hintRep").classList.toggle("hidden", !ent);
+    document.getElementById("fs2").classList.toggle("hidden", ent);
+    document.getElementById("hintNature").textContent = ent ? "Le dossier est au nom d'une société." : "Le dossier est au nom d'une personne privée (ou de deux).";
+    document.getElementById("hintAdr").textContent = ent ? "Le siège social." : "Votre domicile.";
+  }
+  segs.forEach(function(b){ b.addEventListener("click", function(){ setNature(b.dataset.n); }); });
+  setNature(nature);
+
+  document.getElementById("t2").addEventListener("click", function(){
+    document.getElementById("blk2").classList.remove("hidden"); this.style.display = "none";
+  });
+
+  function clean(v){ return (v || "").replace(/[\\"\r\n\t]/g, " ").trim(); }
+
+  f.addEventListener("submit", function(e){
+    e.preventDefault();
+    msg.textContent = "";
+    var ok = true;
+    f.querySelectorAll("input[required]").forEach(function(i){
+      var bad = !i.value.trim() || (i.type === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.value));
+      i.classList.toggle("err", bad); if (bad) ok = false;
+    });
+    if (nature === "Entreprise" && !f.orga.value.trim()) { f.orga.classList.add("err"); ok = false; }
+    if (!ok) { msg.textContent = "Il manque une ou deux informations, en rouge."; return; }
+
+    var d = new URLSearchParams();
+    d.set("ref", clean(ref)); d.set("nature", nature);
+    ["prenom","nom","tel","email","rn","orga","forme","tva","fonction","rue","cp","localite","prenom2","nom2","tel2","email2","rn2"].forEach(function(k){
+      d.set(k, clean(f.elements[k] ? f.elements[k].value : ""));
+    });
+    go.disabled = true;
+    fetch(HOOK, { method: "POST", mode: "no-cors", body: d }).then(function(){
+      f.style.display = "none"; document.getElementById("merci").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }).catch(function(){
+      go.disabled = false; msg.textContent = "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous à contact@studiobega.be.";
+    });
+  });
+})();
+</script>
+</body>
+</html>
