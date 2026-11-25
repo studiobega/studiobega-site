@@ -461,6 +461,9 @@ shutil.copy(ROOT / 'assets' / 'site.js', DIST / 'assets' / 'site.js')
 # → webhook Make → Airtable Contacts. Le fichier est dans assets/, copié tel quel.
 (DIST / 'dossier').mkdir(exist_ok=True)
 shutil.copy(ROOT / 'assets' / 'dossier.html', DIST / 'dossier' / 'index.html')
+# app client « BEGA · Votre projet » (PWA, noindex) : studiobega.be/app/?k=CLÉ → webhook Make → Airtable (Projets › Espace · Clé).
+# Copiée telle quelle depuis assets/app/ ; source de référence : kDrive Le Système/01_Outils/app-client.
+shutil.copytree(ROOT / 'assets' / 'app', DIST / 'app', dirs_exist_ok=True)
 emp = DATA / 'empreinte.txt'
 (DIST / 'build.json').write_text(json.dumps({'empreinte': emp.read_text().strip() if emp.exists() else ''}))
 # favicon : le gros rond jaune, seul, sans fond (PNG : Safari ignore les SVG)

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="BEGA">
+<title>BEGA · Votre projet</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* App client BEGA — fond blanc, encre noire, gris, un seul jaune (le point, l'étape en cours, ce qu'on attend du client). Pas de surface noire. */
+:root{--bg:#fff;--ink:#1A1A1A;--mut:#6b6b6b;--line:#e7e7e4;--soft:#f6f6f4;--y:#F5C800;--ysoft:#fff6d1}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Schibsted Grotesk",system-ui,-apple-system,sans-serif;overflow-x:clip}
+button,input,textarea{font:inherit;color:inherit}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:6px}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--y);display:inline-block;margin-top:4px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top)) max(5vw,18px) 14px;max-width:1100px;margin:0 auto}
+.who{font-size:14px;color:var(--mut)}
+.hero{max-width:1100px;margin:0 auto;padding:0 max(5vw,18px)}
+.hero img{width:100%;aspect-ratio:16/8;object-fit:cover;border-radius:14px;display:block;background:var(--soft)}
+.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.05;margin:14px 0 0;font-weight:700;letter-spacing:-.01em}
+.hero .addr{color:var(--mut);margin-top:6px}
+.now{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:6px 12px;border-radius:999px;background:var(--ysoft);font-size:14px;font-weight:500}
+.now i{width:8px;height:8px;border-radius:50%;background:var(--y)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:5;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs button{min-height:62px;border:0;background:none;font-size:12.5px;font-weight:500;color:var(--mut);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+nav.tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6}
+nav.tabs button[aria-selected=true]{color:var(--ink)}
+nav.tabs button[aria-selected=true]::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--y);margin-top:-2px}
+main{max-width:1100px;margin:0 auto;padding:12px max(5vw,18px) calc(110px + env(safe-area-inset-bottom))}
+section[hidden]{display:none}
+h2{font-size:26px;line-height:1.1;margin:22px 0 6px;font-weight:700}
+h3{font-size:15px;font-weight:700;margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.lead{color:var(--mut);margin:0 0 22px;max-width:62ch}
+.note{font-size:13px;color:var(--mut);margin-top:14px}
+/* Projet : départ / aujourd'hui */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.blk{margin:0 0 26px}
+.blk .lbl{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin-bottom:8px}
+.lines{margin:0;padding:0;list-style:none}
+.lines li{padding:10px 0;border-bottom:1px solid var(--line)}
+.lines b{font-weight:700}
+.budget{background:var(--soft);border-radius:12px;padding:16px 18px;white-space:pre-line}
+/* Planning */
+.gantt{border:1px solid var(--line);border-radius:12px;padding:16px 16px 10px;margin:0 0 22px;overflow:hidden}
+.g-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin:0 0 10px}
+.g-row{display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:center;margin:0 0 10px}
+.g-row .n{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-track{position:relative;height:12px;background:var(--soft);border-radius:99px}
+.g-bar{position:absolute;top:0;bottom:0;border-radius:99px;background:#cfcfcb}
+.done .g-bar{background:var(--ink)}
+.cur .g-bar{background:var(--y)}
+.g-today{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--y)}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{display:grid;grid-template-columns:28px 1fr auto;gap:14px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);margin:4px 0 0 4px;background:var(--bg)}
+.tl .done .dot,.tl li.done .dot{background:var(--ink)}
+.tl li.cur .dot{border-color:var(--y);background:var(--y);box-shadow:0 0 0 5px var(--ysoft)}
+.tl .ph{font-weight:700;font-size:17px}
+.tl li.cur .ph::after{content:" · en cours";font-weight:500;color:var(--mut)}
+.tl .when{font-size:15px;white-space:nowrap;text-align:right;color:var(--mut)}
+/* Comptes rendus */
+.todo{background:var(--ysoft);border-radius:12px;padding:16px 18px;margin:0 0 22px}
+.todo b{display:block;margin-bottom:6px}
+.todo ul{margin:0;padding-left:18px}
+.rep{border:1px solid var(--line);border-radius:12px;margin:0 0 14px;overflow:hidden}
+.rep>button{width:100%;text-align:left;background:none;border:0;padding:16px 18px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;min-height:56px}
+.rep .t{font-weight:700}
+.rep .m{font-size:14px;color:var(--mut)}
+.chev{transition:transform .2s}
+.rep.open .chev{transform:rotate(180deg)}
+.rep .body{display:none;padding:0 18px 16px}
+.rep.open .body{display:block}
+.pt{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-top:1px solid var(--line)}
+.pt .pt-t{font-weight:500}
+.pt .pt-c{grid-column:1/-1;font-size:15px;color:var(--mut)}
+.chip{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--soft);white-space:nowrap;align-self:start}
+.chip.y{background:var(--ysoft)}
+.empty{color:var(--mut);padding:18px 0}
+/* Mes infos */
+.form{max-width:640px}
+.grp{margin:0 0 26px}
+.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.row.one{grid-template-columns:1fr}
+label{display:block;font-size:14px;font-weight:500;margin:0 0 6px}
+input,textarea{width:100%;font-size:16px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);min-height:46px}
+textarea{min-height:110px}
+input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+.miss label::after{content:" · à compléter";color:#9a7a00;font-weight:400}
+.btn{min-height:46px;padding:0 20px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:#fff;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn[disabled]{opacity:.5;cursor:default}
+.ro{padding:12px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:200px 1fr;gap:12px}
+.ro span:first-child{color:var(--mut);font-size:14px}
+.locked{background:var(--soft);border-radius:12px;padding:16px 18px;margin-bottom:20px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+/* états */
+#gate{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}
+#gate p{color:var(--mut);max-width:36ch;margin:14px auto 0}
+.spin{width:22px;height:22px;border:2px solid var(--line);border-top-color:var(--y);border-radius:50%;animation:s 0.8s linear infinite;margin:22px auto 0}
+@keyframes s{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.08);padding:12px 16px;border-radius:10px;font-size:14px;max-width:min(92vw,440px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
+.toast.on{opacity:1}
+.install{font-size:13px;color:var(--mut);border-top:1px solid var(--line);margin-top:34px;padding-top:14px}
+@media(min-width:760px){
+ nav.tabs{position:sticky;top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);max-width:1100px;margin:22px auto 0;grid-template-columns:repeat(4,max-content);gap:28px;padding:0 max(5vw,18px)}
+ nav.tabs button{flex-direction:row;min-height:52px;font-size:15px;padding:0}
+ nav.tabs svg{display:none}
+ nav.tabs button[aria-selected=true]{box-shadow:inset 0 -2px 0 var(--ink)}
+ nav.tabs button[aria-selected=true]::after{margin:0 0 0 2px}
+ main{padding-bottom:60px}
+ .toast{bottom:28px}
+}
+@media(max-width:640px){.duo{grid-template-columns:1fr;gap:0}.row{grid-template-columns:1fr}.ro{grid-template-columns:1fr;gap:2px}.hero img{aspect-ratio:4/3}.g-row{grid-template-columns:96px 1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="gate"><div><span class="logo">BEGA<i></i></span><div class="spin" id="spin"></div><p id="gmsg">Ouverture de votre projet…</p></div></div>
+
+<div id="app" hidden>
+ <header class="top"><span class="logo">BEGA<i></i></span><span class="who" id="who"></span></header>
+ <div class="hero">
+  <img id="heroImg" alt="" hidden>
+  <h1 id="title"></h1>
+  <div class="addr" id="addr"></div>
+  <div class="now" id="now" hidden><i></i><span></span></div>
+ </div>
+
+ <nav class="tabs" role="tablist">
+  <button role="tab" data-t="projet" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H3z"/><path d="M10 20v-5h4v5"/></svg>Projet</button>
+  <button role="tab" data-t="planning" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h6"/></svg>Planning</button>
+  <button role="tab" data-t="rapports" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M10 12h5M10 16h5"/></svg>Comptes rendus</button>
+  <button role="tab" data-t="infos" aria-selected="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Mes infos</button>
+ </nav>
+
+ <main>
+  <section id="projet">
+   <h2>Votre projet</h2>
+   <p class="lead">Ce que vous nous avez demandé au départ, et où en est le projet aujourd'hui.</p>
+   <div class="duo">
+    <div class="blk"><div class="lbl" id="dLbl">Au départ</div><ul class="lines" id="depart"></ul></div>
+    <div class="blk"><div class="lbl">Aujourd'hui</div><ul class="lines" id="actuel"></ul></div>
+   </div>
+   <div class="blk" id="budgetBlk" hidden><div class="lbl">Le budget</div><div class="budget" id="budget"></div></div>
+  </section>
+
+  <section id="planning" hidden>
+   <h2>Le planning</h2>
+   <p class="lead">Les grandes étapes de votre dossier. Il se met à jour dès qu'une date bouge chez nous.</p>
+   <div class="gantt" id="gantt"></div>
+   <ol class="tl" id="tl"></ol>
+   <p class="note">Les dates sont indicatives. Elles dépendent notamment des délais de l'administration.</p>
+  </section>
+
+  <section id="rapports" hidden>
+   <h2>Comptes rendus</h2>
+   <p class="lead">Chaque réunion et chaque visite de chantier donne lieu à un compte rendu. Le plus récent est en haut.</p>
+   <div class="todo" id="todo" hidden><b>Ce qu'on attend de vous</b><ul id="todoList"></ul></div>
+   <div id="reps"></div>
+  </section>
+
+  <section id="infos" hidden>
+   <h2>Vos informations</h2>
+   <p class="lead">Elles servent pour la convention, le permis et la facturation. Complétez ce qui manque, puis validez.</p>
+   <div id="infoBox"></div>
+  </section>
+
+  <p class="install" id="install"></p>
+ </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(()=>{
+const API="https://hook.eu1.make.com/36fkkffow556o2hm3qlhkwn5tkrm8tq1";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const M=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const Ms=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+const d=s=>s?new Date(s+"T12:00:00"):null;
+const fmtM=x=>x?M[x.getMonth()]+" "+x.getFullYear():"";
+const fmtD=x=>x?x.getDate()+" "+M[x.getMonth()]+" "+x.getFullYear():"";
+let tt;const toast=m=>{const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),3600)};
+
+// La clé : dans le lien (?k=…), gardée sur l'appareil pour l'icône d'accueil.
+const url=new URL(location.href);
+let K=url.searchParams.get("k");
+try{if(K)localStorage.setItem("bega_k",K);else K=localStorage.getItem("bega_k")}catch(_){}
+if(!K||!/^[A-Za-z0-9]{24}$/.test(K)){fail("Ouvrez le lien personnel reçu de Studio BEGA pour accéder à votre projet.");return}
+
+function fail(m){$("spin").hidden=true;$("gmsg").textContent=m}
+
+fetch(API+"?k="+encodeURIComponent(K),{cache:"no-store"})
+ .then(r=>{if(r.status===404)throw"404";return r.json()})
+ .then(draw)
+ .catch(e=>fail(e==="404"?"Ce lien n'est plus actif. Demandez-en un nouveau à Studio BEGA.":"Connexion impossible pour le moment. Réessayez dans un instant."));
+
+// "Le lieu : …\nLe projet : …" → lignes avec étiquette
+const lines=t=>String(t||"").split(/\n+/).map(s=>s.trim()).filter(Boolean).map(s=>{const m=s.match(/^([^:]{2,40}) : (.*)$/);return m?`<li><b>${esc(m[1])}</b> · ${esc(m[2])}</li>`:`<li>${esc(s)}</li>`}).join("");
+
+function draw(D){
+ const P=(D.p.records[0]||{}).fields||{};
+ const E=(D.e.records||[]).map(r=>r.fields);
+ const C=(D.c.records||[]).map(r=>r.fields);
+ const U=((D.u.records||[])[0]||{}).fields||{};
+
+ const name=P.fldstrWEqDYt1clsy||String(P.fldhRDQaai7maHOyF||"").split(/[–-]/).pop().trim()||"Votre projet";
+ $("title").textContent=name;
+ const code=String(P.fldMRMwE81dQc1pdc||"").trim();
+ $("addr").textContent=[String(P.fldpOicULPn9qkAMM||"").replace(/\s*\(.*?\)\s*/g," ").trim(),P.fld85JRQb7iTxo0Jv].filter(Boolean).join(", ")+(code?" · dossier "+code:"");
+ $("who").textContent=[U.fld2lk8TMD2VsM2Oy,U.flda9l2grlncBC8hs].filter(Boolean).join(" ");
+ const ph=(P.fldBkgAi6Se1YqZ3l||[])[0];
+ if(ph){const i=$("heroImg");i.src=(ph.thumbnails&&ph.thumbnails.large||ph).url;i.alt=name;i.hidden=false}
+ document.title="BEGA · "+name;
+
+ // Projet
+ $("depart").innerHTML=lines(P.fldzj9hHtXRkzHYcH)||'<li class="empty">Le programme de départ se formule lors de notre première rencontre.</li>';
+ if(P.fld3jnUuZmoYrsCmP)$("dLbl").textContent="Au départ · validé le "+fmtD(d(P.fld3jnUuZmoYrsCmP));
+ $("actuel").innerHTML=lines(P.fldwyWcRILzrmda3P)||'<li class="empty">Rien n\'a encore bougé depuis le départ.</li>';
+ if(P.fldFF1CEG9XvV4HgR){$("budget").textContent=P.fldFF1CEG9XvV4HgR;$("budgetBlk").hidden=false}
+
+ // Planning
+ const today=new Date();const DONE=["Réalisé","À facturer","Facturé","Payé"];
+ const ph2=E.map(e=>({n:e.fldu2O54lh2K2Orf1||"Étape",a:d(e.fldYwKp31C38VRtDX),b:d(e.fldHQLP0nTNqlW1U7),s:e.fldOEtsAuyBwFTPdX}))
+  .filter(x=>x.a||x.b).map(x=>{x.a=x.a||x.b;x.b=x.b||x.a;x.k=(DONE.includes(x.s)||x.b<today)?"done":(x.a<=today?"cur":"next");return x});
+ if(!ph2.some(x=>x.k==="cur")){const n=ph2.find(x=>x.k==="next");if(n)n.k="cur"}
+ const SHORT={"Permis d'urbanisme":"Permis","Dossier d'exécution":"Exécution","Suivi de chantier":"Chantier"};
+ const cur=ph2.find(x=>x.k==="cur");
+ if(cur){$("now").hidden=false;$("now").querySelector("span").textContent=cur.n+" en cours"}
+ if(ph2.length){
+  const t0=new Date(Math.min(...ph2.map(x=>x.a))),t1=new Date(Math.max(...ph2.map(x=>x.b),today));
+  t0.setDate(1);t1.setMonth(t1.getMonth()+1,1);const span=t1-t0;const pc=x=>((x-t0)/span*100).toFixed(2)+"%";
+  const ticks=[];for(let y=t0.getFullYear();y<=t1.getFullYear();y++)ticks.push(y);
+  $("gantt").innerHTML=`<div class="g-axis">${ticks.map(y=>`<span>${y}</span>`).join("")}</div>`+
+   ph2.map(x=>`<div class="g-row ${x.k}"><span class="n">${esc(SHORT[x.n]||x.n)}</span><div class="g-track"><div class="g-bar" style="left:${pc(x.a)};width:max(8px,calc(${pc(x.b)} - ${pc(x.a)}))"></div>${today>=t0&&today<=t1?`<div class="g-today" style="left:${pc(today)}" title="Aujourd'hui"></div>`:""}</div></div>`).join("");
+  $("tl").innerHTML=ph2.map(x=>`<li class="${x.k}"><span class="dot"></span><div><div class="ph">${esc(x.n)}</div></div><div class="when">${x.k==="done"?"Fait · "+fmtM(x.b):(Ms[x.a.getMonth()]+" "+x.a.getFullYear()+" → "+Ms[x.b.getMonth()]+" "+x.b.getFullYear())}</div></li>`).join("");
+ }else{$("gantt").hidden=true;$("tl").innerHTML='<li class="empty">Le planning arrive avec la convention.</li>'}
+
+ // Comptes rendus
+ const asks=[];
+ $("reps").innerHTML=C.length?C.map((c,i)=>{
+  let pts=[];try{pts=JSON.parse(c.fldsrqWWvx1PF3iJP||"[]")}catch(_){pts=[]}
+  if(!Array.isArray(pts))pts=[];
+  if(i===0)pts.forEach(p=>{const q=String(p.qui||"");if(/\b(MO|client|maître d'ouvrage)\b/i.test(q)&&!/clôtur/i.test(p.statut||""))asks.push(p.titre+(p.action?" · "+p.action:""))});
+  const chip=s=>{s=String(s||"").trim();return s?`<span class="chip${/vous|client/i.test(s)?" y":""}">${esc(s[0].toUpperCase()+s.slice(1))}</span>`:""};
+  return `<div class="rep${i===0?" open":""}"><button aria-expanded="${i===0}" data-r><div><div class="t">${esc(c.flddjUjgPUm5weFh7==="Chantier"?"Visite de chantier":"Compte rendu")} n° ${String(c.fld0su0ntUlwVTe9C||"").padStart(2,"0")} · ${fmtD(d(c.fldOrcGKCEa5VY43t))}</div><div class="m">${esc(String(c.fldi7Ms9mElgdgNXu||"").replace(/^Réunion client\s*[—-]\s*/,""))}</div></div><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9l6 6 6-6"/></svg></button><div class="body">${pts.map(p=>`<div class="pt"><span class="pt-t">${esc(p.titre)}</span>${chip(p.statut)}<span class="pt-c">${esc([p.constat,p.action].filter(Boolean).join(" "))}</span></div>`).join("")||'<p class="empty">Le détail est dans le PDF reçu par mail.</p>'}${c.fldQTCupDHuyLoARU?`<p class="note">Prochaine rencontre : ${fmtD(d(c.fldQTCupDHuyLoARU))}</p>`:""}</div></div>`}).join(""):'<p class="empty">Le premier compte rendu apparaîtra ici après notre prochaine réunion.</p>';
+ if(asks.length){$("todo").hidden=false;$("todoList").innerHTML=asks.map(a=>`<li>${esc(a)}</li>`).join("")}
+
+ // Mes infos
+ drawInfo(U);
+
+ $("install").textContent=/iPhone|iPad/.test(navigator.userAgent)?"Pour l'avoir sur votre écran d'accueil : bouton Partager, puis « Sur l'écran d'accueil ».":/Android/.test(navigator.userAgent)?"Pour l'avoir sur votre écran d'accueil : menu ⋮, puis « Ajouter à l'écran d'accueil ».":"";
+ $("gate").hidden=true;$("app").hidden=false;
+ try{const t=localStorage.getItem("bega_tab");if(t)show(t)}catch(_){}
+}
+
+const F=[["Demandeur",[["prenom","Prénom","fld2lk8TMD2VsM2Oy"],["nom","Nom","flda9l2grlncBC8hs"]],[["email","E-mail","fldOOvuOStWeeyPE7","email"],["tel","Téléphone","fldq42Gzy25OxL7Bj","tel"]],[["rue","Adresse","fldgCQLj9I1MgJywy"]],[["cp","Code postal","fldSC9ekmTbo0kvRT"],["loc","Localité","fldKMsoiAdAb7PRy7"]],[["pays","Pays","fldvKrDBKG3HoZqmO"]]],
+ ["Second demandeur (s'il y en a un)",[["p2","Prénom","fldvvGfWqjOP5Rwls"],["n2","Nom","fldyCrKsUYXLL4njP"]],[["t2","Téléphone","fldH66UuzEiq2PhPW","tel"]]],
+ ["Pour le permis",[["rn","N° de registre national"],["rn2","N° de registre national (2e demandeur)"]]]];
+const OPT=["p2","n2","t2","rn2"];
+function drawInfo(U){
+ const box=$("infoBox");
+ if(!U.fldFSC9gKhXOnXopm){
+  box.innerHTML=`<form class="form" id="inf">${F.map(g=>`<div class="grp"><h3>${g[0]}</h3>${g.slice(1).map(r=>`<div class="row${r.length===1?" one":""}">${r.map(([k,l,f,t])=>{const v=f?(U[f]||""):"";return `<div class="${v||OPT.includes(k)?"":"miss"}"><label for="f_${k}">${l}</label><input id="f_${k}" name="${k}" type="${t||"text"}" value="${esc(v)}" ${k.startsWith("rn")?'inputmode="numeric" placeholder="00.00.00-000.00" autocomplete="off"':""}></div>`}).join("")}</div>`).join("")}</div>`).join("")}<p class="note" style="margin:-8px 0 18px">Vos numéros de registre national ne servent qu'au permis. Ils ne sont jamais réaffichés ici.</p><button class="btn" type="submit">Valider mes informations</button></form>`;
+  $("inf").onsubmit=e=>{e.preventDefault();const b=e.submitter||$("inf").querySelector("button");b.disabled=true;
+   const fd=new URLSearchParams({k:K,a:"info"});
+   new FormData($("inf")).forEach((v,k)=>{v=String(v).replace(/\s+/g," ").trim();if(v)fd.append(k,v.slice(0,200))});
+   fetch(API,{method:"POST",body:fd}).then(r=>r.json()).then(()=>{
+    const V={fldFSC9gKhXOnXopm:new Date().toISOString().slice(0,10)};F.flat(2).forEach(x=>{if(Array.isArray(x)&&x[2]){const el=$("f_"+x[0]);V[x[2]]=el?el.value.trim():""}});
+    drawInfo(V);toast("Merci, c'est validé. Vos informations sont chez nous.")})
+   .catch(()=>{b.disabled=false;toast("L'envoi n'est pas passé. Réessayez dans un instant.")})};
+ }else{
+  const rows=[["Demandeur",[U.fld2lk8TMD2VsM2Oy,U.flda9l2grlncBC8hs].filter(Boolean).join(" ")],["E-mail",U.fldOOvuOStWeeyPE7],["Téléphone",U.fldq42Gzy25OxL7Bj],["Adresse",[U.fldgCQLj9I1MgJywy,[U.fldSC9ekmTbo0kvRT,U.fldKMsoiAdAb7PRy7].filter(Boolean).join(" ")].filter(Boolean).join(", ")],["Second demandeur",[U.fldvvGfWqjOP5Rwls,U.fldyCrKsUYXLL4njP].filter(Boolean).join(" ")]];
+  box.innerHTML=`<div class="locked"><b>Validées le ${fmtD(d(U.fldFSC9gKhXOnXopm))}</b><br>Pour éviter toute erreur dans le permis et la facturation, vos informations sont figées. Un changement ? Dites-le nous ici.</div><div class="form">${rows.map(r=>`<div class="ro"><span>${r[0]}</span><span>${esc(r[1]||"·")}</span></div>`).join("")}<div style="margin-top:20px"><label for="msg">Qu'est-ce qui change ?</label><textarea id="msg" maxlength="1500" placeholder="Par exemple : nouvelle adresse à partir de mars"></textarea><div class="acts"><button class="btn" id="send">Envoyer au studio</button></div></div></div>`;
+  $("send").onclick=()=>{const m=$("msg").value.trim();if(!m)return;$("send").disabled=true;
+   fetch(API,{method:"POST",body:new URLSearchParams({k:K,a:"msg",m})}).then(r=>r.json()).then(()=>{$("msg").value="";$("send").disabled=false;toast("Bien reçu. On met à jour et on revient vers vous.")})
+   .catch(()=>{$("send").disabled=false;toast("L'envoi n'est pas passé. Réessayez dans un instant.")})};
+ }
+}
+
+function show(t){if(!$(t))return;document.querySelectorAll("[data-t]").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t));document.querySelectorAll("main section").forEach(s=>s.hidden=s.id!==t);try{localStorage.setItem("bega_tab",t)}catch(_){}}
+document.addEventListener("click",e=>{
+ const r=e.target.closest("[data-r]");if(r){const c=r.parentElement;c.classList.toggle("open");r.setAttribute("aria-expanded",c.classList.contains("open"))}
+ const tb=e.target.closest("[data-t]");if(tb){show(tb.dataset.t);window.scrollTo({top:0})}
+});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+})();
+</script>
+</body>
+</html>

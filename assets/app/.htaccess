@@ -1,0 +1,6 @@
+# App client BEGA : jamais indexée
+Header set X-Robots-Tag "noindex, nofollow"
+Header set Referrer-Policy "no-referrer"
+<Files "sw.js">
+  Header set Cache-Control "no-cache"
+</Files>
