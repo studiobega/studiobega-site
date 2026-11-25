@@ -113,7 +113,15 @@ input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px soli
 @keyframes s{to{transform:rotate(360deg)}}
 .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.08);padding:12px 16px;border-radius:10px;font-size:14px;max-width:min(92vw,440px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
 .toast.on{opacity:1}
-.install{font-size:13px;color:var(--mut);border-top:1px solid var(--line);margin-top:34px;padding-top:14px}
+/* bandeau « BEGA sur votre téléphone » : un tap sur Android/ordi, mode d'emploi en 2 gestes sur iPhone ; disparaît une fois installée */
+.inst{max-width:1100px;margin:0 auto 18px;padding:0 max(5vw,18px)}
+.inst>div{display:grid;grid-template-columns:44px 1fr auto auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px 10px 10px 12px}
+.inst img{width:44px;height:44px;border-radius:10px;border:1px solid var(--line)}
+.inst b{display:block;font-size:15px}
+.inst span{font-size:13px;color:var(--mut)}
+.inst svg{width:15px;height:15px;vertical-align:-2px;stroke:currentColor;fill:none;stroke-width:1.8}
+.inst .add{min-height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--ink);background:#fff;font-weight:700;cursor:pointer}
+.inst .x{min-width:40px;min-height:40px;border:0;background:none;color:var(--mut);font-size:22px;line-height:1;cursor:pointer}
 @media(min-width:760px){
  nav.tabs{position:sticky;top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);max-width:1100px;margin:22px auto 0;grid-template-columns:repeat(4,max-content);gap:28px;padding:0 max(5vw,18px)}
  nav.tabs button{flex-direction:row;min-height:52px;font-size:15px;padding:0}
@@ -133,6 +141,7 @@ input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px soli
 
 <div id="app" hidden>
  <header class="top"><span class="logo">BEGA<i></i></span><span class="who" id="who"></span></header>
+ <div class="inst" id="inst" hidden><div><img src="apple-touch-icon.png" alt=""><div><b>BEGA sur votre téléphone</b><span id="instTxt">Votre projet en un geste, depuis l'écran d'accueil.</span></div><button class="add" id="instBtn" hidden>Ajouter</button><button class="x" id="instX" aria-label="Fermer">×</button></div></div>
  <div class="hero">
   <img id="heroImg" alt="" hidden>
   <h1 id="title"></h1>
@@ -179,7 +188,6 @@ input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px soli
    <div id="infoBox"></div>
   </section>
 
-  <p class="install" id="install"></p>
  </main>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -263,8 +271,8 @@ function draw(D){
  // Mes infos
  drawInfo(U);
 
- $("install").textContent=/iPhone|iPad/.test(navigator.userAgent)?"Pour l'avoir sur votre écran d'accueil : bouton Partager, puis « Sur l'écran d'accueil ».":/Android/.test(navigator.userAgent)?"Pour l'avoir sur votre écran d'accueil : menu ⋮, puis « Ajouter à l'écran d'accueil ».":"";
  $("gate").hidden=true;$("app").hidden=false;
+ setupInstall();
  try{const t=localStorage.getItem("bega_tab");if(t)show(t)}catch(_){}
 }
 
@@ -292,6 +300,27 @@ function drawInfo(U){
  }
 }
 
+
+// Bandeau d'installation : Android / ordi = vrai bouton (beforeinstallprompt) ; iPhone = Safari ne le permet pas, on montre les 2 gestes.
+let deferred=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;showInst()});
+function installed(){return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}
+function closed(){try{return localStorage.getItem("bega_inst")==="x"}catch(_){return false}}
+function showInst(){
+ if(installed()||closed()||$("app").hidden)return;
+ const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+ if(deferred){$("instBtn").hidden=false;$("instTxt").textContent="Votre projet en un geste, depuis l'écran d'accueil."}
+ else if(ios){$("instTxt").innerHTML='Touchez <svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4M5 11v9h14v-9"/></svg> en bas, puis « Sur l\'écran d\'accueil ».'}
+ else if(/Android/.test(navigator.userAgent)){$("instTxt").textContent="Menu ⋮ du navigateur, puis « Ajouter à l'écran d'accueil »."}
+ else return;
+ $("inst").hidden=false;
+}
+function setupInstall(){
+ $("instBtn").onclick=async()=>{if(!deferred)return;deferred.prompt();const r=await deferred.userChoice;deferred=null;if(r.outcome==="accepted")$("inst").hidden=true};
+ $("instX").onclick=()=>{$("inst").hidden=true;try{localStorage.setItem("bega_inst","x")}catch(_){}};
+ window.addEventListener("appinstalled",()=>{$("inst").hidden=true});
+ showInst();
+}
 function show(t){if(!$(t))return;document.querySelectorAll("[data-t]").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t));document.querySelectorAll("main section").forEach(s=>s.hidden=s.id!==t);try{localStorage.setItem("bega_tab",t)}catch(_){}}
 document.addEventListener("click",e=>{
  const r=e.target.closest("[data-r]");if(r){const c=r.parentElement;c.classList.toggle("open");r.setAttribute("aria-expanded",c.classList.contains("open"))}
